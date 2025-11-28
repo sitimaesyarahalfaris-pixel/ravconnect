@@ -78,6 +78,7 @@ class CartController extends Controller
             }
         }
 
+        
         // 3. Create Payment record
         $payment = new \App\Models\Payment();
         $payment->order_id = $order->id;
