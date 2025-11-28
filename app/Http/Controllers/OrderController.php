@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        // Admin list/update/delete only
+        $this->middleware('auth')->only(['index', 'update', 'destroy', 'quickStatus']);
+        $this->middleware(\App\Http\Middleware\AdminAuthMiddleware::class)->only(['index', 'update', 'destroy', 'quickStatus']);
+    }
     // List all orders
     public function index(Request $request)
     {
@@ -24,7 +30,10 @@ class OrderController extends Controller
             $query->whereBetween('created_at', [$request->from, $request->to]);
         }
         $orders = $query->orderBy('created_at', 'desc')->paginate(20);
-        return response()->json($orders);
+        if ($request->wantsJson()) {
+            return response()->json($orders);
+        }
+        return view('admin.orders.index', compact('orders'));
     }
 
     // Store a new order
@@ -69,6 +78,23 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($id);
         $order->delete();
-        return response()->json(['message' => 'Order deleted']);
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Order deleted']);
+        }
+        return redirect()->route('admin.dashboard')->with('success', 'Order deleted');
+    }
+
+    // Quick status update from admin list
+    public function quickStatus(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+        $validated = $request->validate([
+            'status' => 'required|in:pending,paid,expired,failed',
+        ]);
+        $order->update(['status' => $validated['status']]);
+        if ($request->wantsJson()) {
+            return response()->json($order);
+        }
+        return redirect()->route('admin.dashboard')->with('success', 'Order status updated');
     }
 }

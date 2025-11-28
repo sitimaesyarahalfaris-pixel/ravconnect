@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(\App\Http\Middleware\AdminAuthMiddleware::class);
+    }
+
     // Dashboard statistics
     public function stats()
     {
@@ -46,9 +52,105 @@ class AdminDashboardController extends Controller
             'revenue_total' => Payment::where('status', 'paid')->sum('amount'),
             'stock_total' => ProductStock::where('status', 'available')->count(),
         ];
-        $products = Product::with('country')->get();
+        // Load products with their countries and compute available stock per product
+        $products = Product::with('countries')->get();
+        foreach ($products as $p) {
+            $p->country = $p->countries->first() ?? null;
+            $p->stock = \App\Models\ProductStock::where('product_id', $p->id)->where('status', 'available')->count();
+        }
         $countries = \App\Models\Country::all();
-        // Pass stats, products, countries to view
+
+        // Ensure only admins can access (extra safety)
+        if (!auth()->check() || !auth()->user()->is_admin) {
+            return redirect()->route('admin.login');
+        }
+
         return view('admin.admin_panel', compact('stats', 'products', 'countries'));
+    }
+
+    // Simple admin dashboard view (minimal, uses auth middleware and checks is_admin)
+    public function simpleIndex()
+    {
+        // require authentication and admin status is checked in the route/login redirect
+        $stats = [
+            'orders_total' => Order::count(),
+            'orders_pending' => Order::where('status', 'pending')->count(),
+            'orders_paid' => Order::where('status', 'paid')->count(),
+            'products_total' => Product::count(),
+        ];
+        $products = Product::limit(20)->get();
+        return view('admin.simple_dashboard', compact('stats', 'products'));
+    }
+
+    // Export simple JSON list or CSV (basic implementation)
+    public function export(Request $request, $entity)
+    {
+        $allowed = ['products', 'orders', 'payments', 'users'];
+        if (!in_array($entity, $allowed)) {
+            return response()->json(['error' => 'Invalid export entity'], 400);
+        }
+        switch ($entity) {
+            case 'products':
+                $data = Product::all();
+                break;
+            case 'orders':
+                $data = Order::all();
+                break;
+            case 'payments':
+                $data = Payment::all();
+                break;
+            case 'users':
+                $data = \App\Models\User::all();
+                break;
+        }
+        if ($request->wantsJson()) {
+            return response()->json($data);
+        }
+        // Simple CSV download for web requests
+        $csv = '';
+        $first = true;
+        foreach ($data as $row) {
+            $arr = (array)$row->toArray();
+            if ($first) {
+                $csv .= implode(',', array_keys($arr)) . "\n";
+                $first = false;
+            }
+            $csv .= implode(',', array_map(function ($v) {
+                return '"' . str_replace('"', '""', (string)$v) . '"';
+            }, array_values($arr))) . "\n";
+        }
+        $filename = $entity . "-export-" . date('Ymd') . ".csv";
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ]);
+    }
+
+    // Bulk action handler (basic)
+    public function bulkAction(Request $request, $entity)
+    {
+        $ids = $request->input('ids', []);
+        $action = $request->input('action');
+        if (empty($ids) || empty($action)) {
+            return redirect()->route('admin.dashboard')->with('error', 'No ids or action provided');
+        }
+        switch ($entity) {
+            case 'products':
+                if ($action === 'delete') {
+                    \App\Models\Product::whereIn('id', $ids)->delete();
+                }
+                break;
+            case 'orders':
+                if (in_array($action, ['pending', 'paid', 'expired', 'failed'])) {
+                    \App\Models\Order::whereIn('id', $ids)->update(['status' => $action]);
+                }
+                break;
+            case 'payments':
+                if ($action === 'confirm') {
+                    \App\Models\Payment::whereIn('id', $ids)->update(['status' => 'paid']);
+                }
+                break;
+        }
+        return redirect()->route('admin.dashboard')->with('success', 'Bulk action completed');
     }
 }

@@ -3,15 +3,24 @@
 @section('content')
 <div class="max-w-md mx-auto mt-16 bg-white p-8 rounded-xl shadow">
     <h1 class="text-2xl font-black mb-6">Register</h1>
+    @if ($errors->any())
+        <div class="mb-4 text-red-600">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <form method="POST" action="{{ route('register') }}">
         @csrf
         <div class="mb-4">
             <label class="block font-bold mb-1">Name</label>
-            <input type="text" name="name" class="w-full border rounded px-3 py-2" required>
+            <input type="text" name="name" value="{{ old('name') }}" class="w-full border rounded px-3 py-2" required>
         </div>
         <div class="mb-4">
             <label class="block font-bold mb-1">Email</label>
-            <input type="email" name="email" class="w-full border rounded px-3 py-2" required>
+            <input type="email" name="email" value="{{ old('email') }}" class="w-full border rounded px-3 py-2" required>
         </div>
         <div class="mb-4">
             <label class="block font-bold mb-1">Password</label>

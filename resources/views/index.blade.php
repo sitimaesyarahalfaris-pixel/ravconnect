@@ -340,7 +340,7 @@
                     <div class="absolute top-10 left-10 bg-gradient-to-br from-[#FFC50F] to-[#FFD700] rounded-2xl p-5 shadow-2xl transform rotate-6 hover:rotate-0 transition-all">
                         <div class="text-center">
                             <div class="text-3xl font-black text-black">Rp 50k</div>
-                            <div class="text-xs text-black/70 font-bold">Mulai dari</div>
+                            <div class="text-xs text-black/70 font-bold">Start From</div>
                         </div>
                     </div>
                 </div>

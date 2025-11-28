@@ -4,22 +4,7 @@
 
 @section('content')
 <div class="flex flex-col md:flex-row min-h-screen">
-    <!-- Sidebar -->
-    <aside class="w-full md:w-64 bg-black/95 text-white py-8 px-6 flex-shrink-0 border-r-4 border-[#FFC50F]">
-        <div class="flex items-center gap-3 mb-10">
-            <img src="{{ asset('resources/assets/img/Logo-transparent.png') }}" alt="RavConnect Logo" class="h-10 w-auto">
-            <span class="font-black text-xl">Admin Panel</span>
-        </div>
-        <nav class="space-y-4">
-            <a href="#dashboard" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Dashboard</a>
-            <a href="#products" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Products</a>
-            <a href="#orders" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Orders</a>
-            <a href="#payments" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Payments</a>
-            <a href="#stock" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Stock</a>
-            <a href="#content" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Content</a>
-            <a href="#settings" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Settings</a>
-        </nav>
-    </aside>
+    @include('admin.partials.sidebar')
     <!-- Main Content -->
     <main class="flex-1 bg-gray-50 py-12 px-6">
         <!-- Dashboard Section -->
@@ -99,6 +84,7 @@
                     <h3 class="text-lg font-bold mb-4" id="productModalTitle">Tambah Produk</h3>
                     <form id="productForm" method="POST" action="{{ route('admin.products.store') }}">
                         @csrf
+                        <input type="hidden" name="_method" id="productFormMethod" value="">
                         <input type="hidden" name="id" id="productId">
                         <div class="mb-4">
                             <label class="block font-bold mb-1">Name</label>
@@ -133,6 +119,7 @@
                     document.getElementById('productModalTitle').innerText = 'Tambah Produk';
                     document.getElementById('productForm').action = '{{ route('admin.products.store') }}';
                     document.getElementById('productId').value = '';
+                    document.getElementById('productFormMethod').value = '';
                     document.getElementById('productName').value = '';
                     document.getElementById('productCountry').value = '';
                     document.getElementById('productPrice').value = '';
@@ -143,46 +130,24 @@
                 }
                 function editProduct(id) {
                     // AJAX fetch product data and fill modal fields
-                    fetch(`/admin/products/${id}`)
-                        .then(res => res.json())
+                    fetch(`/admin/products/${id}`, { headers: { 'Accept': 'application/json' } })
+                            .then(res => res.json())
                         .then(data => {
                             document.getElementById('productModal').classList.remove('hidden');
                             document.getElementById('productModalTitle').innerText = 'Edit Produk';
                             document.getElementById('productForm').action = `/admin/products/${id}`;
+                                document.getElementById('productFormMethod').value = 'PUT';
                             document.getElementById('productId').value = data.id;
                             document.getElementById('productName').value = data.name;
-                            document.getElementById('productCountry').value = data.country_id;
+                                // If API returns countries relation, try country_id or country.id
+                                document.getElementById('productCountry').value = data.country_id ?? (data.country ? data.country.id : '');
                             document.getElementById('productPrice').value = data.price;
                             document.getElementById('productStock').value = data.stock;
                         });
                 }
             </script>
         </section>
-        <!-- Digital Stock Management Section -->
-        <section id="stock" class="mb-12">
-            <h2 class="text-xl font-bold mb-4">Digital Stock Management</h2>
-            <div>Upload Stok, Tabel Stok, Auto/Manual Assign</div>
-        </section>
-        <!-- Order Management Section -->
-        <section id="orders" class="mb-12">
-            <h2 class="text-xl font-bold mb-4">Order Management</h2>
-            <div>Filter, Detail, Manual Delivery, Resend Email</div>
-        </section>
-        <!-- Payment Management Section -->
-        <section id="payments" class="mb-12">
-            <h2 class="text-xl font-bold mb-4">Payment Gateway Settings</h2>
-            <div>API Key, Webhook, QRIS</div>
-        </section>
-        <!-- Content Management Section -->
-        <section id="content" class="mb-12">
-            <h2 class="text-xl font-bold mb-4">Website Content Settings</h2>
-            <div>Edit Banner, FAQ, Info, Rekomendasi, Kontak, Social Media, Logo, Footer</div>
-        </section>
-        <!-- System Settings Section -->
-        <section id="settings" class="mb-12">
-            <h2 class="text-xl font-bold mb-4">System Settings</h2>
-            <div>SMTP, WhatsApp CS, Website Title, Meta SEO</div>
-        </section>
+        <!-- NOTE: Digital Stock, Orders, Payments, Content and Settings moved to dedicated pages -->
     </main>
 </div>
 @endsection

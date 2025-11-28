@@ -9,10 +9,20 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        // Protect admin user management actions
+        $this->middleware('auth')->only(['index', 'show', 'store', 'update', 'destroy']);
+        $this->middleware(\App\Http\Middleware\AdminAuthMiddleware::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+    }
     // List all users
     public function index()
     {
-        return response()->json(User::all());
+        $users = \App\Models\User::orderBy('created_at', 'desc')->paginate(20);
+        if (request()->wantsJson()) {
+            return response()->json($users);
+        }
+        return view('admin.users.index', compact('users'));
     }
 
     // Store a new user
@@ -57,63 +67,5 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
         return response()->json(['message' => 'User deleted']);
-    }
-
-    // Show login form
-    public function showLoginForm()
-    {
-        return view('auth.login');
-    }
-
-    // Handle login
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            // Redirect admin to admin dashboard, user to my-esim
-            if (Auth::user()->is_admin) {
-                return redirect()->intended('/admin/dashboard');
-            }
-            return redirect()->intended('/my-esim');
-        }
-        return back()->withErrors([
-            'email' => 'Invalid credentials.',
-        ]);
-    }
-
-    // Handle logout
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/');
-    }
-
-    // Show register form
-    public function showRegisterForm()
-    {
-        return view('auth.register');
-    }
-
-    // Handle registration
-    public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
-        Auth::login($user);
-        return redirect('/my-esim');
     }
 }

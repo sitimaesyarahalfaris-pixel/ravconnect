@@ -43,6 +43,8 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
+        // Keep both aliases so older references ('admin.auth') still resolve
+        'admin' => \App\Http\Middleware\AdminAuthMiddleware::class,
         'admin.auth' => \App\Http\Middleware\AdminAuthMiddleware::class,
         // ...other middleware...
     ];

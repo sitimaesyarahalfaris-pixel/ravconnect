@@ -29,7 +29,8 @@ class AdminAuthController extends Controller
                 Auth::logout();
                 return back()->withErrors(['email' => 'Unauthorized.']);
             }
-            return redirect()->intended('/admin/dashboard');
+            // Redirect admins to the main admin dashboard
+            return redirect()->route('admin.dashboard');
         }
         return back()->withErrors([
             'email' => 'Invalid credentials.',
@@ -42,6 +43,6 @@ class AdminAuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return response()->json(['message' => 'Logged out']);
+        return redirect()->route('admin.login');
     }
 }

@@ -7,6 +7,11 @@ use App\Models\Setting;
 
 class AdminSystemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(\App\Http\Middleware\AdminAuthMiddleware::class);
+    }
     // Get system settings
     public function getSettings()
     {
@@ -21,7 +26,10 @@ class AdminSystemController extends Controller
             'qris_static',
             'qris_dynamic'
         ])->get();
-        return response()->json($settings);
+        if (request()->wantsJson()) {
+            return response()->json($settings);
+        }
+        return view('admin.system.index', compact('settings'));
     }
 
     // Update system setting
@@ -32,6 +40,9 @@ class AdminSystemController extends Controller
             'value' => 'nullable|string',
         ]);
         $setting = Setting::updateOrCreate(['key' => $validated['key']], ['value' => $validated['value']]);
-        return response()->json($setting);
+        if ($request->wantsJson()) {
+            return response()->json($setting);
+        }
+        return redirect()->route('admin.simple')->with('success', 'Setting updated');
     }
 }

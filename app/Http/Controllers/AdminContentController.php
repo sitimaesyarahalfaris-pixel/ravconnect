@@ -12,10 +12,15 @@ use Illuminate\Http\Request;
 
 class AdminContentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(\App\Http\Middleware\AdminAuthMiddleware::class);
+    }
     // Get editable content for admin panel
     public function getContent()
     {
-        return response()->json([
+        $data = [
             'promo_banner' => Setting::where('key', 'promo_banner')->first(),
             'faq' => Setting::where('key', 'faq')->first(),
             'esim_info' => Setting::where('key', 'esim_info')->first(),
@@ -24,7 +29,11 @@ class AdminContentController extends Controller
             'social_media' => Setting::where('key', 'social_media')->first(),
             'logo' => Setting::where('key', 'logo')->first(),
             'footer' => Setting::where('key', 'footer')->first(),
-        ]);
+        ];
+        if (request()->wantsJson()) {
+            return response()->json($data);
+        }
+        return view('admin.content.index', $data);
     }
 
     // Update content section
@@ -35,6 +44,9 @@ class AdminContentController extends Controller
             'value' => 'nullable|string',
         ]);
         $setting = Setting::updateOrCreate(['key' => $validated['key']], ['value' => $validated['value']]);
-        return response()->json($setting);
+        if ($request->wantsJson()) {
+            return response()->json($setting);
+        }
+        return redirect()->route('admin.simple')->with('success', 'Content updated');
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductCountryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminDashboardController;
@@ -36,12 +37,12 @@ Route::get('/delivery', [CartController::class, 'delivery'])->name('delivery');
 // Payment webhook
 Route::post('payment/webhook', [PaymentWebhookController::class, 'handle']);
 
-// User authentication
-Route::get('login', [UserController::class, 'showLoginForm'])->name('login');
-Route::post('login', [UserController::class, 'login']);
-Route::post('logout', [UserController::class, 'logout'])->name('logout');
-Route::get('register', [UserController::class, 'showRegisterForm'])->name('register');
-Route::post('register', [UserController::class, 'register']);
+// User authentication (simple)
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('register', [AuthController::class, 'register']);
 
 // User routes (protected)
 Route::middleware(['auth'])->group(function () {
@@ -55,9 +56,14 @@ Route::get('admin/login', [AdminAuthController::class, 'showLoginForm'])->name('
 Route::post('admin/login', [AdminAuthController::class, 'login']);
 Route::post('admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
-// Admin routes group with middleware
-Route::middleware(['admin.auth'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+// Simple admin dashboard (protected by regular auth middleware; controller checks is_admin)
+Route::get('admin/simple', [AdminDashboardController::class, 'simpleIndex'])->name('admin.simple')->middleware('auth');
+
+// Expose the main admin dashboard route (auth protected)
+Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware('auth');
+
+// Admin routes group (protected by auth; controllers enforce admin checks)
+Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/dashboard/stats', [AdminDashboardController::class, 'stats']);
     Route::resource('products', ProductController::class, ['as' => 'admin']);
     Route::resource('orders', OrderController::class, ['as' => 'admin']);

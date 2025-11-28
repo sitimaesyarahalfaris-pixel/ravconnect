@@ -42,8 +42,10 @@ class CartController extends Controller
     }
 
     // Process checkout with real payment gateway logic
-    public function processCheckout(Request $request)
+    public function processCheckout(Request $request, $id)
     {
+        $product_id = Product::findOrFail($id);
+
         $cart = session('cart', []);
         if (count($cart) === 0) {
             return redirect()->route('cart')->with('error', 'Keranjang kosong.');
@@ -58,6 +60,7 @@ class CartController extends Controller
         // 1. Create Order
         $order = new \App\Models\Order();
         $order->user_id = auth()->check() ? auth()->id() : null;
+        $order->product_id = $product_id;
         $order->name = $validated['name'];
         $order->email = $validated['email'];
         $order->whatsapp = $validated['whatsapp'] ?? null;
@@ -99,5 +102,19 @@ class CartController extends Controller
         // 5. Clear cart
         session()->forget('cart');
         return redirect()->route('index')->with('success', 'Checkout berhasil! Pesanan Anda sedang diproses.');
+    }
+
+    // Show cart contents
+    public function index()
+    {
+        $cart = session('cart', []);
+        return view('order/cart', compact('cart'));
+    }
+
+    // Delivery / order confirmation page
+    public function delivery()
+    {
+        $cart = session('cart', []);
+        return view('order/delivery', compact('cart'));
     }
 }

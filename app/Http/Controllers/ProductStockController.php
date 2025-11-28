@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class ProductStockController extends Controller
 {
+    public function __construct()
+    {
+        // Only admin may manipulate stocks
+        $this->middleware('auth')->only(['store', 'update', 'destroy']);
+        $this->middleware(\App\Http\Middleware\AdminAuthMiddleware::class)->only(['store', 'update', 'destroy']);
+    }
     // List all stocks for a product
     public function index(Request $request)
     {
@@ -15,7 +21,11 @@ class ProductStockController extends Controller
         if ($productId) {
             $query->where('product_id', $productId);
         }
-        return response()->json($query->get());
+        $stocks = $query->orderBy('created_at', 'desc')->paginate(50);
+        if ($request->wantsJson()) {
+            return response()->json($stocks);
+        }
+        return view('admin.product_stocks.index', compact('stocks'));
     }
 
     // Store new stock
