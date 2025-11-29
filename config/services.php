@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'atlanticpedia' => [
+        'api_key' => env('ATLANTIC_PEDIA_API_KEY'),
+        'base_url' => env('ATLANTIC_PEDIA_BASE_URL', 'https://atlantich2h.com/'),
+    ],
+
 ];

@@ -27,12 +27,17 @@ Route::get('/country/{id}', [CountryController::class, 'showProducts']);
 Route::resource('countries', CountryController::class)->only(['index', 'show']);
 
 // Cart & Checkout (transaction allowed without user auth)
+// Cart Routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/cart/count', [CartController::class, 'getCartCount'])->name('cart.count');
 Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
-Route::post('/checkout', [CartController::class, 'processCheckout'])->name('checkout.process');
+Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/delivery', [CartController::class, 'delivery'])->name('delivery');
+Route::post('/payment/cancel', [CartController::class, 'cancelPayment'])->name('payment.cancel');
+Route::post('/payment/status', [CartController::class, 'ajaxDepositStatus'])->name('payment.status');
+Route::get('/search', [CartController::class, 'search'])->name('search');
 
 // Payment webhook
 Route::post('payment/webhook', [PaymentWebhookController::class, 'handle']);

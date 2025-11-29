@@ -16,6 +16,11 @@
             <h1 class="text-3xl md:text-4xl font-black text-gray-900">{{ $product->name }}</h1>
         </div>
         <div class="bg-white rounded-3xl shadow-xl border-4 border-[#FFC50F]/30 p-8 mb-8">
+            @if(session('success'))
+                <div class="mb-4 p-4 rounded-xl bg-green-100 text-green-800 font-bold text-center shadow-lg animate-bounce">
+                    {{ session('success') }}
+                </div>
+            @endif
             <div class="text-gray-700 text-lg mb-4">{{ $product->description }}</div>
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
@@ -46,13 +51,21 @@
                     @endforeach
                 </div>
             </div>
-            <form method="POST" action="{{ route('cart.add', $product->id) }}" class="block w-full mt-4">
+            <form method="POST" action="{{ route('cart.add', $product->id) }}?cart=open" class="block w-full mt-4">
                 @csrf
+            @if (auth()->check())
+                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                 <button type="submit" class="w-full bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-4 rounded-2xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 text-center">
-                    Beli Sekarang
+                    Tambah ke Keranjang
                 </button>
+            @else
+                <a href="{{ route('login') }}" class="w-full bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-4 rounded-2xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 text-center block text-center">
+                    Login untuk Membeli
+                </a>
+            @endif
             </form>
         </div>
     </div>
 </section>
 @endsection
+

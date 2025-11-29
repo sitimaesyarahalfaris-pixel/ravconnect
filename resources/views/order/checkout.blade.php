@@ -30,24 +30,50 @@
         <form method="POST" action="{{ route('checkout.process') }}" class="space-y-6 bg-white rounded-2xl shadow-lg p-8 border-2 border-[#FFC50F]/20">
             @csrf
             <div>
-                <label class="block font-semibold mb-1">Nama</label>
-                <input type="text" name="name" required class="w-full border rounded-lg px-4 py-2">
-            </div>
-            <div>
-                <label class="block font-semibold mb-1">Email</label>
-                <input type="email" name="email" required class="w-full border rounded-lg px-4 py-2">
-            </div>
-            <div>
-                <label class="block font-semibold mb-1">Nomor WhatsApp (opsional)</label>
-                <input type="text" name="whatsapp" class="w-full border rounded-lg px-4 py-2">
-            </div>
-            <div>
                 <label class="block font-semibold mb-1">Pilih Metode Pembayaran</label>
-                <select name="payment_method" class="w-full border rounded-lg px-4 py-2">
-                    <option value="midtrans">Midtrans</option>
-                    <option value="tripay">Tripay</option>
-                    <option value="xendit">Xendit</option>
-                </select>
+                @php
+                    $groupOrder = ['ewallet', 'va', 'bank'];
+                    $grouped = collect($paymentMethods)
+                        ->where('status', 'aktif')
+                        ->groupBy(fn($m) => strtolower($m['type']))
+                        ->sortBy(fn($v, $k) => array_search($k, $groupOrder));
+                    $groupLabel = [
+                        'ewallet' => 'Pembayaran instan dengan E-Wallet (OVO, DANA, ShopeePay, dll)',
+                        'va' => 'Pembayaran melalui Virtual Account (BNI, BRI, Mandiri, dll)',
+                        'bank' => 'Transfer ke rekening bank manual',
+                    ];
+                    $groupTitle = [
+                        'ewallet' => 'E-Wallet',
+                        'va' => 'Virtual Account',
+                        'bank' => 'Transfer Bank',
+                    ];
+                @endphp
+                <div class="grid grid-cols-1 gap-4">
+                    @foreach($groupOrder as $group)
+                        @if(isset($grouped[$group]))
+                            <div class="mb-1 mt-4 text-xs font-bold uppercase text-gray-500">{{ $groupTitle[$group] ?? ucfirst($group) }}</div>
+                            <div class="mb-2 text-xs text-gray-600">{{ $groupLabel[$group] ?? '' }}</div>
+                            @foreach($grouped[$group] as $method)
+                                @php
+                                    $totalBiaya = $total + ($method['fee'] ?? 0) + round($total * (($method['fee_persen'] ?? 0) / 100));
+                                @endphp
+                                <label class="flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all shadow-sm hover:border-[#FFC50F] {{ old('payment_method') == $method['metode'] ? 'border-[#FFC50F] bg-yellow-50' : 'border-gray-200 bg-white' }}">
+                                    <div class="flex flex-col items-center justify-center w-28 min-w-28">
+                                        <div class="font-black text-lg text-[#FFC50F]">Rp {{ number_format($totalBiaya, 0, ',', '.') }}</div>
+                                        @if(($method['fee'] ?? 0) > 0 || ($method['fee_persen'] ?? 0) > 0)
+                                            <div class="text-xs text-gray-400">Termasuk admin/fee</div>
+                                        @endif
+                                    </div>
+                                    <input type="radio" name="payment_method" value="{{ $method['metode'] }}" class="form-radio text-[#FFC50F] focus:ring-[#FFC50F]" {{ old('payment_method') == $method['metode'] ? 'checked' : '' }} required>
+                                    <img src="{{ $method['img_url'] }}" alt="{{ $method['name'] }}" class="w-12 h-12 object-contain rounded bg-white border border-gray-100">
+                                    <div class="flex-1">
+                                        <div class="font-bold text-gray-900">{{ $method['name'] }}</div>
+                                    </div>
+                                </label>
+                            @endforeach
+                        @endif
+                    @endforeach
+                </div>
             </div>
             <button type="submit" class="w-full bg-[#FFC50F] text-black py-3 rounded-xl font-black text-lg shadow hover:bg-[#FFD700] transition-all">Lanjut Bayar</button>
         </form>
