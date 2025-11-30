@@ -32,7 +32,7 @@
                     </div>
                     <div class="flex items-center justify-between pt-3 border-t-2 border-gray-100 mb-4">
                         <span class="text-sm text-gray-700 font-bold">Harga</span>
-                        <span class="text-2xl font-black text-[#FFC50F]">Rp {{ number_format($product->price * 1000, 0, ',', '.') }}</span>
+                        <span class="text-2xl font-black text-[#FFC50F]">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                     </div>
                     <a href="{{ route('products.show', $product->id) }}" class="w-full block bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-3 rounded-2xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-base shadow-xl hover:shadow-2xl transform hover:scale-105 text-center">Lihat Detail</a>
                 </div>

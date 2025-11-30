@@ -68,4 +68,15 @@ class UserController extends Controller
         $user->delete();
         return response()->json(['message' => 'User deleted']);
     }
+
+    // Show user's assigned eSIMs
+    public function myEsim()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
+        $esims = $user->productStocks()->with('product')->get();
+        return view('my_esim', compact('esims'));
+    }
 }

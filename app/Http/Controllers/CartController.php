@@ -81,7 +81,7 @@ class CartController extends Controller
     public function index()
     {
         $cart = session('cart', []);
-        $total = array_sum(array_column($cart, 'price')) * 1000;
+        $total = array_sum(array_column($cart, 'price'));
 
         return view('order.cart', compact('cart', 'total'));
     }
@@ -95,7 +95,7 @@ class CartController extends Controller
             return redirect()->route('cart')->with('error', 'Keranjang kosong.');
         }
 
-        $total = array_sum(array_column($cart, 'price')) * 1000;
+        $total = array_sum(array_column($cart, 'price'));
 
         // Ambil metode pembayaran dari AtlanticPedia
         $methods = app(\App\Services\AtlanticPediaApi::class)->getDepositMethods();
@@ -129,7 +129,7 @@ class CartController extends Controller
         $reffId = 'order-' . now()->format('YmdHis') . '-' . (auth()->id() ?? 'guest');
         $nominal = array_sum(array_map(function ($item) {
             return $item['price'];
-        }, $cart)) * 1000;
+        }, $cart));
         $type = $selected['type'] ?? '';
         $metode = $selected['metode'] ?? '';
 
@@ -203,6 +203,14 @@ class CartController extends Controller
                 // Update status in session for UI
                 $payment['status'] = $statusData['status'] ?? $payment['status'];
                 session(['payment_data' => $payment]);
+                // If payment is PAID, assign eSIM stock
+                if (($statusData['status'] ?? null) === 'PAID' && auth()->check()) {
+                    $cart = session('cart_backup', []); // Optionally keep cart backup for assignment
+                    foreach ($cart as $item) {
+                        \App\Models\Order::assignEsimToUser(auth()->id(), $item['id']);
+                    }
+                    session()->forget('cart_backup');
+                }
             }
         }
         return view('order.delivery', compact('payment', 'statusData'));

@@ -24,4 +24,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Country::class, 'product_country');
     }
+
+    public function stocks()
+    {
+        return $this->hasMany(ProductStock::class);
+    }
 }

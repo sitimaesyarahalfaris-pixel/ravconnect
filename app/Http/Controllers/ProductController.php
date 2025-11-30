@@ -44,6 +44,10 @@ class ProductController extends Controller
             'image' => 'nullable|string',
             'active' => 'boolean',
         ]);
+        // Ensure price is stored as Rupiah (not multiplied)
+        if (isset($validated['price'])) {
+            $validated['price'] = floatval($validated['price']);
+        }
         $product = Product::create($validated);
         // Attach country if provided
         if (!empty($validated['country_id'])) {
@@ -102,6 +106,10 @@ class ProductController extends Controller
             'image' => 'nullable|string',
             'active' => 'boolean',
         ]);
+        // Ensure price is stored as Rupiah (not multiplied)
+        if (isset($validated['price'])) {
+            $validated['price'] = floatval($validated['price']);
+        }
         $product->update($validated);
         // Sync country if provided
         if (array_key_exists('country_id', $validated) && $validated['country_id']) {

@@ -16,8 +16,8 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Global eSIM 5GB',
                 'description' => '5GB data, 30 days validity, works in 100+ countries.',
-                'price' => 25.00,
-                'quota' => 5,
+                'price' => 35000,
+                'quota' => 5120,
                 'validity' => 30,
                 'operator' => 'GlobalTel',
                 'auto_delivery' => true,
@@ -29,8 +29,8 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Europe eSIM 10GB',
                 'description' => '10GB data, 30 days validity, covers all of Europe.',
-                'price' => 30.00,
-                'quota' => 10,
+                'price' => 50000,
+                'quota' => 10240,
                 'validity' => 30,
                 'operator' => 'EuroConnect',
                 'auto_delivery' => true,
@@ -42,8 +42,8 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Asia eSIM 3GB',
                 'description' => '3GB data, 15 days validity, for major Asian countries.',
-                'price' => 15.00,
-                'quota' => 3,
+                'price' => 25000,
+                'quota' => 3072,
                 'validity' => 15,
                 'operator' => 'AsiaLink',
                 'auto_delivery' => true,
@@ -55,7 +55,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'USA eSIM Unlimited',
                 'description' => 'Unlimited data, 7 days validity, for the United States.',
-                'price' => 20.00,
+                'price' => 40000,
                 'quota' => null,
                 'validity' => 7,
                 'operator' => 'USAMobile',

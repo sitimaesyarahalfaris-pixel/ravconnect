@@ -28,6 +28,13 @@ class ProductStockController extends Controller
         return view('admin.product_stocks.index', compact('stocks'));
     }
 
+    // List all stocks for a product (for admin modal)
+    public function list($productId)
+    {
+        $stocks = \App\Models\ProductStock::where('product_id', $productId)->orderBy('created_at', 'desc')->get();
+        return response()->json($stocks);
+    }
+
     // Store new stock
     public function store(Request $request)
     {
@@ -38,6 +45,21 @@ class ProductStockController extends Controller
             'status' => 'in:available,used',
         ]);
         $stock = ProductStock::create($validated);
+        return response()->json($stock, 201);
+    }
+
+    // Store new stock (for admin modal)
+    public function storeForProduct(Request $request, $productId)
+    {
+        $validated = $request->validate([
+            'iccid' => 'required|string',
+            'activation_code' => 'required|string',
+            'smdp_plus' => 'required|string',
+            'qr_image_url' => 'nullable|string',
+        ]);
+        $validated['product_id'] = $productId;
+        $validated['status'] = 'available';
+        $stock = \App\Models\ProductStock::create($validated);
         return response()->json($stock, 201);
     }
 
@@ -65,6 +87,14 @@ class ProductStockController extends Controller
     public function destroy($id)
     {
         $stock = ProductStock::findOrFail($id);
+        $stock->delete();
+        return response()->json(['message' => 'Stock deleted']);
+    }
+
+    // Delete stock (for admin modal)
+    public function destroyForProduct($productId, $stockId)
+    {
+        $stock = \App\Models\ProductStock::where('product_id', $productId)->where('id', $stockId)->firstOrFail();
         $stock->delete();
         return response()->json(['message' => 'Stock deleted']);
     }

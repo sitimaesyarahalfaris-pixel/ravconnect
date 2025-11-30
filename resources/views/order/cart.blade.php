@@ -19,7 +19,7 @@
                                 <div class="text-gray-600 text-sm mb-2">{{ $item['description'] ?? '' }}</div>
                                 <div class="text-xs text-gray-500">Kuota: {{ $item['quota'] ?? '-' }} | Masa Aktif: {{ $item['validity'] ?? '-' }} | Operator: {{ $item['operator'] ?? '-' }}</div>
                             </div>
-                            <div class="font-black text-xl text-[#FFC50F]">Rp {{ number_format($item['price'] * 1000, 0, ',', '.') }}</div>
+                            <div class="font-black text-xl text-[#FFC50F]">Rp {{ number_format($item['price'], 0, ',', '.') }}</div>
                             <form method="POST" action="{{ route('cart.remove', $item['id']) }}">
                                 @csrf
                                 <button type="submit" class="ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-bold">Hapus</button>

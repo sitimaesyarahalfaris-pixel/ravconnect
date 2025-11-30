@@ -121,7 +121,7 @@
                                         <div class="flex-1 min-w-0">
                                             <h4 class="font-semibold text-gray-900 text-sm truncate">{{ $item['name'] }}</h4>
                                             <p class="text-[#FFC50F] font-bold text-sm mt-1">
-                                                Rp {{ number_format($item['price'] * 1000, 0, ',', '.') }}
+                                                Rp {{ number_format($item['price'], 0, ',', '.') }}
                                             </p>
                                             @if(isset($item['quota']))
                                             <p class="text-gray-500 text-xs mt-1">{{ $item['quota'] }} • {{ $item['validity'] }}</p>
@@ -144,7 +144,7 @@
                                     <div class="flex justify-between items-center mb-4">
                                         <span class="text-gray-600 font-medium">Total:</span>
                                         <span class="text-xl font-bold text-[#FFC50F]">
-                                            Rp {{ number_format(array_sum(array_column($cart, 'price')) * 1000, 0, ',', '.') }}
+                                            Rp {{ number_format(array_sum(array_column($cart, 'price')), 0, ',', '.') }}
                                         </span>
                                     </div>
                                     <div class="flex gap-3">
@@ -184,12 +184,43 @@
 
         <!-- Mobile Search -->
         <div class="md:hidden mt-4">
-            <div class="relative w-full">
+            <div class="relative w-full" x-data="{ open: false, results: [], loading: false, query: '' }">
                 <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
                 <input type="text" placeholder="Cari eSIM atau negara..."
-                    class="w-full pl-12 pr-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#FFC50F] focus:bg-white/20 transition">
+                    class="w-full pl-12 pr-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#FFC50F] focus:bg-white/20 transition"
+                    x-model="query"
+                    @input.debounce.400ms="if(query.length > 1){ loading=true; fetch('/search?q='+encodeURIComponent(query)).then(r=>r.json()).then(data=>{results=data;open=true;loading=false;}) } else { open=false; results=[]; }"
+                    @focus="if(results.length) open=true"
+                    @blur="setTimeout(()=>open=false,200)"
+                >
+                <div x-show="open" x-cloak class="absolute left-0 mt-2 w-full bg-white rounded-xl shadow-2xl z-50 border border-gray-200 max-h-80 overflow-y-auto">
+                    <template x-if="loading">
+                        <div class="p-4 text-center text-gray-400">Memuat...</div>
+                    </template>
+                    <template x-if="!loading && results.length === 0 && query.length > 1">
+                        <div class="p-4 text-center text-gray-400">Tidak ditemukan</div>
+                    </template>
+                    <template x-for="item in results" :key="item.type+'-'+item.id">
+                        <a :href="item.url" class="px-5 py-3 hover:bg-[#FFF8E1] transition flex items-center gap-3 border-b last:border-b-0 border-gray-100">
+                            <template x-if="item.type==='product'">
+                                <span class="w-8 h-8 rounded bg-[#FFF3CD] flex items-center justify-center text-[#FFC50F] font-black text-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                </span>
+                            </template>
+                            <template x-if="item.type==='country'">
+                                <span class="w-8 h-8 rounded bg-[#E3F2FD] flex items-center justify-center text-[#2196F3] font-black text-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 0v20m0-20C7.03 2 2 7.03 2 12s5.03 10 10 10 10-5.03 10-10S16.97 2 12 2z"/></svg>
+                                </span>
+                            </template>
+                            <span class="flex-1">
+                                <span class="block font-bold text-gray-900" x-text="item.name"></span>
+                                <span class="block text-xs text-gray-500" x-text="item.type==='product' ? 'eSIM Product' : 'Country'"></span>
+                            </span>
+                        </a>
+                    </template>
+                </div>
             </div>
         </div>
     </div>

@@ -25,6 +25,11 @@
             </form>
         @endif
         @if($payment)
+            @if(empty($payment['id']))
+                <div class="mb-4 p-4 bg-red-100 text-red-800 rounded-xl font-bold text-base">
+                    Terjadi kesalahan saat membuat permintaan pembayaran. Silakan cek nominal, metode, atau coba metode lain.
+                </div>
+            @endif
             <div class="mb-8 p-6 bg-white border-2 border-[#FFC50F]/40 rounded-xl text-left shadow-xl mx-auto max-w-lg">
                 <h2 class="text-xl font-bold mb-4 text-[#FFC50F]">Instruksi Pembayaran</h2>
                 @if(isset($payment['qr_image']))
@@ -60,12 +65,12 @@
                 @if(isset($payment['expired_at']))
                     <div class="text-xs text-gray-500 mb-2">Batas waktu pembayaran: {{ $payment['expired_at'] }}</div>
                 @endif
-                @if(isset($payment['qr_string']) && !empty($payment['qr_string']))
+                {{-- @if(isset($payment['qr_string']) && !empty($payment['qr_string']))
                     <div class="mb-2">
                         <span class="font-semibold">QR String:</span>
                         <div class="bg-gray-100 rounded p-2 font-mono text-xs break-all">{{ $payment['qr_string'] }}</div>
                     </div>
-                @endif
+                @endif --}}
                 @if(isset($payment['url']) && $payment['url'])
                     <div class="mb-2">
                         <span class="font-semibold">Link Pembayaran Ewallet:</span>

@@ -14,13 +14,13 @@
             @else
                 <div class="space-y-4 mb-6">
                     @foreach($cart as $item)
-                        @php $total += $item['price'] * 1000; @endphp
+                        @php $total += $item['price']; @endphp
                         <div class="flex items-center gap-4 bg-white rounded-xl shadow p-4 border border-[#FFC50F]/30">
                             <div class="flex-1">
                                 <div class="font-bold text-base text-gray-900">{{ $item['name'] }}</div>
                                 <div class="text-xs text-gray-500">Kuota: {{ $item['quota'] ?? '-' }} | Masa Aktif: {{ $item['validity'] ?? '-' }} | Operator: {{ $item['operator'] ?? '-' }}</div>
                             </div>
-                            <div class="font-black text-lg text-[#FFC50F]">Rp {{ number_format($item['price'] * 1000, 0, ',', '.') }}</div>
+                            <div class="font-black text-lg text-[#FFC50F]">Rp {{ number_format($item['price'], 0, ',', '.') }}</div>
                         </div>
                     @endforeach
                 </div>

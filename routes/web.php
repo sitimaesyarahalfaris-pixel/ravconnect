@@ -17,6 +17,7 @@ use App\Http\Controllers\AdminContentController;
 use App\Http\Controllers\AdminSystemController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\MyEsimController;
 
 
 // Public routes
@@ -25,6 +26,9 @@ Route::resource('products', ProductController::class)->only(['index', 'show']);
 Route::get('/products/{id}/detail', [ProductController::class, 'detail'])->name('products.detail');
 Route::get('/country/{id}', [CountryController::class, 'showProducts']);
 Route::resource('countries', CountryController::class)->only(['index', 'show']);
+Route::get('/support', function () {
+    return view('support');
+})->name('support');
 
 // Cart & Checkout (transaction allowed without user auth)
 // Cart Routes
@@ -51,7 +55,9 @@ Route::post('register', [AuthController::class, 'register']);
 
 // User routes (protected)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/my-esim', [UserController::class, 'myEsim'])->name('my_esim');
+    Route::get('/my_esim', [UserController::class, 'myEsim'])->name('my_esim');
+    Route::middleware(['auth'])->get('/my-esim', [\App\Http\Controllers\UserController::class, 'myEsim'])->name('my-esim');
+    Route::middleware(['auth'])->get('/my-esim', [\App\Http\Controllers\MyEsimController::class, 'index'])->name('my-esim');
     Route::get('/order-history', [OrderController::class, 'history'])->name('order_history');
     // ...add more user features here
 });
@@ -84,4 +90,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::post('payments/{id}/quick-confirm', [PaymentController::class, 'quickConfirm']);
     Route::get('export/{entity}', [AdminDashboardController::class, 'export']);
     Route::post('bulk/{entity}/action', [AdminDashboardController::class, 'bulkAction']);
+
+    // eSIM stock management routes
+    Route::get('products/{product}/stocks', [ProductStockController::class, 'list'])->middleware('auth');
+    Route::post('products/{product}/stocks', [ProductStockController::class, 'storeForProduct'])->middleware('auth');
+    Route::delete('products/{product}/stocks/{stock}', [ProductStockController::class, 'destroy'])->middleware('auth');
 });

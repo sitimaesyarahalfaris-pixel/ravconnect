@@ -25,11 +25,21 @@
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
                     <div class="text-xs text-gray-500 font-semibold mb-1">Harga</div>
-                    <div class="text-2xl font-black text-[#FFC50F]">Rp {{ number_format($product->price * 1000, 0, ',', '.') }}</div>
+                    <div class="text-2xl font-black text-[#FFC50F]">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                 </div>
                 <div>
                     <div class="text-xs text-gray-500 font-semibold mb-1">Kuota</div>
-                    <div class="font-black text-gray-900 text-lg">{{ $product->quota ? $product->quota . 'GB' : 'Unlimited' }}</div>
+                    <div class="font-black text-gray-900 text-lg">
+                        @if($product->quota)
+                            @if($product->quota >= 1024)
+                                {{ number_format($product->quota / 1024, 2) }}GB
+                            @else
+                                {{ $product->quota }}MB
+                            @endif
+                        @else
+                            Unlimited
+                        @endif
+                    </div>
                 </div>
                 <div>
                     <div class="text-xs text-gray-500 font-semibold mb-1">Masa Aktif</div>
@@ -55,9 +65,23 @@
                 @csrf
             @if (auth()->check())
                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                <button type="submit" class="w-full bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-4 rounded-2xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 text-center">
-                    Tambah ke Keranjang
-                </button>
+                <div class="flex gap-3">
+                    <form method="POST" action="{{ route('cart.add', $product->id) }}" id="beli-sekarang-form">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                        <input type="hidden" name="beli_sekarang" value="1">
+                        <button type="submit" class="flex-1 bg-[#FFC50F] text-black py-2 rounded-xl font-black text-sm shadow-md hover:bg-[#FFD700] transition-all text-center block">
+                            Beli Sekarang
+                        </button>
+                    </form>
+                    <button type="submit" form="masukkan-keranjang-form" class="flex-1 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-2 rounded-xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-sm shadow-md hover:shadow-xl transform hover:scale-105 text-center">
+                        Masukkan Keranjang
+                    </button>
+                    <form method="POST" action="{{ route('cart.add', $product->id) }}?cart=open" id="masukkan-keranjang-form" style="display:none;">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                    </form>
+                </div>
             @else
                 <a href="{{ route('login') }}" class="w-full bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-4 rounded-2xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 text-center block text-center">
                     Login untuk Membeli
@@ -67,5 +91,11 @@
         </div>
     </div>
 </section>
+<script>
+    document.querySelector('button[form="masukkan-keranjang-form"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('masukkan-keranjang-form').submit();
+    });
+</script>
 @endsection
 
