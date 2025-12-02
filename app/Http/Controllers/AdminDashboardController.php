@@ -25,7 +25,7 @@ class AdminDashboardController extends Controller
         $paidOrders = Order::where('status', 'paid')->count();
         $expiredOrders = Order::where('status', 'expired')->count();
         $totalProducts = Product::count();
-        $totalRevenue = Payment::where('status', 'paid')->sum('amount');
+        $totalRevenue = Order::where('status', 'paid')->sum('total');
         $remainingStock = ProductStock::where('status', 'available')->count();
 
         return response()->json([
@@ -49,7 +49,7 @@ class AdminDashboardController extends Controller
             'orders_paid' => Order::where('status', 'paid')->count(),
             'orders_expired' => Order::where('status', 'expired')->count(),
             'products_total' => Product::count(),
-            'revenue_total' => Payment::where('status', 'paid')->sum('amount'),
+            'revenue_total' => Order::where('status', 'paid')->sum('total'),
             'stock_total' => ProductStock::where('status', 'available')->count(),
         ];
         // Load products with their countries and compute available stock per product

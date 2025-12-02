@@ -16,12 +16,26 @@ class Order extends Model
         'whatsapp',
         'status',
         'delivery_status',
-        'expired_at'
+        'total',
+        'expired_at',
+        'reff_id',
+        'deposit_id',
+        'esim_stock_id'
     ];
 
     public function products()
     {
         return $this->belongsToMany(Product::class, 'order_product', 'order_id', 'product_id')->withPivot(['price', 'quantity']);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function esimStock()
+    {
+        return $this->belongsTo(ProductStock::class, 'esim_stock_id');
     }
 
     // Assign eSIM stock after payment success

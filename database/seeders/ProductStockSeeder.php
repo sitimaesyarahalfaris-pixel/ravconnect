@@ -15,13 +15,8 @@ class ProductStockSeeder extends Seeder
             ProductStock::firstOrCreate([
                 'product_id' => $product->id,
                 'sku' => 'SKU-' . $product->id,
-                'content' => 'DEMO-ESIM-' . $product->id,
-                'type' => 'qr',
             ], [
                 'product_id' => $product->id,
-                'content' => 'DEMO-ESIM-' . $product->id,
-                'type' => 'qr',
-                'stock' => rand(10, 100),
                 'sku' => 'SKU-' . $product->id,
                 'status' => 'available',
             ]);

@@ -56,9 +56,20 @@ class ProductStockController extends Controller
             'activation_code' => 'required|string',
             'smdp_plus' => 'required|string',
             'qr_image_url' => 'nullable|string',
+            'qr_image_file' => 'nullable|file|image|max:2048',
         ]);
         $validated['product_id'] = $productId;
         $validated['status'] = 'available';
+        // Fill content and type for compatibility
+        $validated['content'] = $validated['iccid'];
+        $validated['type'] = 'esim';
+
+        // Handle file upload
+        if ($request->hasFile('qr_image_file')) {
+            $path = $request->file('qr_image_file')->store('qr_images', 'public');
+            $validated['qr_image_url'] = '/storage/' . $path;
+        }
+
         $stock = \App\Models\ProductStock::create($validated);
         return response()->json($stock, 201);
     }
@@ -79,6 +90,27 @@ class ProductStockController extends Controller
             'type' => 'nullable|string',
             'status' => 'in:available,used',
         ]);
+        $stock->update($validated);
+        return response()->json($stock);
+    }
+
+    // Update stock for a product (for admin modal)
+    public function updateForProduct(Request $request, $productId, $stockId)
+    {
+        $stock = \App\Models\ProductStock::where('product_id', $productId)->where('id', $stockId)->firstOrFail();
+        $validated = $request->validate([
+            'iccid' => 'sometimes|required|string',
+            'activation_code' => 'sometimes|required|string',
+            'smdp_plus' => 'sometimes|required|string',
+            'qr_image_url' => 'nullable|string',
+            'qr_image_file' => 'nullable|file|image|max:2048',
+            'status' => 'in:available,used',
+        ]);
+        // Handle file upload
+        if ($request->hasFile('qr_image_file')) {
+            $path = $request->file('qr_image_file')->store('qr_images', 'public');
+            $validated['qr_image_url'] = '/storage/' . $path;
+        }
         $stock->update($validated);
         return response()->json($stock);
     }

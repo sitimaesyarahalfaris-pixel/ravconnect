@@ -7,8 +7,8 @@
         <a href="{{ route('admin.dashboard') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Dashboard</a>
         <a href="{{ route('admin.products.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Products</a>
         <a href="{{ route('admin.orders.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Orders</a>
-        <a href="{{ route('admin.payments.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Payments</a>
-        <a href="{{ route('admin.product-stocks.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Stock</a>
+        {{-- <a href="{{ route('admin.payments.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Payments</a> --}}
+        {{-- <a href="{{ route('admin.product-stocks.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Stock</a> --}}
         <a href="{{ route('admin.users.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Users</a>
         <a href="{{ url('admin/content') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Content</a>
         <a href="{{ url('admin/system/settings') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Settings</a>

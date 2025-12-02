@@ -16,23 +16,28 @@ class OrderController extends Controller
     // List all orders
     public function index(Request $request)
     {
-        $query = Order::query();
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
+        $query = \App\Models\Order::with('product');
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('id', $search)
+                    ->orWhere('name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('whatsapp', 'like', "%$search%")
+                    ->orWhereHas('product', function ($p) use ($search) {
+                        $p->where('name', 'like', "%$search%")
+                            ->orWhere('quota', 'like', "%$search%")
+                            ->orWhere('validity', 'like', "%$search%");
+                    });
+            });
         }
-        if ($request->has('email')) {
-            $query->where('email', 'like', '%' . $request->email . '%');
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
         }
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-        if ($request->has('from') && $request->has('to')) {
-            $query->whereBetween('created_at', [$request->from, $request->to]);
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->input('date'));
         }
         $orders = $query->orderBy('created_at', 'desc')->paginate(20);
-        if ($request->wantsJson()) {
-            return response()->json($orders);
-        }
         return view('admin.orders.index', compact('orders'));
     }
 
@@ -73,6 +78,17 @@ class OrderController extends Controller
         return response()->json($order);
     }
 
+    // Update order status
+    public function updateStatus(Request $request, Order $order)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,paid,expired,failed,cancelled',
+        ]);
+        $order->status = $request->status;
+        $order->save();
+        return redirect()->back()->with('success', 'Order status updated!');
+    }
+
     // Delete an order
     public function destroy($id)
     {
@@ -96,5 +112,36 @@ class OrderController extends Controller
             return response()->json($order);
         }
         return redirect()->route('admin.dashboard')->with('success', 'Order status updated');
+    }
+
+    // Export orders as CSV
+    public function export(Request $request)
+    {
+        $orders = \App\Models\Order::with('product')->orderBy('created_at', 'desc')->get();
+        $filename = 'orders_export_' . now()->format('Ymd_His') . '.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$filename",
+        ];
+        $columns = ['ID', 'Customer', 'Email', 'WhatsApp', 'Product', 'Amount', 'Status', 'Delivery', 'Date'];
+        $callback = function () use ($orders, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($orders as $order) {
+                fputcsv($file, [
+                    $order->id,
+                    $order->name,
+                    $order->email,
+                    $order->whatsapp,
+                    $order->product ? $order->product->name : ($order->product_id ? \App\Models\Product::find($order->product_id)->name : '-'),
+                    $order->total ?? $order->price,
+                    $order->status,
+                    $order->delivery_status,
+                    $order->created_at->format('Y-m-d H:i:s'),
+                ]);
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
     }
 }

@@ -14,11 +14,15 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email');
             $table->string('whatsapp')->nullable();
+            $table->string('reff_id')->nullable();
+            $table->string('deposit_id')->nullable();
+            $table->unsignedBigInteger('esim_stock_id')->nullable();
             $table->enum('status', ['pending', 'paid', 'expired', 'failed'])->default('pending');
             $table->enum('delivery_status', ['pending', 'delivered', 'manual'])->default('pending');
             $table->unsignedBigInteger('total')->default(0);
             $table->timestamp('expired_at')->nullable();
             $table->timestamps();
+            $table->foreign('esim_stock_id')->references('id')->on('product_stocks')->onDelete('set null');
         });
     }
 

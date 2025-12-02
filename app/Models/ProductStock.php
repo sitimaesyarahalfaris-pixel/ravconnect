@@ -10,12 +10,9 @@ class ProductStock extends Model
     use HasFactory;
     protected $fillable = [
         'product_id',
-        'content',
-        'type',
         'status',
         'user_id',
-        'sku',
-        'stock',
+        'sku',        
         'iccid',
         'activation_code',
         'smdp_plus',

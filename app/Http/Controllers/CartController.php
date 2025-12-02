@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
@@ -13,8 +15,16 @@ class CartController extends Controller
         $product = Product::findOrFail($id);
         $cart = session('cart', []);
 
+        // Check if ?checkout=1 is present (Buy Now flow)
+        $isCheckoutFlow = $request->query('checkout') == 1;
+
         // Check if product already in cart
         if (isset($cart[$id])) {
+            // If it's Buy Now flow and product already in cart, just proceed to checkout
+            if ($isCheckoutFlow) {
+                return redirect()->route('checkout');
+            }
+
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -24,6 +34,7 @@ class CartController extends Controller
             return redirect()->back()->with('info', 'Produk sudah ada di keranjang!');
         }
 
+        // Add product to cart
         $cart[$id] = [
             'id' => $product->id,
             'name' => $product->name,
@@ -42,6 +53,11 @@ class CartController extends Controller
                 'cart_count' => count($cart),
                 'message' => 'Produk berhasil ditambahkan ke keranjang!'
             ]);
+        }
+
+        // If Buy Now flow, redirect to checkout immediately
+        if ($isCheckoutFlow) {
+            return redirect()->route('checkout');
         }
 
         return redirect()->back()->with('success', 'Produk berhasil ditambahkan ke keranjang!');
@@ -107,7 +123,33 @@ class CartController extends Controller
     // Process checkout
     public function processCheckout(Request $request)
     {
-        $cart = session('cart', []);
+        // If direct_checkout is set, override cart with single product and auto-select payment method
+        if ($request->has('direct_checkout') && $request->has('product_id')) {
+            $product = \App\Models\Product::findOrFail($request->product_id);
+            $cart = [
+                [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'description' => $product->description,
+                    'price' => $product->price,
+                    'quota' => $product->quota,
+                    'validity' => $product->validity,
+                    'operator' => $product->operator,
+                ]
+            ];
+            session(['cart' => $cart]);
+            // Ambil metode pembayaran dari AtlanticPedia
+            $methods = app(\App\Services\AtlanticPediaApi::class)->getDepositMethods();
+            $paymentMethods = $methods['data'] ?? [];
+            // Pilih metode pembayaran default (misal: pertama di list)
+            $selected = $paymentMethods[0] ?? null;
+            if (!$selected) {
+                return redirect()->back()->with('error', 'Metode pembayaran tidak tersedia.');
+            }
+            $request->merge(['payment_method' => $selected['metode']]);
+        } else {
+            $cart = session('cart', []);
+        }
 
         if (count($cart) === 0) {
             return redirect()->route('cart')->with('error', 'Keranjang kosong.');
@@ -125,11 +167,16 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Metode pembayaran tidak valid.');
         }
 
-        // Generate reff_id unik (misal: order-<timestamp>-<user_id>)
-        $reffId = 'order-' . now()->format('YmdHis') . '-' . (auth()->id() ?? 'guest');
-        $nominal = array_sum(array_map(function ($item) {
+        // Generate reff_id unik
+        $reffId = 'order-' . now()->format('YmdHis') . '-' . (Auth::id() ?? 'guest');
+        $baseNominal = array_sum(array_map(function ($item) {
             return $item['price'];
         }, $cart));
+        $adminFeeFixed = $selected['fee'] ?? 0;
+        $adminFeePercent = $selected['fee_persen'] ?? 0;
+        $adminFeePercentValue = round($baseNominal * ($adminFeePercent / 100));
+        $adminFee = $adminFeeFixed + $adminFeePercentValue;
+        $nominal = $baseNominal + $adminFee;
         $type = $selected['type'] ?? '';
         $metode = $selected['metode'] ?? '';
 
@@ -137,7 +184,7 @@ class CartController extends Controller
         $api = app(\App\Services\AtlanticPediaApi::class);
         $result = $api->createDeposit($reffId, $nominal, $type, $metode);
 
-        // Handle error jika response tidak sesuai ekspektasi (misal: ewallet OVO gagal karena nominal tidak sesuai min/max, atau metode tidak tersedia)
+        // Handle error jika response tidak sesuai ekspektasi
         if (!($result['status'] ?? false) || !isset($result['data']['id'])) {
             $msg = $result['message'] ?? ($result['data']['msg'] ?? 'Gagal membuat permintaan pembayaran. Pastikan nominal dan metode pembayaran sesuai.');
             return redirect()->back()->with('error', $msg);
@@ -151,7 +198,7 @@ class CartController extends Controller
             'nominal' => $data['nominal'] ?? 0,
             'tambahan' => $data['tambahan'] ?? 0,
             'fee' => $data['fee'] ?? 0,
-            'get_balance' => $data['get_balance'] ?? 0,
+            'get_balance' => $baseNominal,
             'status' => $data['status'] ?? null,
             'created_at' => $data['created_at'] ?? null,
             'expired_at' => $data['expired_at'] ?? null,
@@ -167,10 +214,42 @@ class CartController extends Controller
             'url' => $data['url'] ?? null,
         ];
 
+        // Convert cart to array values to handle associative array
+        $cartItems = array_values($cart);
+
+        // Create orders for each product in cart
+        $orderIds = [];
+        $totalItems = count($cartItems);
+        $adminFeePerItem = $totalItems > 0 ? ($adminFee / $totalItems) : 0;
+
+        foreach ($cartItems as $index => $item) {
+            // Calculate total for this item (price + proportional admin fee)
+            $itemTotal = $item['price'] + $adminFeePerItem;
+
+            $order = \App\Models\Order::create([
+                'user_id' => Auth::id(),
+                'product_id' => $item['id'],
+                'price' => $item['price'],
+                'total' => $itemTotal,
+                'admin_fee' => $adminFeePerItem,
+                'name' => Auth::user()->name ?? '',
+                'email' => Auth::user()->email ?? '',
+                'whatsapp' => Auth::user()->whatsapp ?? '',
+                'status' => 'pending',
+                'delivery_status' => 'pending',
+                'expired_at' => $data['expired_at'] ?? null,
+                'reff_id' => $reffId,
+                'deposit_id' => $data['id'] ?? null,
+            ]);
+            $orderIds[] = $order->id;
+        }
+
         // Kosongkan keranjang
         session()->forget('cart');
+        // Simpan order ids di session untuk delivery/assignment
+        session(['order_ids' => $orderIds]);
 
-        // Kirim data pembayaran ke view delivery (bisa juga redirect ke payment gateway jika perlu)
+        // Kirim data pembayaran ke view delivery
         return redirect()->route('delivery')->with([
             'success' => 'Pesanan berhasil dibuat! Silakan selesaikan pembayaran.',
             'payment_data' => $paymentData
@@ -196,23 +275,88 @@ class CartController extends Controller
     {
         $payment = session('payment_data');
         $statusData = null;
+        $forceUpdate = $request->get('force_update');
+
         if ($payment && isset($payment['id'])) {
+            // Fetch latest status from API
             $statusResult = app(\App\Services\AtlanticPediaApi::class)->getDepositStatus($payment['id']);
+
             if (($statusResult['status'] ?? false) && isset($statusResult['data'])) {
                 $statusData = $statusResult['data'];
+
                 // Update status in session for UI
                 $payment['status'] = $statusData['status'] ?? $payment['status'];
                 session(['payment_data' => $payment]);
-                // If payment is PAID, assign eSIM stock
-                if (($statusData['status'] ?? null) === 'PAID' && auth()->check()) {
-                    $cart = session('cart_backup', []); // Optionally keep cart backup for assignment
-                    foreach ($cart as $item) {
-                        \App\Models\Order::assignEsimToUser(auth()->id(), $item['id']);
+
+                // Check if payment is successful (handle multiple status variations)
+                $paymentStatus = strtoupper($statusData['status'] ?? '');
+                $isSuccessful = in_array($paymentStatus, ['SUCCESS', 'PAID', 'SETTLEMENT', 'COMPLETED']);
+
+                if ($isSuccessful && Auth::check()) {
+                    // Find orders by deposit_id OR reff_id (fallback)
+                    $orders = \App\Models\Order::where(function ($query) use ($payment) {
+                        $query->where('deposit_id', $payment['id'])
+                            ->orWhere('reff_id', $payment['reff_id'] ?? '');
+                    })
+                        ->where('user_id', Auth::id())
+                        ->get();
+
+                    \Log::info('Processing successful payment', [
+                        'deposit_id' => $payment['id'],
+                        'orders_found' => $orders->count(),
+                        'payment_status' => $paymentStatus
+                    ]);
+
+                    foreach ($orders as $order) {
+                        // Skip if already processed
+                        if ($order->status === 'paid' && $order->esim_stock_id) {
+                            continue;
+                        }
+                        // Try to assign eSIM stock
+                        if (!$order->esim_stock_id) {
+                            $stock = \App\Models\ProductStock::where('product_id', $order->product_id)
+                                ->where('status', 'available')
+                                ->first();
+                            if ($stock) {
+                                $order->esim_stock_id = $stock->id;
+                                $order->status = 'paid';
+                                $order->delivery_status = 'delivered';
+                                $order->save();
+                                $stock->status = 'assigned';
+                                $stock->user_id = $order->user_id;
+                                $stock->assigned_at = now();
+                                $stock->save();
+                                \Log::info('eSIM assigned', [
+                                    'order_id' => $order->id,
+                                    'stock_id' => $stock->id,
+                                    'user_id' => $order->user_id
+                                ]);
+                            } else {
+                                \Log::warning('No available stock', [
+                                    'order_id' => $order->id,
+                                    'product_id' => $order->product_id
+                                ]);
+                            }
+                        } else {
+                            // Update order status if already has stock
+                            $order->status = 'paid';
+                            $order->delivery_status = 'delivered';
+                            $order->save();
+                        }
                     }
-                    session()->forget('cart_backup');
                 }
             }
         }
+
+        // If AJAX, return only status
+        if ($request->ajax() || $forceUpdate) {
+            return response()->json([
+                'status' => $payment['status'] ?? 'pending',
+                'payment_status' => strtoupper($statusData['status'] ?? 'PENDING'),
+                'is_successful' => isset($paymentStatus) && in_array($paymentStatus, ['SUCCESS', 'PAID', 'SETTLEMENT', 'COMPLETED'])
+            ]);
+        }
+
         return view('order.delivery', compact('payment', 'statusData'));
     }
 
@@ -256,5 +400,37 @@ class CartController extends Controller
             }
         }
         return response()->json($results);
+    }
+
+    // Update payment and order when deposit status is success (called from AJAX)
+    public function updateDepositSuccess(Request $request)
+    {
+        $request->validate([
+            'deposit_id' => 'required|string',
+        ]);
+        // Get deposit status from API
+        $result = app(\App\Services\AtlanticPediaApi::class)->getDepositStatus($request->deposit_id);
+        if (!empty($result['data']) && ($result['data']['status'] ?? null) === 'success') {
+            $depositId = $request->deposit_id;
+            // Find order(s) by deposit_id
+            $orders = \App\Models\Order::where('deposit_id', $depositId)->get();
+            foreach ($orders as $order) {
+                $order->status = 'paid';
+                $order->save();
+                // Assign eSIM if not yet assigned
+                if ($order->user_id && !$order->esim_stock_id) {
+                    $stock = \App\Models\ProductStock::where('product_id', $order->product_id)
+                        ->where('status', 'available')->first();
+                    if ($stock) {
+                        $order->esim_stock_id = $stock->id;
+                        $order->delivery_status = 'delivered';
+                        $order->save();
+                        $stock->assignToUser($order->user_id);
+                    }
+                }
+            }
+            return response()->json(['updated' => true]);
+        }
+        return response()->json(['updated' => false]);
     }
 }

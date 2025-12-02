@@ -41,6 +41,7 @@ Route::post('/checkout/process', [CartController::class, 'processCheckout'])->na
 Route::get('/delivery', [CartController::class, 'delivery'])->name('delivery');
 Route::post('/payment/cancel', [CartController::class, 'cancelPayment'])->name('payment.cancel');
 Route::post('/payment/status', [CartController::class, 'ajaxDepositStatus'])->name('payment.status');
+Route::post('/payment/success-update', [CartController::class, 'updateDepositSuccess'])->name('payment.successUpdate');
 Route::get('/search', [CartController::class, 'search'])->name('search');
 
 // Payment webhook
@@ -94,5 +95,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // eSIM stock management routes
     Route::get('products/{product}/stocks', [ProductStockController::class, 'list'])->middleware('auth');
     Route::post('products/{product}/stocks', [ProductStockController::class, 'storeForProduct'])->middleware('auth');
-    Route::delete('products/{product}/stocks/{stock}', [ProductStockController::class, 'destroy'])->middleware('auth');
+    Route::put('products/{product}/stocks/{stock}', [ProductStockController::class, 'updateForProduct'])->middleware('auth');
+    Route::delete('products/{product}/stocks/{stock}', [ProductStockController::class, 'destroyForProduct'])->middleware('auth');
+
+    Route::patch('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('admin.orders.update-status');
+    Route::get('/admin/orders/export', [OrderController::class, 'export'])->name('admin.orders.export');
+    Route::patch('/admin/users/{user}/toggle-admin', [UserController::class, 'toggleAdmin'])->name('admin.users.toggle-admin');
 });

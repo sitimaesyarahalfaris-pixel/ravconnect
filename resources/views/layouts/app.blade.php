@@ -16,6 +16,7 @@
     <main>
         @yield('content')
     </main>
+    @include('partials.footer')
     @include('partials.bottom-navbar-new')
     @stack('scripts')
 </body>

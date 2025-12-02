@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -76,7 +77,25 @@ class UserController extends Controller
         if (!$user) {
             return redirect()->route('login');
         }
-        $esims = $user->productStocks()->with('product')->get();
-        return view('my_esim', compact('esims'));
+        $orders = Order::where('user_id', Auth::id())
+            ->whereNotNull('esim_stock_id')
+            ->with('esimStock.product')
+            ->orderByDesc('created_at')
+            ->get();
+        return view('my_esim', [
+            'orders' => $orders,
+            'esims' => $orders->map->esimStock,
+        ]);
+    }
+
+    public function toggleAdmin(Request $request, \App\Models\User $user)
+    {
+        // Prevent self-modification
+        if ($user->id === auth()->id()) {
+            return redirect()->back()->with('error', 'You cannot modify your own admin status.');
+        }
+        $user->is_admin = !$user->is_admin;
+        $user->save();
+        return redirect()->back()->with('success', 'User admin status updated.');
     }
 }
