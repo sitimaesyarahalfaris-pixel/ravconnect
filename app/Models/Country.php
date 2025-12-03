@@ -11,7 +11,8 @@ class Country extends Model
     protected $fillable = [
         'name',
         'code',
-        'flag_url'
+        'flag_url',
+        'image_url' // Add image_url for country header card
     ];
 
     public function products()

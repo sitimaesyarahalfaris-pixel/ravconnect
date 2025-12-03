@@ -23,8 +23,13 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            if (Auth::user()->is_admin) {
+                return redirect()->intended('/admin/dashboard');    
+            };
             return redirect()->intended('/');
         }
 

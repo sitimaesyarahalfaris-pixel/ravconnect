@@ -4,13 +4,13 @@
 
 @section('content')
 <!-- Hero Section with Country -->
-<section class="relative py-16 bg-gradient-to-br from-[#FFC50F] via-[#FFD700] to-[#FFA500] overflow-hidden">
+<section class="relative py-16 bg-linear-to-br from-[#FFC50F] via-[#FFD700] to-[#FFA500] overflow-hidden">
     <!-- Animated Background -->
     <div class="absolute inset-0 overflow-hidden">
         <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
     </div>
-    
+
     <div class="max-w-7xl mx-auto px-4 relative z-10">
         <!-- Breadcrumb -->
         <div class="flex items-center gap-2 text-black/70 text-sm font-semibold mb-6">
@@ -29,9 +29,9 @@
         <div class="flex flex-col md:flex-row items-center gap-6 mb-8">
             <div class="relative">
                 <div class="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-white/20 backdrop-blur-sm border-4 border-white/40 shadow-2xl p-4 flex items-center justify-center">
-                    <img src="https://flagcdn.com/w320/{{ strtolower($country->code) }}.png" alt="{{ $country->name }}" class="w-full h-full object-contain">
+                    <img src="{{ 'https://flagcdn.com/w320/' . strtolower($country->code) . '.png' }}" alt="{{ $country->name }}" class="w-full h-full object-contain">
                 </div>
-                <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-linear-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-white">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
@@ -73,7 +73,7 @@
 
 <!-- Search & Filter Section -->
 <section class="bg-white shadow-lg sticky top-0 z-40 border-b-2 border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 py-6" x-data="{ 
+    <div class="max-w-7xl mx-auto px-4 py-6" x-data="{
         showFilters: false,
         dataFilter: 'all',
         validityFilter: 'all',
@@ -86,8 +86,8 @@
                 <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     placeholder="Search eSIM plans for {{ $country->name }}..."
                     class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#FFC50F] focus:bg-white transition font-semibold"
                     id="searchInput"
@@ -95,7 +95,7 @@
             </div>
 
             <!-- Filter Toggle (Mobile) -->
-            <button @click="showFilters = !showFilters" class="md:hidden w-full px-4 py-3 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black font-bold rounded-xl flex items-center justify-center gap-2">
+            <button @click="showFilters = !showFilters" class="md:hidden w-full px-4 py-3 bg-linear-to-r from-[#FFC50F] to-[#FFD700] text-black font-bold rounded-xl flex items-center justify-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                 </svg>
@@ -151,7 +151,7 @@
 </section>
 
 <!-- Products Grid -->
-<section class="bg-gradient-to-b from-gray-50 to-white py-12">
+<section class="bg-linear-to-b from-gray-50 to-white py-12">
     <div class="max-w-7xl mx-auto px-4">
         <!-- Results Count -->
         <div class="flex items-center justify-between mb-6">
@@ -165,130 +165,86 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="productsGrid">
             @forelse($products as $product)
-            <div class="relative group bg-white rounded-3xl overflow-hidden border-4 border-[#FFC50F]/20 hover:border-[#FFC50F] transition-all shadow-lg hover:shadow-2xl transform hover:-translate-y-2 duration-300"
-                 data-price="{{ $product->price }}"
-                 data-quota="{{ $product->quota ?? 999999 }}"
-                 data-validity="{{ $product->validity }}"
-                 data-name="{{ strtolower($product->name) }}">
-                
-                <!-- Card Header with Flag -->
-                <div class="relative h-32 bg-gradient-to-br from-[#FFC50F] to-[#FFD700] overflow-hidden flex items-center justify-center">
-                    <div class="absolute inset-0 opacity-10">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-white rounded-full -mr-16 -mt-16"></div>
-                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white rounded-full -ml-12 -mb-12"></div>
-                    </div>
-                    <img src="https://flagcdn.com/w160/{{ strtolower($country->code) }}.png" alt="{{ $country->name }}" class="relative z-10 w-20 h-15 object-contain rounded-xl shadow-2xl bg-white/90 p-2">
-                    
-                    <!-- Popular Badge -->
-                    @if($loop->index < 3)
-                    <div class="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg border-2 border-white animate-pulse">
-                        🔥 POPULAR
-                    </div>
-                    @endif
-                </div>
-
-                <!-- Card Body -->
-                <div class="p-6">
-                    <!-- Product Name -->
-                    <h3 class="text-gray-900 mb-2 font-black text-xl leading-tight min-h-[56px]">{{ $product->name }}</h3>
-                    
-                    <!-- Description -->
-                    <p class="text-gray-600 text-sm mb-4 line-clamp-2 min-h-[40px]">{{ $product->description }}</p>
-                    
-                    <!-- Features Grid -->
-                    <div class="space-y-3 mb-5">
-                        <!-- Data Quota -->
-                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shadow">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
-                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-xs text-gray-600 font-bold">Data Quota</span>
+                @php
+                    $stock = \App\Models\ProductStock::where('product_id', $product->id)->where('status', 'available')->count();
+                    $flag = null;
+                    $flagCountry = null;
+                    if ($product->countries && $product->countries->count()) {
+                        $flagCountry = $product->countries->first();
+                        $flag = $flagCountry->code ? 'https://flagcdn.com/48x36/' . strtolower($flagCountry->code) . '.png' : null;
+                    }
+                @endphp
+                @if($stock > 0)
+                <div class="relative group bg-white rounded-3xl overflow-hidden border-4 border-[#FFC50F]/30 hover:border-[#FFC50F] transition-all card-shadow-yellow transform hover:-translate-y-2">
+                    <!-- Header with Product Image -->
+                    <div class="relative h-40 md:h-48 lg:h-56 overflow-hidden" style="background: none;">
+                        @php
+                            $countryImg = null;
+                            if ($product->countries && $product->count()) {
+                                $country = $product->countries->first();
+                                $countryImg = $country->image_url ?: 'https://flagcdn.com/w320/' . strtolower($country->code) . '.png';
+                            }
+                        @endphp
+                        @if($countryImg)
+                            <img src="{{ $countryImg }}" alt="{{ $country->name }}" class="absolute inset-0 w-full h-full object-cover z-0" />
+                        @else
+                            <div class="absolute inset-0 w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 rounded-3xl z-0">No image</div>
+                        @endif
+                        <!-- Subtle black overlay tint, fading bottom to top -->
+                        <div class="absolute inset-0 w-full h-full z-5 pointer-events-none" style="background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.10) 60%, rgba(0,0,0,0.0) 100%);"></div>
+                        @php
+                            $flag = null;
+                            $flagCountry = null;
+                            if ($product->countries && $product->countries->count()) {
+                                $flagCountry = $product->countries->first();
+                                $flag = $flagCountry->code ? 'https://flagcdn.com/48x36/' . strtolower($flagCountry->code) . '.png' : null;
+                            }
+                        @endphp
+                        @if($flag)
+                            <div class="absolute bottom-4 left-4 z-10 bg-white rounded-xl shadow-xl p-2 border border-gray-100 group-hover:scale-110 transition-transform">
+                                <img src="{{ $flag }}" alt="{{ $flagCountry->name ?? $country->name }}" class="w-12 h-9 md:w-16 md:h-12 object-cover rounded-lg">
                             </div>
-                            <span class="font-black text-blue-700 text-lg">
+                        @else
+                            <div class="absolute bottom-4 left-4 z-10 bg-white rounded-xl shadow-xl p-2 border border-gray-100 group-hover:scale-110 transition-transform">
+                                <img src="{{ asset('images/products/default.png') }}" alt="{{ $product->name }}" class="w-12 h-9 md:w-16 md:h-12 object-cover rounded-lg">
+                            </div>
+                        @endif
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-gray-900 mb-3 font-bold text-lg">{{ $product->name }}</h3>
+                        <div class="text-gray-600 text-sm mb-4 line-clamp-2">{{ $product->description }}</div>
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-500 font-semibold">Kuota</span>
                                 @if($product->quota)
                                     @if($product->quota >= 1024)
-                                        {{ number_format($product->quota / 1024, $product->quota % 1024 == 0 ? 0 : 1) }} GB
+                                        <span class="font-black text-gray-900">{{ number_format($product->quota / 1024, 2) }}GB</span>
                                     @else
-                                        {{ $product->quota }} MB
+                                        <span class="font-black text-gray-900">{{ $product->quota }}MB</span>
                                     @endif
                                 @else
-                                    <span class="text-sm">♾️ Unlimited</span>
+                                    <span class="font-black text-gray-900">Unlimited</span>
                                 @endif
-                            </span>
-                        </div>
-
-                        <!-- Validity -->
-                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border border-green-200">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center shadow">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                                    </svg>
-                                </div>
-                                <span class="text-xs text-gray-600 font-bold">Validity</span>
                             </div>
-                            <span class="font-black text-green-700 text-lg">{{ $product->validity }} Days</span>
-                        </div>
-
-                        <!-- Operator -->
-                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center shadow">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
-                                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
-                                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
-                                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
-                                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
-                                    </svg>
-                                </div>
-                                <span class="text-xs text-gray-600 font-bold">Network</span>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-500 font-semibold">Masa Aktif</span>
+                                <span class="font-black text-gray-900">{{ $product->validity }} Hari</span>
                             </div>
-                            <span class="font-black text-purple-700 text-sm">{{ $product->operator }}</span>
-                        </div>
-                    </div>
-
-                    <!-- Price Section -->
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-[#FFC50F]/10 to-[#FFD700]/10 rounded-2xl border-2 border-[#FFC50F]/30 mb-5">
-                        <span class="text-sm text-gray-700 font-bold">Total Price</span>
-                        <div class="text-right">
-                            <div class="text-3xl font-black text-[#FFC50F]">
-                                Rp {{ number_format($product->price, 0, ',', '.') }}
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-500 font-semibold">Operator</span>
+                                <span class="font-black text-gray-900">{{ $product->operator }}</span>
                             </div>
-                            <div class="text-xs text-gray-500 font-semibold">All inclusive</div>
+                            <div class="flex items-center justify-between pt-3 border-t-2 border-gray-100">
+                                <span class="text-sm text-gray-700 font-bold">Harga</span>
+                                <span class="text-2xl font-black" style="color:#F0AC06">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- CTA Buttons -->
-                    <div class="space-y-2">
-                        <a href="{{ route('products.show', $product->id) }}" class="w-full block bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-3.5 rounded-2xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-base shadow-xl hover:shadow-2xl transform hover:scale-105 text-center">
-                            <span class="flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="9" cy="21" r="1"></circle>
-                                    <circle cx="20" cy="21" r="1"></circle>
-                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                </svg>
-                                Buy Now
-                            </span>
-                        </a>
-                        <a href="{{ route('products.show', $product->id) }}" class="w-full block bg-white border-2 border-gray-200 text-gray-700 py-3 rounded-2xl hover:bg-gray-50 hover:border-[#FFC50F] transition-all font-bold text-sm text-center">
-                            View Details
+                        <a href="{{ route('products.show', $product->id) }}" class="w-full block bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-3 rounded-2xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-base shadow-xl hover:shadow-2xl transform hover:scale-105 text-center">
+                            Lihat Detail
                         </a>
                     </div>
-                </div>
-
-                <!-- Stock Indicator -->
-                @if(($product->stock_count ?? 0) < 5 && ($product->stock_count ?? 0) > 0)
-                <div class="absolute top-3 left-3 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg border-2 border-white">
-                    ⚠️ Only {{ $product->stock_count }} left!
                 </div>
                 @endif
-            </div>
             @empty
             <!-- Empty State -->
             <div class="col-span-full text-center py-20">
@@ -298,7 +254,7 @@
                 </svg>
                 <h3 class="text-xl font-black text-gray-400 mb-2">No eSIM Plans Available</h3>
                 <p class="text-gray-400 mb-4">We don't have any eSIM products for {{ $country->name }} at the moment.</p>
-                <a href="/countries" class="inline-block px-6 py-3 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">
+                <a href="/countries" class="inline-block px-6 py-3 bg-linear-to-r from-[#FFC50F] to-[#FFD700] text-black font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">
                     Browse Other Countries
                 </a>
             </div>
@@ -308,7 +264,7 @@
 </section>
 
 <!-- Benefits Section -->
-<section class="bg-gradient-to-br from-gray-900 to-black py-16">
+<section class="bg-linear-to-br from-gray-900 to-black py-16">
     <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-3xl md:text-4xl font-black text-white mb-3">Why Choose Our {{ $country->name }} eSIM?</h2>
@@ -317,7 +273,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="bg-white/5 backdrop-blur-sm border-2 border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
-                <div class="w-14 h-14 bg-gradient-to-br from-[#FFC50F] to-[#FFD700] rounded-xl flex items-center justify-center mb-4 shadow-lg">
+                <div class="w-14 h-14 bg-linear-to-br from-[#FFC50F] to-[#FFD700] rounded-xl flex items-center justify-center mb-4 shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
                         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
                     </svg>
@@ -327,7 +283,7 @@
             </div>
 
             <div class="bg-white/5 backdrop-blur-sm border-2 border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
-                <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl flex items-center justify-center mb-4 shadow-lg">
+                <div class="w-14 h-14 bg-linear-to-br from-blue-400 to-blue-500 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
                         <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
                         <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
@@ -340,7 +296,7 @@
             </div>
 
             <div class="bg-white/5 backdrop-blur-sm border-2 border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
-                <div class="w-14 h-14 bg-gradient-to-br from-green-400 to-green-500 rounded-xl flex items-center justify-center mb-4 shadow-lg">
+                <div class="w-14 h-14 bg-linear-to-br from-green-400 to-green-500 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
                         <line x1="12" y1="1" x2="12" y2="23"></line>
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
@@ -351,7 +307,7 @@
             </div>
 
             <div class="bg-white/5 backdrop-blur-sm border-2 border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
-                <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-500 rounded-xl flex items-center justify-center mb-4 shadow-lg">
+                <div class="w-14 h-14 bg-linear-to-br from-purple-400 to-purple-500 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
@@ -368,12 +324,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const grid = document.getElementById('productsGrid');
-    
+
     if (searchInput && grid) {
         searchInput.addEventListener('input', function(e) {
             const query = e.target.value.toLowerCase();
             const cards = grid.querySelectorAll('[data-name]');
-            
+
             cards.forEach(card => {
                 const name = card.dataset.name;
                 if (name.includes(query)) {

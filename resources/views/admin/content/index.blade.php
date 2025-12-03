@@ -12,25 +12,67 @@
                 <div class="text-sm text-gray-600">Logged in as: {{ auth()->user()->name }}</div>
             </div>
 
-            <form method="POST" action="{{ url('admin/content/update') }}">
+            <form method="POST" action="{{ url('admin/content/update') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="grid grid-cols-1 gap-6">
+
+                    <div class="bg-white p-6 rounded shadow">
+                        <label class="font-bold">Hero Banner Discount (e.g. Diskon 20% untuk Pelanggan Baru!)</label>
+                        <input type="text" name="hero_discount" class="w-full border rounded p-2 mb-2" value="{{ $hero_discount->value ?? '' }}">
+                        <input type="hidden" name="key" value="hero_discount">
+                        <div class="mt-2"><button class="px-4 py-2 bg-[#FFC50F] rounded font-bold">Save</button></div>
+                    </div>
+                    <div class="bg-white p-6 rounded shadow">
+                        <label class="font-bold">Hero Banner Tagline (main headline)</label>
+                        <input type="text" name="hero_banner_text" class="w-full border rounded p-2 mb-2" value="{{ $hero_banner_text->value ?? '' }}">
+                        <input type="hidden" name="key" value="hero_banner_text">
+                        <div class="mt-2"><button class="px-4 py-2 bg-[#FFC50F] rounded font-bold">Save</button></div>
+                    </div>
+                </div>
+            </form>
+
+            <form method="POST" action="{{ url('admin/content/update') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="bg-white p-6 rounded shadow">
+                    <label class="font-bold">Hero Banner Image</label>
+                    <input type="file" name="hero_banner_img" class="w-full border rounded p-2 mb-2">
+                    @php
+                        $imgUrl = $hero_banner_img_url ?? null;
+                        if ($imgUrl && !str_starts_with($imgUrl, 'http')) {
+                            $imgPath = public_path(parse_url($imgUrl, PHP_URL_PATH));
+                            if (!file_exists($imgPath)) {
+                                $imgUrl = null;
+                            }
+                        }
+                    @endphp
+                    @if(!empty($imgUrl))
+                        <div class="mb-2"><img src="{{ $imgUrl }}" alt="Hero Banner" class="max-w-xs rounded shadow"></div>
+                    @else
+                        <div class="mb-2 text-gray-400 italic">No hero banner image uploaded.</div>
+                    @endif
+                    <div class="mt-2"><button type="submit" class="px-4 py-2 bg-[#FFC50F] rounded font-bold">Save Image</button></div>
+                </div>
+            </form>
+
+            <form method="POST" action="{{ url('admin/content/update') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="grid grid-cols-1 gap-6">
                     <div class="bg-white p-6 rounded shadow">
-                        <label class="font-bold">Promo Banner HTML</label>
-                        <textarea name="value" class="w-full border rounded p-2" rows="6">{{ $promo_banner->value ?? '' }}</textarea>
-                        <input type="hidden" name="key" value="promo_banner">
+                        <label class="font-bold">Hero Banner Stats: Countries</label>
+                        <input type="text" name="hero_stat_countries" class="w-full border rounded p-2 mb-2" value="{{ $hero_stat_countries->value ?? '100+' }}">
+                        <input type="hidden" name="key" value="hero_stat_countries">
                         <div class="mt-2"><button class="px-4 py-2 bg-[#FFC50F] rounded font-bold">Save</button></div>
                     </div>
                     <div class="bg-white p-6 rounded shadow">
-                        <label class="font-bold">FAQ (JSON or HTML)</label>
-                        <textarea name="value" class="w-full border rounded p-2" rows="6">{{ $faq->value ?? '' }}</textarea>
-                        <input type="hidden" name="key" value="faq">
+                        <label class="font-bold">Hero Banner Stats: Users</label>
+                        <input type="text" name="hero_stat_users" class="w-full border rounded p-2 mb-2" value="{{ $hero_stat_users->value ?? '50K+' }}">
+                        <input type="hidden" name="key" value="hero_stat_users">
                         <div class="mt-2"><button class="px-4 py-2 bg-[#FFC50F] rounded font-bold">Save</button></div>
                     </div>
                     <div class="bg-white p-6 rounded shadow">
-                        <label class="font-bold">Contact Info</label>
-                        <textarea name="value" class="w-full border rounded p-2" rows="4">{{ $contact_info->value ?? '' }}</textarea>
-                        <input type="hidden" name="key" value="contact_info">
+                        <label class="font-bold">Hero Banner Stats: Rating</label>
+                        <input type="text" name="hero_stat_rating" class="w-full border rounded p-2 mb-2" value="{{ $hero_stat_rating->value ?? '4.9★' }}">
+                        <input type="hidden" name="key" value="hero_stat_rating">
                         <div class="mt-2"><button class="px-4 py-2 bg-[#FFC50F] rounded font-bold">Save</button></div>
                     </div>
                 </div>

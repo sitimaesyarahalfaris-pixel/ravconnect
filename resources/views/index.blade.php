@@ -295,7 +295,57 @@
         }
     }
 
-    </style>
+    
+    .card-shadow-yellow {
+        box-shadow: 0 10px 40px rgba(255, 197, 15, 0.2);
+        transition: all 0.3s ease;
+    }
+    .card-shadow-yellow:hover {
+        box-shadow: 0 20px 60px rgba(255, 197, 15, 0.4);
+    }
+    .product-card-header {
+        background-image: url('https://images.unsplash.com/photo-1724568834522-81eb8e5c048c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiYWxpJTIwYmVhY2glMjB0cm9waWNhbHxlbnwxfHx8fDE3NjQ2Njg2MjN8MA&ixlib=rb-4.1.0&q=80&w=1080');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    .product-card-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255, 197, 15, 0.7), rgba(255, 215, 0, 0.5));
+        z-index: 1;
+    }
+    .flag-container {
+        position: relative;
+        z-index: 10;
+    }
+    .product-initial {
+        position: relative;
+        z-index: 5;
+    }
+
+        .card-shadow-yellow {
+        box-shadow: 0 10px 40px rgba(255, 197, 15, 0.2);
+        transition: all 0.3s ease;
+    }
+    .card-shadow-yellow:hover {
+        box-shadow: 0 20px 60px rgba(255, 197, 15, 0.4);
+    }
+    .product-card-header {
+        background-image: url('https://images.unsplash.com/photo-1724568834522-81eb8e5c048c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiYWxpJTIwYmVhY2glMjB0cm9waWNhbHxlbnwxfHx8fDE3NjQ2Njg2MjN8MA&ixlib=rb-4.1.0&q=80&w=1080');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    .product-card-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
+        z-index: 1;
+    }
+</style>
 </head>
 <body class="bg-white">
 
@@ -303,10 +353,10 @@
 <!-- Header / Top Bar -->
 <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b-4 border-[#FFC50F]">
     <div class="max-w-7xl mx-auto px-4 py-4">
-        
+
         <!-- Desktop Layout -->
         <div class="hidden md:flex items-center justify-between gap-6">
-            
+
             <!-- Logo -->
             <div class="flex items-center">
                 <a href="{{ route('index') }}" class="block">
@@ -324,8 +374,8 @@
                     <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         placeholder="Cari eSIM atau negara tujuan..."
                         class="w-full pl-12 pr-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#FFC50F] focus:bg-white/20 transition"
                         x-model="query"
@@ -333,7 +383,7 @@
                         @focus="if(results.length) open=true"
                         @blur="setTimeout(()=>open=false,200)"
                     >
-                    
+
                     <!-- Search Results Dropdown -->
                     <div x-show="open" x-cloak class="absolute left-0 mt-2 w-full bg-white rounded-xl shadow-2xl z-50 border border-gray-200 max-h-80 overflow-y-auto">
                         <template x-if="loading">
@@ -374,7 +424,7 @@
                         </svg>
                         <span class="font-bold text-white">Menu</span>
                     </button>
-                    
+
                     <div x-show="open" x-cloak class="absolute right-0 mt-2 w-64 bg-black rounded-xl shadow-2xl z-50 border border-[#FFC50F] py-4">
                         <a href="/" class="flex items-center gap-3 px-6 py-3 hover:bg-white/10 transition text-white hover:text-[#FFC50F]">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -535,8 +585,8 @@
                     <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         placeholder="Cari eSIM..."
                         class="w-full pl-9 pr-2 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#FFC50F] focus:bg-white/20 transition text-sm"
                         x-model="query"
@@ -617,93 +667,94 @@ function cartDropdown() {
 
 
 
-    <!-- Hero Banner - Creative Asymmetric Layout -->
-    <section class="relative bg-black overflow-hidden min-h-screen flex items-center">
-        <!-- Animated Background -->
-        <div class="absolute inset-0 blob-gradient"></div>
-        <div class="absolute top-20 right-10 w-96 h-96 bg-[#FFC50F] rounded-full decorative-circle opacity-20"></div>
-        <div class="absolute bottom-20 left-10 w-80 h-80 bg-[#FFD700] rounded-full decorative-circle opacity-20"></div>
-        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-[#FFA500] rounded-full decorative-circle opacity-10"></div>
+@php
+    use App\Helpers\ContentHelper;
+    $heroText = ContentHelper::getHeroBannerText();
+    $heroImg = ContentHelper::getHeroBannerImage();
+    $heroPromo = ContentHelper::getHeroPromo();
+    $heroDiscount = ContentHelper::getHeroDiscount();
+    $heroStats = ContentHelper::getHeroStats();
+@endphp
 
-        <!-- Grid Pattern Overlay -->
-        <div class="absolute inset-0 grid-pattern opacity-30"></div>
+<!-- Hero Banner - Creative Asymmetric Layout -->
+<section class="relative bg-black overflow-hidden min-h-screen flex items-center">
+    <!-- Animated Background -->
+    <div class="absolute inset-0 blob-gradient"></div>
+    <div class="absolute top-20 right-10 w-96 h-96 bg-[#FFC50F] rounded-full decorative-circle opacity-20"></div>
+    <div class="absolute bottom-20 left-10 w-80 h-80 bg-[#FFD700] rounded-full decorative-circle opacity-20"></div>
+    <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-[#FFA500] rounded-full decorative-circle opacity-10"></div>
 
-        <div class="max-w-7xl mx-auto px-4 py-20 relative z-10">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <!-- Left Side - Text Content -->
-                <div class="space-y-8 text-white">
-                    <!-- Promo Badge -->
-                    <div class="inline-flex items-center gap-3 bg-gradient-to-r from-red-500 to-orange-500 px-6 py-3 rounded-full transform -rotate-2 hover:rotate-0 transition-all shadow-2xl">
-                        <span class="text-3xl">🔥</span>
-                        <div>
-                            <div class="font-black text-sm">PROMO SPESIAL</div>
-                            <div class="text-xs opacity-90">Diskon 20% untuk Pelanggan Baru!</div>
-                        </div>
-                    </div>
+    <!-- Grid Pattern Overlay -->
+    <div class="absolute inset-0 grid-pattern opacity-30"></div>
 
+    <div class="max-w-7xl mx-auto px-4 py-20 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Side - Text Content -->
+            <div class="space-y-8 text-white">
+                <!-- Promo Badge -->
+                <div class="inline-flex items-center gap-3 bg-linear-to-r from-red-500 to-orange-500 px-6 py-3 rounded-full transform -rotate-2 hover:rotate-0 transition-all shadow-2xl">
+                    <span class="text-3xl">🔥</span>
                     <div>
-                        <h1 class="text-white mb-6 leading-tight">
-                            Jelajahi <span class="text-[#FFC50F] inline-block transform hover:scale-110 transition-transform">Dunia</span> dengan eSIM<br/>
-                            Roaming Anti <span class="relative inline-block">
-                                <span class="relative z-10">Ribet!</span>
-                                <span class="absolute bottom-2 left-0 w-full h-4 bg-[#FFC50F]/30 -rotate-1"></span>
-                            </span>
-                        </h1>
-                        <p class="text-xl text-gray-300 mb-8 max-w-lg">
-                            Koneksi internet <span class="text-[#FFC50F] font-bold">global di 100+ negara</span>. Aktifkan eSim dalam hitungan detik, tanpa ribet!
-                        </p>
-                    </div>
-
-                    <div class="flex flex-wrap gap-4">
-                        <a href="{{ route('countries.index') }}">
-                        <button class="group relative bg-[#FFC50F] text-black px-10 py-5 rounded-2xl font-black text-lg hover:bg-[#FFD700] transition-all shadow-2xl shadow-[#FFC50F]/50 hover:shadow-[#FFC50F]/70 hover:scale-105">
-                            <span class="relative z-10">Beli Sekarang</span>
-                            <div class="absolute inset-0 bg-white/20 rounded-2xl transform scale-0 group-hover:scale-100 transition-transform"></div>
-                        </button>
-                        </a>
-                        
-                    </div>
-
-                    <!-- Stats -->
-                    <div class="grid grid-cols-3 gap-6 pt-8">
-                        <div class="relative group">
-                            <div class="absolute inset-0 bg-[#FFC50F]/20 rounded-xl transform group-hover:scale-110 transition-transform"></div>
-                            <div class="relative p-4 text-center">
-                                <div class="text-4xl font-black text-[#FFC50F]">100+</div>
-                                <div class="text-sm text-gray-400 font-semibold">Negara</div>
-                            </div>
-                        </div>
-                        <div class="relative group">
-                            <div class="absolute inset-0 bg-[#FFC50F]/20 rounded-xl transform group-hover:scale-110 transition-transform"></div>
-                            <div class="relative p-4 text-center">
-                                <div class="text-4xl font-black text-[#FFC50F]">50K+</div>
-                                <div class="text-sm text-gray-400 font-semibold">Pengguna</div>
-                            </div>
-                        </div>
-                        <div class="relative group">
-                            <div class="absolute inset-0 bg-[#FFC50F]/20 rounded-xl transform group-hover:scale-110 transition-transform"></div>
-                            <div class="relative p-4 text-center">
-                                <div class="text-4xl font-black text-[#FFC50F]">4.9★</div>
-                                <div class="text-sm text-gray-400 font-semibold">Rating</div>
-                            </div>
-                        </div>
+                        <div class="font-black text-sm">{{ $heroPromo }}</div>
+                        <div class="text-xs opacity-90">{{ $heroDiscount }}</div>
                     </div>
                 </div>
 
-                <!-- Right Side - Creative Image Layout -->
-                <div class="relative lg:h-[600px] hidden lg:block">
-                    <!-- Main Image -->
-                    <div class="absolute top-0 right-0 w-4/5 h-4/5 transform rotate-3 hover:rotate-0 transition-all duration-500 group">
-                        <div class="absolute inset-0 bg-[#FFC50F] rounded-3xl transform group-hover:scale-105 transition-transform"></div>
-                        <img
-                            src="https://images.unsplash.com/photo-1761198879998-6bb91fd6797c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmF2ZWwlMjBjb25uZWN0aXZpdHklMjBpbnRlcm5ldHxlbnwxfHx8fDE3NjM0MDUwNDd8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                            alt="Travel"
-                            class="relative w-full h-full object-cover rounded-3xl shadow-2xl border-4 border-white/20"
-                        />
-                    </div>
+                <div>
+                    <h1 class="text-white mb-6 leading-tight">{!! $heroText !!}</h1>
+                    <p class="text-xl text-gray-300 mb-8 max-w-lg">
+                        Koneksi internet <span class="text-[#FFC50F] font-bold">global di {{ $heroStats['countries'] }} negara</span>. Aktifkan eSim dalam hitungan detik, tanpa ribet!
+                    </p>
+                </div>
 
-                    <!-- Floating Cards -->
-                    <div class="absolute bottom-10 left-0 bg-white rounded-2xl p-6 shadow-2xl transform -rotate-6 hover:rotate-0 transition-all">
+                <div class="flex flex-wrap gap-4">
+                    <a href="{{ route('countries.index') }}">
+                    <button class="group relative bg-[#FFC50F] text-black px-10 py-5 rounded-2xl font-black text-lg hover:bg-[#FFD700] transition-all shadow-2xl shadow-[#FFC50F]/50 hover:shadow-[#FFC50F]/70 hover:scale-105">
+                        <span class="relative z-10">Beli Sekarang</span>
+                        <div class="absolute inset-0 bg-white/20 rounded-2xl transform scale-0 group-hover:scale-100 transition-transform"></div>
+                    </button>
+                    </a>
+
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-6 pt-8">
+                    <div class="relative group">
+                        <div class="absolute inset-0 bg-[#FFC50F]/20 rounded-xl transform group-hover:scale-110 transition-transform"></div>
+                        <div class="relative p-4 text-center">
+                            <div class="text-4xl font-black" style="color:#F0AC06">{{ $heroStats['countries'] }}</div>
+                            <div class="text-sm text-gray-400 font-semibold">Negara</div>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <div class="absolute inset-0 bg-[#FFC50F]/20 rounded-xl transform group-hover:scale-110 transition-transform"></div>
+                        <div class="relative p-4 text-center">
+                            <div class="text-4xl font-black" style="color:#F0AC06">{{ $heroStats['users'] }}</div>
+                            <div class="text-sm text-gray-400 font-semibold">Pengguna</div>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <div class="absolute inset-0 bg-[#FFC50F]/20 rounded-xl transform group-hover:scale-110 transition-transform"></div>
+                        <div class="relative p-4 text-center">
+                            <div class="text-4xl font-black" style="color:#F0AC06">{{ $heroStats['rating'] }}</div>
+                            <div class="text-sm text-gray-400 font-semibold">Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Creative Image Layout -->
+            <div class="relative lg:h-[600px] hidden lg:block">
+                <!-- Main Image -->
+                <div class="absolute top-0 right-0 w-4/5 h-4/5 transform rotate-3 hover:rotate-0 transition-all duration-500 group">
+                    <div class="absolute inset-0 bg-[#FFC50F] rounded-3xl transform group-hover:scale-105 transition-transform"></div>
+                    @if($heroImg)
+                        <img src="{{ $heroImg }}" alt="Hero Banner" class="relative w-full h-full object-cover rounded-3xl shadow-2xl border-4 border-white/20" />
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100 rounded-3xl">No hero image</div>
+                    @endif
+                </div>
+                <div class="absolute bottom-10 left-0 bg-white rounded-2xl p-6 shadow-2xl transform -rotate-6 hover:rotate-0 transition-all">
                         <div class="flex items-center gap-4">
                             <div class="w-16 h-16 bg-gradient-to-br from-[#FFC50F] to-[#FFA500] rounded-xl flex items-center justify-center">
                                 <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -719,17 +770,16 @@ function cartDropdown() {
 
                     <div class="absolute top-10 left-10 bg-gradient-to-br from-[#FFC50F] to-[#FFD700] rounded-2xl p-5 shadow-2xl transform rotate-6 hover:rotate-0 transition-all">
                         <div class="text-center">
-                            <div class="text-3xl font-black text-black">Rp 50k</div>
+                            <div class="text-3xl font-black" style="color:#000000">Rp 50k</div>
                             <div class="text-xs text-black/70 font-bold">Start From</div>
                         </div>
-                    </div>
-                </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Country Coverage Section - Bento Box Style -->
-    <section class="relative py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+    <section class="relative py-24 bg-linear-to-b from-gray-50 to-white overflow-hidden">
         <!-- Decorative Elements -->
         <div class="absolute top-0 right-0 w-96 h-96 bg-[#FFC50F]/10 rounded-full blur-3xl"></div>
 
@@ -747,79 +797,94 @@ function cartDropdown() {
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach($products->take(6) as $product)
-                <div class="relative group bg-white rounded-3xl overflow-hidden border-4 border-[#FFC50F]/30 hover:border-[#FFC50F] transition-all card-shadow-yellow transform hover:-translate-y-2">
-    <!-- Redesigned header with gradient background -->
-    <div class="relative h-40 md:h-48 lg:h-56 hero-gradient overflow-hidden">
-        <!-- Flag positioned in top-left corner -->
-        @php
-            $flag = null;
-            if ($product->countries && $product->countries->count()) {
-                $country = $product->countries->first();
-                $flag = $country->code ? 'https://flagcdn.com/48x36/' . strtolower($country->code) . '.png' : null;
-            }
-        @endphp
-        @if($flag)
-            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-2 border-2 border-white">
-                <img src="{{ $flag }}" alt="{{ $country->name }}" class="w-16 h-12 md:w-20 md:h-16 lg:w-24 lg:h-18 object-contain">
-            </div>
-        @else
-            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-2 border-2 border-white">
-                <img src="{{ asset('images/products/default.png') }}" alt="{{ $product->name }}" class="w-16 h-12 md:w-20 md:h-16 lg:w-24 lg:h-18 object-contain">
-            </div>
-        @endif
+            <!-- Product Cards List -->
+            @if(isset($products) && count($products) > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($products as $product)
+                        <!-- Product Card Component -->
+                        <div class="relative group bg-white rounded-3xl overflow-hidden border-4 border-[#FFC50F]/30 hover:border-[#FFC50F] transition-all card-shadow-yellow transform hover:-translate-y-2">
+                            <!-- Header with Country Image Background -->
+                            <div class="relative h-40 md:h-48 lg:h-56 overflow-hidden" style="background: none;">
+                                @php
+                                    $countryImg = null;
+                                    if ($product->countries && $product->countries->count()) {
+                                        $country = $product->countries->first();
+                                        $countryImg = $country->image_url ?: 'https://flagcdn.com/w320/' . strtolower($country->code) . '.png';
+                                    }
+                                @endphp
+                                @if($countryImg)
+                                    <img src="{{ $countryImg }}" alt="{{ $country->name }}" class="absolute inset-0 w-full h-full object-cover z-0" />
+                                @else
+                                    <div class="absolute inset-0 w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 rounded-3xl z-0">No image</div>
+                                @endif
+                                <!-- Subtle black overlay tint, fading bottom to top -->
+                                <div class="absolute inset-0 w-full h-full z-5 pointer-events-none" style="background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.10) 60%, rgba(0,0,0,0.0) 100%);"></div>
+                                <!-- Flag positioned in bottom-left corner with modern styling -->
+                                @php
+                                    $flag = null;
+                                    if ($product->countries && $product->countries->count()) {
+                                        $country = $product->countries->first();
+                                        $flag = $country->code ? 'https://flagcdn.com/48x36/' . strtolower($country->code) . '.png' : null;
+                                    }
+                                @endphp
+                                @if($flag)
+                                    <div class="absolute bottom-4 left-4 z-10 bg-white rounded-xl shadow-xl p-2 border border-gray-100 group-hover:scale-110 transition-transform">
+                                        <img src="{{ $flag }}" alt="{{ $country->name }}" class="w-12 h-9 md:w-16 md:h-12 object-cover rounded-lg">
+                                    </div>
+                                @else
+                                    <div class="absolute bottom-4 left-4 z-10 bg-white rounded-xl shadow-xl p-2 border border-gray-100 group-hover:scale-110 transition-transform">
+                                        <img src="{{ asset('images/products/default.png') }}" alt="{{ $product->name }}" class="w-12 h-9 md:w-16 md:h-12 object-cover rounded-lg">
+                                    </div>
+                                @endif
+                            </div>
 
-        <!-- Optional: Add product name or icon in center -->
-        <div class="absolute inset-0 flex items-center justify-center">
-            <div class="text-white/20 text-7xl md:text-8xl lg:text-9xl font-black">
-                {{ strtoupper(substr($product->name, 0, 1)) }}
-            </div>
-        </div>
-    </div>
+                            <div class="p-6">
+                                <h3 class="text-gray-900 mb-3 font-bold text-lg">{{ $product->name }}</h3>
+                                <div class="text-gray-600 text-sm mb-4 line-clamp-2">{{ $product->description }}</div>
 
-    <div class="p-6">
-        <h3 class="text-gray-900 mb-3 font-bold text-lg">{{ $product->name }}</h3>
-        <div class="text-gray-600 text-sm mb-4 line-clamp-2">{{ $product->description }}</div>
+                                <!-- Info grid with better spacing -->
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-gray-500 font-semibold">Kuota</span>
+                                        @if($product->quota)
+                                            @if($product->quota >= 1024)
+                                                <span class="font-black text-gray-900">{{ number_format($product->quota / 1024, 2) }}GB</span>
+                                            @else
+                                                <span class="font-black text-gray-900">{{ $product->quota }}MB</span>
+                                            @endif
+                                        @else
+                                            <span class="font-black text-gray-900">Unlimited</span>
+                                        @endif
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-gray-500 font-semibold">Masa Aktif</span>
+                                        <span class="font-black text-gray-900">{{ $product->validity }} Hari</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-gray-500 font-semibold">Operator</span>
+                                        <span class="font-black text-gray-900">{{ $product->operator }}</span>
+                                    </div>
 
-        <!-- Info grid with better spacing -->
-        <div class="space-y-3 mb-6">
-            <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-500 font-semibold">Kuota</span>
-                @if($product->quota)
-                            @if($product->quota >= 1024)
-                                <span class="font-black text-gray-900">{{ number_format($product->quota / 1024, 2) }}GB</span>
-                            @else
-                                <span class="font-black text-gray-900">{{ $product->quota }}MB</span>
-                            @endif
-                        @else
-                            Unlimited
-                        @endif
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-500 font-semibold">Masa Aktif</span>
-                <span class="font-black text-gray-900">{{ $product->validity }} Hari</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-500 font-semibold">Operator</span>
-                <span class="font-black text-gray-900">{{ $product->operator }}</span>
-            </div>
+                                    <!-- Price with more emphasis -->
+                                    <div class="flex items-center justify-between pt-3 border-t-2 border-gray-100">
+                                        <span class="text-sm text-gray-700 font-bold">Harga</span>
+                                        <span class="text-2xl font-black" style="color:#F0AC06">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
 
-            <!-- Price with more emphasis -->
-            <div class="flex items-center justify-between pt-3 border-t-2 border-gray-100">
-                <span class="text-sm text-gray-700 font-bold">Harga</span>
-                <span class="text-2xl font-black text-[#FFC50F]">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-            </div>
-        </div>
+                                <a href="{{ route('products.show', $product->id) }}" class="w-full block bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-3 rounded-2xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-base shadow-xl hover:shadow-2xl transform hover:scale-105 text-center">
+                                    Lihat Detail
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center text-gray-400 text-lg py-16">Belum ada produk tersedia.</div>
+            @endif
+            <!-- End Product Cards List -->
 
-        <a href="{{ route('products.show', $product->id) }}" class="w-full block bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-3 rounded-2xl hover:from-[#FFD700] hover:to-[#FFC50F] transition-all font-black text-base shadow-xl hover:shadow-2xl transform hover:scale-105 text-center">
-            Lihat Detail
-        </a>
-    </div>
-</div>
-                @endforeach
-            </div>
-        </div>
+
         <div class="text-center mt-10">
             <a href="{{route('countries.index')}}">
                 <button class="group px-12 py-5 border-4 border-[#FFC50F] text-black bg-white hover:bg-[#FFC50F] rounded-2xl transition-all font-black text-xl shadow-xl hover:shadow-2xl transform hover:scale-105">
@@ -849,7 +914,7 @@ function cartDropdown() {
             <!-- Card A -->
             <div class="relative h-full">
                 <div class="absolute -top-10 -left-10 w-32 h-32 bg-[#FFC50F] rounded-full blur-3xl"></div>
-                <div class="relative bg-gradient-to-br from-[#FFC50F] to-[#FFD700] rounded-[3rem] p-1 h-full">
+                <div class="relative bg-linear-to-br from-[#FFC50F] to-[#FFD700] rounded-[3rem] p-1 h-full">
                     <div class="bg-black rounded-[2.8rem] p-10 h-full flex flex-col">
 
                         <!-- Icon (Not tilted) -->
@@ -867,16 +932,17 @@ function cartDropdown() {
 
                         <div class="space-y-4 mt-auto">
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center shrink-0">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 </div>
+
                                 <span class="text-white font-semibold text-lg">Tanpa kartu fisik</span>
                             </div>
 
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center shrink-0">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                     </svg>
@@ -885,7 +951,7 @@ function cartDropdown() {
                             </div>
 
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center shrink-0">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                     </svg>
@@ -900,11 +966,11 @@ function cartDropdown() {
             <!-- Card B -->
             <div class="relative h-full">
                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-[#FFD700] rounded-full blur-3xl"></div>
-                <div class="relative bg-gradient-to-br from-[#FFD700] to-[#FFA500] rounded-[3rem] p-1 h-full">
+                <div class="relative bg-linear-to-br from-[#FFD700] to-[#FFA500] rounded-[3rem] p-1 h-full">
                     <div class="bg-black rounded-[2.8rem] p-10 h-full flex flex-col">
 
                         <!-- Icon (Not tilted) -->
-                        <div class="w-20 h-20 bg-gradient-to-br from-[#FFD700] to-[#FFA500] rounded-2xl flex items-center justify-center mb-6">
+                        <div class="w-20 h-20 bg-linear-to-br from-[#FFD700] to-[#FFA500] rounded-2xl flex items-center justify-center mb-6">
                             <svg class="w-12 h-12 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
@@ -957,11 +1023,11 @@ function cartDropdown() {
 
         <!-- BOTTOM: Long Card -->
         <div class="max-w-4xl mx-auto">
-            <div class="relative bg-gradient-to-br from-[#FFA500] to-[#FFC50F] rounded-[3rem] p-1">
+            <div class="relative bg-linear-to-br from-[#FFA500] to-[#FFC50F] rounded-[3rem] p-1">
                 <div class="bg-black rounded-[2.8rem] p-12">
 
                     <div class="text-center mb-12">
-                        <div class="w-24 h-24 bg-gradient-to-br from-[#FFA500] to-[#FFC50F] rounded-3xl flex items-center justify-center mx-auto mb-6">
+                        <div class="w-24 h-24 bg-linear-to-br from-[#FFA500] to-[#FFC50F] rounded-3xl flex items-center justify-center mx-auto mb-6">
                             <svg class="w-14 h-14 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -1010,7 +1076,7 @@ function cartDropdown() {
 
 
     <!-- Footer -->
-    <footer class="relative bg-gradient-to-b from-gray-900 to-black text-white pt-20 pb-8 overflow-hidden">
+    <footer class="relative bg-linear-to-b from-gray-900 to-black text-white pt-20 pb-8 overflow-hidden">
         <!-- Decorative Background -->
         <div class="absolute inset-0 opacity-5">
             <div class="absolute top-0 left-1/4 w-96 h-96 bg-[#FFC50F] rounded-full blur-3xl"></div>
@@ -1022,7 +1088,7 @@ function cartDropdown() {
                 <!-- Company Info -->
                 <div class="space-y-6">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-[#FFC50F] to-[#FFD700] rounded-xl flex items-center justify-center">
+                        <div class="w-12 h-12 bg-linear-to-br from-[#FFC50F] to-[#FFD700] rounded-xl flex items-center justify-center">
                             <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>

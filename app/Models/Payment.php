@@ -14,6 +14,14 @@ class Payment extends Model
         'amount',
         'status',
         'payment_url',
-        'transaction_id'
+        'transaction_id',
+        'qr_image',
+        'qr_string',
+        'bank',
+        'tujuan',
+        'atas_nama',
+        'nomor_va',
+        'tambahan',
+        'expired_at'
     ];
 }

@@ -12,6 +12,7 @@ class AdminSystemController extends Controller
         $this->middleware('auth');
         $this->middleware(\App\Http\Middleware\AdminAuthMiddleware::class);
     }
+
     // Get system settings
     public function getSettings()
     {
@@ -24,25 +25,39 @@ class AdminSystemController extends Controller
             'tripay_api_key',
             'webhook_url',
             'qris_static',
-            'qris_dynamic'
-        ])->get();
-        if (request()->wantsJson()) {
-            return response()->json($settings);
-        }
-        return view('admin.system.index', compact('settings'));
+            'qris_dynamic',
+            'available_payment_methods',
+            'default_payment_method',
+        ])->get()->keyBy('key');
+        // Get payment methods from AtlanticPediaApi
+        $paymentMethods = app(\App\Services\AtlanticPediaApi::class)->getDepositMethods();
+        $paymentMethods = $paymentMethods['data'] ?? [];
+        $availablePaymentMethods = isset($settings['available_payment_methods']) ? json_decode($settings['available_payment_methods']->value, true) : [];
+        $defaultPaymentMethod = $settings['default_payment_method']->value ?? null;
+        return view('admin.system.index', [
+            'settings' => $settings,
+            'paymentMethods' => $paymentMethods,
+            'availablePaymentMethods' => $availablePaymentMethods,
+            'defaultPaymentMethod' => $defaultPaymentMethod,
+        ]);
     }
 
     // Update system setting
     public function updateSetting(Request $request)
     {
+        if ($request->has('available_payment_methods')) {
+            Setting::updateOrCreate(['key' => 'available_payment_methods'], ['value' => json_encode($request->input('available_payment_methods'))]);
+            return redirect()->back()->with('success', 'Available payment methods updated');
+        }
+        if ($request->has('default_payment_method')) {
+            Setting::updateOrCreate(['key' => 'default_payment_method'], ['value' => $request->input('default_payment_method')]);
+            return redirect()->back()->with('success', 'Default payment method updated');
+        }
         $validated = $request->validate([
             'key' => 'required|string',
             'value' => 'nullable|string',
         ]);
         $setting = Setting::updateOrCreate(['key' => $validated['key']], ['value' => $validated['value']]);
-        if ($request->wantsJson()) {
-            return response()->json($setting);
-        }
-        return redirect()->route('admin.simple')->with('success', 'Setting updated');
+        return redirect()->back()->with('success', 'Setting updated');
     }
 }

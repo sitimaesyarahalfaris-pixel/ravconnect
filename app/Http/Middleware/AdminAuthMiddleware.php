@@ -9,9 +9,17 @@ class AdminAuthMiddleware
 {
     public function handle($request, Closure $next)
     {
-        if (!Auth::check() || !Auth::user()->is_admin) {
-            return redirect()->route('admin.login')->withErrors(['email' => 'Please login as admin.']);
+        // First check: User must be authenticated
+        if (!Auth::check()) {
+            return redirect()->route('login')
+                ->withErrors(['message' => 'Please login to continue.']);
         }
+        
+        // Second check: User must be admin
+        if (Auth::user()->is_admin !== 1) {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+        
         return $next($request);
     }
 }

@@ -38,11 +38,15 @@ Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.
 Route::get('/cart/count', [CartController::class, 'getCartCount'])->name('cart.count');
 Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process');
-Route::get('/delivery', [CartController::class, 'delivery'])->name('delivery');
+// Payment delivery page with payment/order ID in URL
+Route::get('/delivery/{id?}', [CartController::class, 'delivery'])->name('delivery');
 Route::post('/payment/cancel', [CartController::class, 'cancelPayment'])->name('payment.cancel');
 Route::post('/payment/status', [CartController::class, 'ajaxDepositStatus'])->name('payment.status');
 Route::post('/payment/success-update', [CartController::class, 'updateDepositSuccess'])->name('payment.successUpdate');
 Route::get('/search', [CartController::class, 'search'])->name('search');
+
+// AJAX endpoint for full payment instructions
+Route::get('/payment/instructions', [CartController::class, 'getPaymentInstructions'])->name('payment.instructions');
 
 // Payment webhook
 Route::post('payment/webhook', [PaymentWebhookController::class, 'handle']);
@@ -71,11 +75,11 @@ Route::post('admin/logout', [AdminAuthController::class, 'logout'])->name('admin
 // Simple admin dashboard (protected by regular auth middleware; controller checks is_admin)
 Route::get('admin/simple', [AdminDashboardController::class, 'simpleIndex'])->name('admin.simple')->middleware('auth');
 
-// Expose the main admin dashboard route (auth protected)
-Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware('auth');
+// Expose the main admin dashboard route (must be protected by admin middleware!)
+Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware('admin');
 
-// Admin routes group (protected by auth; controllers enforce admin checks)
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+// Admin routes group (protected by admin middleware)
+Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard/stats', [AdminDashboardController::class, 'stats']);
     Route::resource('products', ProductController::class, ['as' => 'admin']);
     Route::resource('orders', OrderController::class, ['as' => 'admin']);
@@ -93,12 +97,13 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::post('bulk/{entity}/action', [AdminDashboardController::class, 'bulkAction']);
 
     // eSIM stock management routes
-    Route::get('products/{product}/stocks', [ProductStockController::class, 'list'])->middleware('auth');
-    Route::post('products/{product}/stocks', [ProductStockController::class, 'storeForProduct'])->middleware('auth');
-    Route::put('products/{product}/stocks/{stock}', [ProductStockController::class, 'updateForProduct'])->middleware('auth');
-    Route::delete('products/{product}/stocks/{stock}', [ProductStockController::class, 'destroyForProduct'])->middleware('auth');
+    Route::get('products/{product}/stocks', [ProductStockController::class, 'list']);
+    Route::post('products/{product}/stocks', [ProductStockController::class, 'storeForProduct']);
+    Route::put('products/{product}/stocks/{stock}', [ProductStockController::class, 'updateForProduct']);
+    Route::delete('products/{product}/stocks/{stock}', [ProductStockController::class, 'destroyForProduct']);
 
     Route::patch('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('admin.orders.update-status');
     Route::get('/admin/orders/export', [OrderController::class, 'export'])->name('admin.orders.export');
     Route::patch('/admin/users/{user}/toggle-admin', [UserController::class, 'toggleAdmin'])->name('admin.users.toggle-admin');
+    Route::resource('countries', \App\Http\Controllers\Admin\CountryAdminController::class, ['as' => 'admin']);
 });

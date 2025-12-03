@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     public function __construct()
     {
-        // Protect admin actions with auth + explicit admin middleware class
+        // Only protect admin actions, not index/show/detail
         $this->middleware('auth')->only(['store', 'update', 'destroy', 'quickUpdate']);
         $this->middleware(\App\Http\Middleware\AdminAuthMiddleware::class)->only(['store', 'update', 'destroy', 'quickUpdate']);
     }
@@ -17,15 +18,26 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('countries')->get();
-        foreach ($products as $p) {
-            $p->country = $p->countries->first() ?? null;
-            $p->stock = \App\Models\ProductStock::where('product_id', $p->id)->where('status', 'available')->count();
-        }
+        // Only show products with available stock for users, but show all for admin
         $countries = \App\Models\Country::all();
-        if (request()->wantsJson()) {
-            return response()->json($products);
+        if (request()->routeIs('admin.products.index')) {
+            // Admin: show all products, even if stock is 0
+            foreach ($products as $p) {
+                $p->country = $p->countries->first() ?? null;
+                $p->stock = \App\Models\ProductStock::where('product_id', $p->id)->where('status', 'available')->count();
+            }
+        } else {
+            // User: filter out products with no available stock
+            $products = $products->filter(function ($p) {
+                $p->country = $p->countries->first() ?? null;
+                $p->stock = \App\Models\ProductStock::where('product_id', $p->id)->where('status', 'available')->count();
+                return $p->stock > 0;
+            });
         }
-        return view('admin.products.index', compact('products', 'countries'));
+        if (request()->wantsJson()) {
+            return response()->json($products->values());
+        }
+        return view(request()->routeIs('admin.products.index') ? 'admin.products.index' : 'products.index', compact('products', 'countries'));
     }
 
     // Store a new product
@@ -44,6 +56,12 @@ class ProductController extends Controller
             'image' => 'nullable|string',
             'active' => 'boolean',
         ]);
+        // Handle image upload
+        if ($request->hasFile('image_file')) {
+            $image = $request->file('image_file');
+            $path = $image->store('products', 'public');
+            $validated['image'] = $path ? 'storage/' . $path : null;
+        }
         // Ensure price is stored as Rupiah (not multiplied)
         if (isset($validated['price'])) {
             $validated['price'] = floatval($validated['price']);
@@ -103,9 +121,14 @@ class ProductController extends Controller
             'validity' => 'nullable|string',
             'operator' => 'nullable|string',
             'auto_delivery' => 'boolean',
-            'image' => 'nullable|string',
             'active' => 'boolean',
         ]);
+        // Handle image upload
+        if ($request->hasFile('image_file')) {
+            $image = $request->file('image_file');
+            $path = $image->store('products', 'public');
+            $validated['image'] = $path ? 'storage/' . $path : null;
+        }
         // Ensure price is stored as Rupiah (not multiplied)
         if (isset($validated['price'])) {
             $validated['price'] = floatval($validated['price']);

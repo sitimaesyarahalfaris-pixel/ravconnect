@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Country;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CountryController extends Controller
@@ -25,6 +26,7 @@ class CountryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:10',
+            'image_url' => 'nullable|string|max:255', // Add image_url validation
         ]);
         $country = Country::create($validated);
         return response()->json($country, 201);
@@ -40,11 +42,17 @@ class CountryController extends Controller
     public function showProducts($id)
     {
         $country = Country::findOrFail($id);
-        $products = \DB::table('products')
-            ->join('product_country', 'products.id', '=', 'product_country.product_id')
-            ->where('product_country.country_id', $id)
-            ->select('products.*')
+        // Eager load products as Eloquent models with countries relation
+        $products = Product::whereHas('countries', function ($q) use ($id) {
+            $q->where('countries.id', $id);
+        })
+            ->with('countries')
             ->get();
+        // Only show products with available stock
+        $products = $products->filter(function ($p) {
+            $stock = \App\Models\ProductStock::where('product_id', $p->id)->where('status', 'available')->count();
+            return $stock > 0;
+        })->values();
         return view('products/country_products', compact('country', 'products'));
     }
 
@@ -55,6 +63,7 @@ class CountryController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'code' => 'nullable|string|max:10',
+            'image_url' => 'nullable|string|max:255', // Add image_url validation
         ]);
         $country->update($validated);
         return response()->json($country);

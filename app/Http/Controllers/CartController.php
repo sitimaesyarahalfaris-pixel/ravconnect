@@ -117,7 +117,17 @@ class CartController extends Controller
         $methods = app(\App\Services\AtlanticPediaApi::class)->getDepositMethods();
         $paymentMethods = $methods['data'] ?? [];
 
-        return view('order.checkout', compact('cart', 'total', 'paymentMethods'));
+        // Ambil default payment method dari settings
+        $defaultPaymentMethod = \App\Models\Setting::where('key', 'default_payment_method')->value('value');
+
+        $availablePaymentMethods = \App\Models\Setting::where('key', 'available_payment_methods')->value('value');
+        $availablePaymentMethods = $availablePaymentMethods ? json_decode($availablePaymentMethods, true) : [];
+        // Filter paymentMethods to only those selected in settings
+        $paymentMethods = array_filter($paymentMethods, function ($m) use ($availablePaymentMethods) {
+            return in_array($m['metode'], $availablePaymentMethods);
+        });
+
+        return view('order.checkout', compact('cart', 'total', 'paymentMethods', 'defaultPaymentMethod'));
     }
 
     // Process checkout
@@ -244,13 +254,31 @@ class CartController extends Controller
             $orderIds[] = $order->id;
         }
 
+        // Create Payment record in DB for delivery page
+        $payment = \App\Models\Payment::create([
+            'order_id' => $orderIds[0] ?? null, // Link to first order (or null if none)
+            'method' => $metode,
+            'amount' => $nominal,
+            'status' => $data['status'] ?? 'pending',
+            'payment_url' => $data['url'] ?? null,
+            'transaction_id' => $data['id'] ?? null,
+            'qr_image' => $data['qr_image'] ?? null,
+            'qr_string' => $data['qr_string'] ?? null,
+            'bank' => $data['bank'] ?? null,
+            'tujuan' => $data['tujuan'] ?? null,
+            'atas_nama' => $data['atas_nama'] ?? null,
+            'nomor_va' => $data['nomor_va'] ?? null,
+            'tambahan' => $data['tambahan'] ?? null,
+            'expired_at' => $data['expired_at'] ?? null,
+        ]);
+
         // Kosongkan keranjang
         session()->forget('cart');
         // Simpan order ids di session untuk delivery/assignment
         session(['order_ids' => $orderIds]);
 
         // Kirim data pembayaran ke view delivery
-        return redirect()->route('delivery')->with([
+        return redirect()->route('delivery', ['id' => $payment->id])->with([
             'success' => 'Pesanan berhasil dibuat! Silakan selesaikan pembayaran.',
             'payment_data' => $paymentData
         ]);
@@ -271,48 +299,79 @@ class CartController extends Controller
         }
     }
 
-    public function delivery(Request $request)
+    public function delivery(Request $request, $id = null)
     {
-        $payment = session('payment_data');
+        // If payment/order ID is provided in URL, fetch from DB
+        if ($id) {
+            $payment = \App\Models\Payment::where('id', $id)->first();
+            if ($payment) {
+                $payment = $payment->toArray();
+                // Fetch latest status/details from API and merge into $payment
+                $statusResult = app(\App\Services\AtlanticPediaApi::class)->getDepositStatus($payment['transaction_id'] ?? $payment['id']);
+                if (($statusResult['status'] ?? false) && isset($statusResult['data'])) {
+                    $apiData = $statusResult['data'];
+                    // Only overwrite qr_image and qr_string if API returns a non-empty value
+                    if (!empty($apiData['qr_image'])) {
+                        $payment['qr_image'] = $apiData['qr_image'];
+                    }
+                    if (!empty($apiData['qr_string'])) {
+                        $payment['qr_string'] = $apiData['qr_string'];
+                    }
+                    // Merge all other API fields except 'id', 'qr_image', 'qr_string'
+                    foreach ($apiData as $k => $v) {
+                        if (!in_array($k, ['id', 'qr_image', 'qr_string'])) {
+                            $payment[$k] = $v;
+                        }
+                    }
+                }
+            }
+        } else {
+            // Fix: If no ID, try to get latest payment from session, and if it has qr_image, show it
+            $payment = session('payment_data');
+            // If session payment_data is missing qr_image, try to fetch from API using deposit_id
+            if ($payment && isset($payment['id'])) {
+                $statusResult = app(\App\Services\AtlanticPediaApi::class)->getDepositStatus($payment['id']);
+                if (($statusResult['status'] ?? false) && isset($statusResult['data'])) {
+                    $apiData = $statusResult['data'];
+                    if (!empty($apiData['qr_image'])) {
+                        $payment['qr_image'] = $apiData['qr_image'];
+                    }
+                    if (!empty($apiData['qr_string'])) {
+                        $payment['qr_string'] = $apiData['qr_string'];
+                    }
+                    foreach ($apiData as $k => $v) {
+                        if (!in_array($k, ['id', 'qr_image', 'qr_string'])) {
+                            $payment[$k] = $v;
+                        }
+                    }
+                }
+            }
+        }
         $statusData = null;
         $forceUpdate = $request->get('force_update');
 
         if ($payment && isset($payment['id'])) {
-            // Fetch latest status from API
-            $statusResult = app(\App\Services\AtlanticPediaApi::class)->getDepositStatus($payment['id']);
-
+            // Fetch latest status from API (already done above for DB case)
+            if (!isset($statusResult)) {
+                $statusResult = app(\App\Services\AtlanticPediaApi::class)->getDepositStatus($payment['id']);
+            }
             if (($statusResult['status'] ?? false) && isset($statusResult['data'])) {
                 $statusData = $statusResult['data'];
-
-                // Update status in session for UI
                 $payment['status'] = $statusData['status'] ?? $payment['status'];
                 session(['payment_data' => $payment]);
-
-                // Check if payment is successful (handle multiple status variations)
                 $paymentStatus = strtoupper($statusData['status'] ?? '');
                 $isSuccessful = in_array($paymentStatus, ['SUCCESS', 'PAID', 'SETTLEMENT', 'COMPLETED']);
-
                 if ($isSuccessful && Auth::check()) {
-                    // Find orders by deposit_id OR reff_id (fallback)
                     $orders = \App\Models\Order::where(function ($query) use ($payment) {
                         $query->where('deposit_id', $payment['id'])
                             ->orWhere('reff_id', $payment['reff_id'] ?? '');
                     })
                         ->where('user_id', Auth::id())
                         ->get();
-
-                    \Log::info('Processing successful payment', [
-                        'deposit_id' => $payment['id'],
-                        'orders_found' => $orders->count(),
-                        'payment_status' => $paymentStatus
-                    ]);
-
                     foreach ($orders as $order) {
-                        // Skip if already processed
                         if ($order->status === 'paid' && $order->esim_stock_id) {
                             continue;
                         }
-                        // Try to assign eSIM stock
                         if (!$order->esim_stock_id) {
                             $stock = \App\Models\ProductStock::where('product_id', $order->product_id)
                                 ->where('status', 'available')
@@ -322,23 +381,12 @@ class CartController extends Controller
                                 $order->status = 'paid';
                                 $order->delivery_status = 'delivered';
                                 $order->save();
-                                $stock->status = 'assigned';
+                                $stock->status = 'used';
                                 $stock->user_id = $order->user_id;
                                 $stock->assigned_at = now();
                                 $stock->save();
-                                \Log::info('eSIM assigned', [
-                                    'order_id' => $order->id,
-                                    'stock_id' => $stock->id,
-                                    'user_id' => $order->user_id
-                                ]);
-                            } else {
-                                \Log::warning('No available stock', [
-                                    'order_id' => $order->id,
-                                    'product_id' => $order->product_id
-                                ]);
                             }
                         } else {
-                            // Update order status if already has stock
                             $order->status = 'paid';
                             $order->delivery_status = 'delivered';
                             $order->save();
@@ -347,8 +395,6 @@ class CartController extends Controller
                 }
             }
         }
-
-        // If AJAX, return only status
         if ($request->ajax() || $forceUpdate) {
             return response()->json([
                 'status' => $payment['status'] ?? 'pending',
@@ -356,7 +402,6 @@ class CartController extends Controller
                 'is_successful' => isset($paymentStatus) && in_array($paymentStatus, ['SUCCESS', 'PAID', 'SETTLEMENT', 'COMPLETED'])
             ]);
         }
-
         return view('order.delivery', compact('payment', 'statusData'));
     }
 
@@ -412,8 +457,11 @@ class CartController extends Controller
         $result = app(\App\Services\AtlanticPediaApi::class)->getDepositStatus($request->deposit_id);
         if (!empty($result['data']) && ($result['data']['status'] ?? null) === 'success') {
             $depositId = $request->deposit_id;
-            // Find order(s) by deposit_id
-            $orders = \App\Models\Order::where('deposit_id', $depositId)->get();
+            // Unify order lookup: find by deposit_id OR reff_id (like delivery polling)
+            $orders = \App\Models\Order::where(function ($query) use ($result, $depositId) {
+                $query->where('deposit_id', $depositId)
+                    ->orWhere('reff_id', $result['data']['reff_id'] ?? '');
+            })->get();
             foreach ($orders as $order) {
                 $order->status = 'paid';
                 $order->save();
@@ -432,5 +480,41 @@ class CartController extends Controller
             return response()->json(['updated' => true]);
         }
         return response()->json(['updated' => false]);
+    }
+
+    // Return full payment instructions and status for AJAX polling
+    public function getPaymentInstructions(Request $request)
+    {
+        $paymentId = $request->input('payment_id');
+        if (!$paymentId) {
+            return response()->json(['error' => 'Missing payment_id'], 400);
+        }
+        $payment = \App\Models\Payment::find($paymentId);
+        if (!$payment) {
+            return response()->json(['error' => 'Payment not found'], 404);
+        }
+        // Fetch latest status/details from API and merge into $payment
+        $statusResult = app(\App\Services\AtlanticPediaApi::class)->getDepositStatus($payment->transaction_id ?? $payment->id);
+        if (($statusResult['status'] ?? false) && isset($statusResult['data'])) {
+            $apiData = $statusResult['data'];
+            // Only overwrite qr_image and qr_string if API returns a non-empty value
+            if (!empty($apiData['qr_image'])) {
+                $payment->qr_image = $apiData['qr_image'];
+            }
+            if (!empty($apiData['qr_string'])) {
+                $payment->qr_string = $apiData['qr_string'];
+            }
+            // Merge all other API fields except 'id', 'qr_image', 'qr_string'
+            foreach ($apiData as $k => $v) {
+                if (!in_array($k, ['id', 'qr_image', 'qr_string'])) {
+                    $payment->$k = $v;
+                }
+            }
+        }
+        // Prepare response
+        $response = $payment->toArray();
+        $response['payment_status'] = strtoupper($payment->status ?? 'PENDING');
+        $response['is_successful'] = in_array($response['payment_status'], ['SUCCESS', 'PAID', 'SETTLEMENT', 'COMPLETED']);
+        return response()->json($response);
     }
 }

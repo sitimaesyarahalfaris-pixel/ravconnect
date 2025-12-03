@@ -34,6 +34,10 @@
                 </div>
             @endif
 
+            <div class="mb-8">
+                <a href="{{ route('admin.countries.index') }}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 transition">Manage Countries</a>
+            </div>
+
             <!-- Statistics Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Total Orders Card -->

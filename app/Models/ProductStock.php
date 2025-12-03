@@ -12,11 +12,12 @@ class ProductStock extends Model
         'product_id',
         'status',
         'user_id',
-        'sku',        
+        'sku',
         'iccid',
         'activation_code',
         'smdp_plus',
-        'qr_image_url'
+        'qr_image_url',
+        'assigned_at'
     ];
 
     public function product()
@@ -33,6 +34,7 @@ class ProductStock extends Model
     {
         $this->user_id = $userId;
         $this->status = 'used';
+        $this->assigned_at = now();
         $this->save();
     }
 }

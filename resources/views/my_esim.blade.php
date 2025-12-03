@@ -54,6 +54,38 @@
                 </div>
             </div>
         @else
+           @if($esims->count())
+    <div class="max-w-2xl mx-auto mb-8">
+        <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl p-5 shadow-lg">
+            <div class="flex items-start gap-4">
+                <!-- Icon -->
+                <div class="flex-shrink-0">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Content -->
+                <div class="flex-1">
+                    <h3 class="font-black text-gray-900 mb-2 flex items-center gap-2">
+                        <span>Informasi Penting</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-500 text-white">
+                            Important
+                        </span>
+                    </h3>
+                    <p class="text-sm text-gray-700 leading-relaxed">
+                        Harap <span class="font-bold text-blue-700">simpan kode ICCID eSIM</span> Anda untuk info garansi, sisa kuota, dan layanan lainnya.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
             <!-- eSIM Cards Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 @foreach($esims as $esim)
@@ -103,6 +135,7 @@
                                         <img src="{{ asset(ltrim($esim->qr_image_url, '/')) }}" alt="QR eSIM" class="relative w-24 h-24 md:w-32 md:h-32 object-contain rounded-2xl bg-white p-2 shadow-2xl border-2 border-[#FFC50F]/50">
                                     </div>
                                 </div>
+
 
                                 <!-- Product Info -->
                                 <div class="mb-3">

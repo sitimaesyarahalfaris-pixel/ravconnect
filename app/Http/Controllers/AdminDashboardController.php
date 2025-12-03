@@ -8,13 +8,20 @@ use App\Models\Payment;
 use App\Models\ProductStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AdminDashboardController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(\App\Http\Middleware\AdminAuthMiddleware::class);
+        $this->middleware(function ($request, $next) {
+            $user = Auth::user();
+            if (!$user || !$user->is_admin) {
+                abort(403, 'Unauthorized');
+            }
+            return $next($request);
+        });
     }
 
     // Dashboard statistics

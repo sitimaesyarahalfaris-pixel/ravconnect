@@ -20,9 +20,21 @@
                         <label class="font-bold">{{ $s->key }}</label>
                         <input type="text" name="value" class="w-full border rounded p-2" value="{{ $s->value }}">
                         <input type="hidden" name="key" value="{{ $s->key }}">
-                        <div class="mt-2"><button class="px-4 py-2 bg-[#FFC50F] rounded font-bold">Save</button></div>
                     </div>
                     @endforeach
+                    <div class="bg-white p-4 rounded shadow">
+                        <label class="font-bold">Available Payment Methods</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            @foreach($paymentMethods as $method)
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox" name="available_payment_methods[]" value="{{ $method['metode'] }}"
+                                        {{ (isset($availablePaymentMethods) && in_array($method['metode'], $availablePaymentMethods)) ? 'checked' : '' }}>
+                                    {{ $method['name'] }} <span class="text-xs text-gray-400">({{ ucfirst($method['type']) }})</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <div class="mt-2"><button class="px-4 py-2 bg-[#FFC50F] rounded font-bold">Save Available Methods</button></div>
+                    </div>
                 </div>
             </form>
         </div>

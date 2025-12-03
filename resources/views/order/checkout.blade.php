@@ -10,7 +10,7 @@
         <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
     </div>
-    
+
     <div class="max-w-4xl mx-auto px-4 relative z-10">
         <div class="text-center">
             <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full border-2 border-white/40 mb-4">
@@ -28,19 +28,23 @@
 <!-- Main Content -->
 <section class="relative py-12 bg-gradient-to-b from-gray-50 to-white min-h-screen">
     <div class="max-w-4xl mx-auto px-4">
-        
+
         <!-- Order Summary Card -->
         <div class="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-8 mb-8">
             <h2 class="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#FFC50F]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#F0AC06]">
                     <circle cx="9" cy="21" r="1"></circle>
                     <circle cx="20" cy="21" r="1"></circle>
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
                 Order Summary
             </h2>
-            
-            @php $cart = session('cart', []); $total = 0; @endphp
+
+            @php
+                $cart = session('cart', []);
+                $total = 0;
+                $defaultPaymentMethod = $defaultPaymentMethod ?? null;
+            @endphp
             @if(count($cart) === 0)
                 <div class="text-center py-16">
                     <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -51,7 +55,7 @@
                         </svg>
                     </div>
                     <p class="text-gray-500 font-semibold">Your cart is empty</p>
-                    <a href="/countries" class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105">
+                    <a href="/countries" class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-[#F0AC06] to-[#FFD700] text-black rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105">
                         Browse Products
                     </a>
                 </div>
@@ -59,8 +63,8 @@
                 <div class="space-y-4 mb-6">
                     @foreach($cart as $item)
                         @php $total += $item['price']; @endphp
-                        <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white rounded-2xl shadow-md p-5 border-2 border-gray-200 hover:border-[#FFC50F]/50 transition-all">
-                            <div class="w-12 h-12 bg-gradient-to-br from-[#FFC50F] to-[#FFD700] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                        <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white rounded-2xl shadow-md p-5 border-2 border-gray-200 hover:border-[#F0AC06]/50 transition-all">
+                            <div class="w-12 h-12 bg-gradient-to-br from-[#F0AC06] to-[#FFD700] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
                                     <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
                                     <line x1="12" y1="18" x2="12.01" y2="18"></line>
@@ -95,16 +99,16 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="font-black text-xl text-[#FFC50F]">Rp {{ number_format($item['price'], 0, ',', '.') }}</div>
+                            <div class="font-black text-xl" style="color:#F0AC06">Rp {{ number_format($item['price'], 0, ',', '.') }}</div>
                         </div>
                     @endforeach
                 </div>
-                
+
                 <!-- Total -->
                 <div class="border-t-2 border-gray-200 pt-6">
-                    <div class="flex items-center justify-between bg-gradient-to-r from-[#FFC50F]/10 to-[#FFD700]/10 rounded-2xl p-6 border-2 border-[#FFC50F]/30">
+                    <div class="flex items-center justify-between bg-gradient-to-r from-[#F0AC06]/10 to-[#FFD700]/10 rounded-2xl p-6 border-2 border-[#F0AC06]/30">
                         <span class="font-bold text-xl text-gray-900">Total Amount:</span>
-                        <span class="font-black text-3xl text-[#FFC50F]">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                        <span class="text-xl font-bold" style="color:#F0AC06">Rp {{ number_format($total, 0, ',', '.') }}</span>
                     </div>
                 </div>
             @endif
@@ -115,127 +119,72 @@
         <form method="POST" action="{{ route('checkout.process') }}" class="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-8">
             @csrf
             <h2 class="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#FFC50F]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#F0AC06]">
                     <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                     <line x1="1" y1="10" x2="23" y2="10"></line>
                 </svg>
                 Payment Method
             </h2>
-            
+
             @php
-                // Filter payment methods - only show QRIS Instant (not regular QRIS), ShopeePay and DANA
-                $filteredMethods = collect($paymentMethods)
+                $groupOrder = ['ewallet', 'va', 'bank'];
+                $grouped = collect($paymentMethods)
                     ->where('status', 'aktif')
-                    ->filter(function($method) {
-                        $type = strtolower($method['type']);
-                        $name = strtolower($method['name'] ?? '');
-                        $metode = strtolower($method['metode'] ?? '');
-                        
-                        // Show VA
-                        if ($type === 'va') {
-                            return true;
-                        }
-                        
-                        // For e-wallets
-                        if ($type === 'ewallet') {
-                            // Show QRIS Instant but hide regular QRIS
-                            if (str_contains($name, 'qris') || str_contains($metode, 'qris')) {
-                                // Only allow if it contains "instant"
-                                return str_contains($name, 'instant') || str_contains($metode, 'instant');
-                            }
-                            
-                            // Show ShopeePay
-                            if (str_contains($name, 'shopeepay') || str_contains($metode, 'shopeepay')) {
-                                return true;
-                            }
-                            
-                            // Show DANA
-                            if (str_contains($name, 'dana') || str_contains($metode, 'dana')) {
-                                return true;
-                            }
-                            
-                            return false;
-                        }
-                        
-                        // Hide bank transfers
-                        return false;
-                    });
-                
-                $groupOrder = ['ewallet', 'va'];
-                $grouped = $filteredMethods
                     ->groupBy(fn($m) => strtolower($m['type']))
                     ->sortBy(fn($v, $k) => array_search($k, $groupOrder));
-                
                 $groupLabel = [
                     'ewallet' => 'Instant payment with E-Wallet',
                     'va' => 'Payment via Virtual Account',
+                    'bank' => 'Manual bank transfer',
                 ];
                 $groupTitle = [
                     'ewallet' => 'E-Wallet',
                     'va' => 'Virtual Account',
+                    'bank' => 'Transfer Bank',
                 ];
             @endphp
-            
+
             <div class="space-y-8">
                 @foreach($groupOrder as $group)
                     @if(isset($grouped[$group]))
                         <!-- Group Header -->
                         <div>
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 bg-gradient-to-br from-[#FFC50F] to-[#FFD700] rounded-xl flex items-center justify-center shadow-lg">
+                                <div class="w-10 h-10 bg-gradient-to-br from-[#F0AC06] to-[#FFD700] rounded-xl flex items-center justify-center shadow-lg">
                                     @if($group === 'ewallet')
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
                                             <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                                             <line x1="1" y1="10" x2="23" y2="10"></line>
                                         </svg>
-                                    @else
+                                    @elseif($group === 'va')
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
                                             <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
                                             <polyline points="17 2 12 7 7 2"></polyline>
                                         </svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+                                            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                                        </svg>
                                     @endif
                                 </div>
                                 <div>
-                                    <div class="font-black text-lg text-gray-900">{{ $groupTitle[$group] ?? ucfirst($group) }}</div>
-                                    <div class="text-xs text-gray-600">{{ $groupLabel[$group] ?? '' }}</div>
+                                    <div class="font-bold text-lg text-gray-900">{{ $groupTitle[$group] ?? ucfirst($group) }}</div>
+                                    <div class="text-xs text-gray-500">{{ $groupLabel[$group] ?? '' }}</div>
                                 </div>
                             </div>
-                            
-                            <!-- Payment Options -->
                             <div class="space-y-3">
                                 @foreach($grouped[$group] as $method)
-                                    @php
-                                        $totalBiaya = $total + ($method['fee'] ?? 0) + round($total * (($method['fee_persen'] ?? 0) / 100));
-                                        $displayName = $method['name'];
-                                    @endphp
-                                    <label class="group flex items-center gap-4 p-5 border-2 rounded-2xl cursor-pointer transition-all shadow-md hover:shadow-xl hover:scale-[1.02] {{ old('payment_method') == $method['metode'] ? 'border-[#FFC50F] bg-gradient-to-r from-yellow-50 to-white shadow-xl scale-[1.02]' : 'border-gray-200 bg-white hover:border-[#FFC50F]/50' }}">
-                                        <input type="radio" name="payment_method" value="{{ $method['metode'] }}" class="w-5 h-5 text-[#FFC50F] focus:ring-[#FFC50F] focus:ring-2" {{ old('payment_method') == $method['metode'] ? 'checked' : '' }} required>
-                                        
-                                        <div class="w-16 h-16 rounded-xl bg-white border-2 border-gray-200 p-2 flex items-center justify-center group-hover:border-[#FFC50F]/50 transition-all {{ old('payment_method') == $method['metode'] ? 'border-[#FFC50F]' : '' }}">
-                                            <img src="{{ $method['img_url'] }}" alt="{{ $displayName }}" class="w-full h-full object-contain">
+                                    <label class="flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all shadow-sm hover:border-[#F0AC06] {{ old('payment_method', $defaultPaymentMethod) == $method['metode'] ? 'border-[#F0AC06] bg-yellow-50' : 'border-gray-200 bg-white' }}">
+                                        <div class="flex flex-col items-center justify-center w-28 min-w-28">
+                                            <div class="font-black text-lg" style="color:#F0AC06">Rp {{ number_format($total + ($method['fee'] ?? 0) + round($total * (($method['fee_persen'] ?? 0) / 100)), 0, ',', '.') }}</div>
+                                            @if(($method['fee'] ?? 0) > 0 || ($method['fee_persen'] ?? 0) > 0)
+                                                <div class="text-xs text-gray-400">Termasuk admin/fee</div>
+                                            @endif
                                         </div>
-                                        
+                                        <input type="radio" name="payment_method" value="{{ $method['metode'] }}" class="form-radio text-[#F0AC06] focus:ring-[#F0AC06]" {{ old('payment_method', $defaultPaymentMethod) == $method['metode'] ? 'checked' : '' }} required>
+                                        <img src="{{ $method['img_url'] }}" alt="{{ $method['name'] }}" class="w-12 h-12 object-contain rounded bg-white border border-gray-100">
                                         <div class="flex-1">
-                                            <div class="font-black text-base text-gray-900 mb-1">{{ $displayName }}</div>
-                                            @if(($method['fee'] ?? 0) > 0 || ($method['fee_persen'] ?? 0) > 0)
-                                                <div class="text-xs text-gray-500">
-                                                    <span class="inline-flex items-center gap-1">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                            <circle cx="12" cy="12" r="10"></circle>
-                                                            <path d="M12 16v-4"></path>
-                                                            <path d="M12 8h.01"></path>
-                                                        </svg>
-                                                        Admin fee included
-                                                    </span>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        
-                                        <div class="text-right">
-                                            <div class="font-black text-2xl text-[#FFC50F]">Rp {{ number_format($totalBiaya, 0, ',', '.') }}</div>
-                                            @if(($method['fee'] ?? 0) > 0 || ($method['fee_persen'] ?? 0) > 0)
-                                                <div class="text-xs text-gray-400 mt-1">+ Rp {{ number_format(($method['fee'] ?? 0) + round($total * (($method['fee_persen'] ?? 0) / 100)), 0, ',', '.') }} fee</div>
-                                            @endif
+                                            <div class="font-bold text-gray-900">{{ $method['name'] }}</div>
                                         </div>
                                     </label>
                                 @endforeach
@@ -244,15 +193,15 @@
                     @endif
                 @endforeach
             </div>
-            
+
             <!-- Submit Button -->
-            <button type="submit" class="w-full mt-8 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black py-4 rounded-2xl font-black text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center justify-center gap-2">
+            <button type="submit" class="w-full mt-8 bg-gradient-to-r from-[#F0AC06] to-[#FFD700] text-black py-4 rounded-2xl font-black text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center justify-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                 </svg>
                 Continue to Payment
             </button>
-            
+
             <!-- Trust Badges -->
             <div class="mt-6 flex items-center justify-center gap-6 text-xs text-gray-500">
                 <div class="flex items-center gap-2">
