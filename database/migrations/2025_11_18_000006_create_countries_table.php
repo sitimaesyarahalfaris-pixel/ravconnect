@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('code')->nullable();
             $table->string('flag_url')->nullable();
+            $table->boolean('active')->default(true); // Add active column for on/off display
             $table->timestamps();
         });
     }

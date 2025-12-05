@@ -18,7 +18,9 @@ use App\Http\Controllers\AdminSystemController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\MyEsimController;
-
+use App\Models\Country;
+use App\Http\Controllers\UserBankInfoController;
+use App\Http\Controllers\AdminWithdrawalController;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('index');
@@ -29,6 +31,11 @@ Route::resource('countries', CountryController::class)->only(['index', 'show']);
 Route::get('/support', function () {
     return view('support');
 })->name('support');
+
+Route::view('/terms', 'terms');
+Route::view('/privacy', 'privacy');
+Route::view('/refund', 'refund');
+Route::view('/disclaimer', 'disclaimer');
 
 // Cart & Checkout (transaction allowed without user auth)
 // Cart Routes
@@ -65,6 +72,13 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['auth'])->get('/my-esim', [\App\Http\Controllers\MyEsimController::class, 'index'])->name('my-esim');
     Route::get('/order-history', [OrderController::class, 'history'])->name('order_history');
     // ...add more user features here
+    // User bank info management (must be authenticated)
+    Route::get('/user/bank-infos', [UserBankInfoController::class, 'index'])->name('user.bank_infos.index');
+    Route::post('/user/bank-infos', [UserBankInfoController::class, 'store'])->name('user.bank_infos.store');
+    Route::put('/user/bank-infos/{id}', [UserBankInfoController::class, 'update'])->name('user.bank_infos.update');
+    Route::delete('/user/bank-infos/{id}', [UserBankInfoController::class, 'destroy'])->name('user.bank_infos.destroy');
+    // User bank info management page
+    Route::middleware(['auth'])->get('/user/bank-infos/manage', [UserController::class, 'bankInfos'])->name('user.bank_infos.manage');
 });
 
 // Admin authentication
@@ -88,6 +102,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::resource('users', UserController::class, ['as' => 'admin']);
     Route::get('content', [AdminContentController::class, 'getContent']);
     Route::post('content/update', [AdminContentController::class, 'updateContent']);
+    Route::post('content/update-recommended-products', [AdminContentController::class, 'updateRecommendedProducts']);
     Route::get('system/settings', [AdminSystemController::class, 'getSettings']);
     Route::post('system/settings/update', [AdminSystemController::class, 'updateSetting']);
     Route::post('products/{id}/quick-update', [ProductController::class, 'quickUpdate']);
@@ -105,5 +120,45 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::patch('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('admin.orders.update-status');
     Route::get('/admin/orders/export', [OrderController::class, 'export'])->name('admin.orders.export');
     Route::patch('/admin/users/{user}/toggle-admin', [UserController::class, 'toggleAdmin'])->name('admin.users.toggle-admin');
-    Route::resource('countries', \App\Http\Controllers\Admin\CountryAdminController::class, ['as' => 'admin']);
+
+    // Admin withdrawal routes
+    Route::get('/admin/withdrawal', [AdminWithdrawalController::class, 'showForm'])->name('admin.withdrawal.form');
+    Route::post('/admin/withdrawal', [AdminWithdrawalController::class, 'withdraw'])->name('admin.withdrawal.submit');
+    Route::post('admin/system/withdrawal-info', [AdminSystemController::class, 'saveWithdrawalInfo'])->name('admin.system.save_withdrawal_info');
 });
+
+// Add route to return user as JSON for AJAX edit modal
+Route::get('admin/users/{id}/json', function ($id) {
+    return \App\Models\User::findOrFail($id);
+})->middleware('admin');
+
+Route::get('admin/countries', function () {
+    return view('admin.countries.index');
+})->name('admin.countries.index');
+
+Route::post('admin/countries/toggle', function (Illuminate\Http\Request $request) {
+    $activeIds = $request->input('active_countries', []);
+    Country::query()->update(['active' => false]);
+    Country::whereIn('id', $activeIds)->update(['active' => true]);
+    return redirect()->route('admin.countries.index')->with('success', 'Status negara berhasil diperbarui');
+})->name('admin.countries.toggle');
+
+Route::get('admin/countries/json/{id}', function ($id) {
+    return \App\Models\Country::findOrFail($id);
+});
+
+Route::post('admin/countries/update', function (Illuminate\Http\Request $request) {
+    $country = \App\Models\Country::findOrFail($request->input('id'));
+    $country->name = $request->input('name');
+    $country->code = $request->input('code');
+    $country->flag_url = $request->input('flag_url');
+    if ($request->hasFile('image_url')) {
+        $file = $request->file('image_url');
+        $path = $file->store('public/country_images');
+        $country->image_url = str_replace('public/', 'storage/', $path);
+    }
+    $country->save();
+    return redirect()->route('admin.countries.index')->with('success', 'Country updated');
+})->name('admin.countries.update');
+
+Route::get('countries', [CountryController::class, 'index'])->name('countries.index');

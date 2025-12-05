@@ -2,8 +2,8 @@
 @section('title', 'Support & Panduan eSIM - RAVCONNECT')
 @section('content')
 
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -104,7 +104,7 @@
             <p class="text-xl text-muted max-w-2xl mx-auto">Panduan lengkap untuk mengaktifkan dan menggunakan teknologi eSIM. Cepat, mudah, dan revolusioner.</p>
 
             <div class="mt-10 flex justify-center">
-                <div class="relative w-64 h-64 bg-gradient-to-br from-[#FFC50F] to-[#FFD700] rounded-2xl p-1 glow pulse">
+                <div class="relative w-64 h-64 bg-linear-to-br from-[#FFC50F] to-[#FFD700] rounded-2xl p-1 glow pulse">
                     <div class="w-full h-full bg-white rounded-2xl flex items-center justify-center">
                         <div class="text-center p-4">
                             <div class="text-4xl mb-2">📱</div>
@@ -116,108 +116,137 @@
             </div>
         </div>
 
-        <!-- Activation Steps -->
-        <!-- Activation Steps -->
-<div class="mb-20">
-    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text">Cara Mengaktifkan eSIM Anda</h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Android Card -->
-        <div class="step-card rounded-2xl p-6 glow">
-            <div class="flex items-center mb-6">
-                <div class="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center mr-4">
-                    <i class="fab fa-android text-2xl text-white"></i>
+        <!-- FAQ Section -->
+        <div class="mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text">Pertanyaan Umum (FAQ)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="step-card rounded-2xl p-6 glow">
+                    <h3 class="font-bold text-yellow-600 mb-2">Apa itu eSIM?</h3>
+                    <p class="text-dark text-sm">eSIM adalah SIM digital yang tertanam di perangkat Anda, memungkinkan Anda mengaktifkan paket seluler tanpa kartu fisik.</p>
                 </div>
-                <h3 class="text-2xl font-bold text-dark">Aktivasi Android</h3>
-            </div>
-
-            <div class="space-y-6">
-                <div class="flex items-start">
-                    <div class="w-8 h-8 rounded-full bg-yellow-500 flex-shrink-0 flex items-center justify-center mr-4 mt-1">
-                        <span class="font-bold text-white">1</span>
-                    </div>
-                    <p class="text-dark">Buka <span class="text-yellow-600 font-semibold">Settings → Connections → SIM Manager</span></p>
+                <div class="step-card rounded-2xl p-6 glow">
+                    <h3 class="font-bold text-yellow-600 mb-2">Bagaimana cara membeli paket eSIM di RAVCONNECT?</h3>
+                    <p class="text-dark text-sm">Anda dapat membeli paket eSIM langsung di website kami, lalu aktivasi dengan scan QR atau input manual.</p>
                 </div>
-
-                <div class="flex items-start">
-                    <div class="w-8 h-8 rounded-full bg-yellow-500 flex-shrink-0 flex items-center justify-center mr-4 mt-1">
-                        <span class="font-bold text-white">2</span>
-                    </div>
-                    <p class="text-dark">Pilih <span class="text-yellow-600 font-semibold">Add Mobile Plan → Scan QR Code</span></p>
+                <div class="step-card rounded-2xl p-6 glow">
+                    <h3 class="font-bold text-yellow-600 mb-2">Apakah eSIM bisa digunakan di luar negeri?</h3>
+                    <p class="text-dark text-sm">Tentu! eSIM RAVCONNECT mendukung koneksi di lebih dari 190 negara di dunia.</p>
                 </div>
-
-                <div class="flex items-start">
-                    <div class="w-8 h-8 rounded-full bg-yellow-500 flex-shrink-0 flex items-center justify-center mr-4 mt-1">
-                        <span class="font-bold text-white">3</span>
-                    </div>
-                    <p class="text-dark">Konfirmasi dan selesai! eSIM Anda sekarang aktif.</p>
+                <div class="step-card rounded-2xl p-6 glow">
+                    <h3 class="font-bold text-yellow-600 mb-2">Bagaimana jika perangkat saya tidak mendukung eSIM?</h3>
+                    <p class="text-dark text-sm">Pastikan perangkat Anda kompatibel dengan eSIM. Lihat daftar perangkat didukung di bawah atau cek situs resmi perangkat Anda.</p>
                 </div>
-            </div>
-
-            <!-- YouTube Video Widget for Android -->
-            <div class="mt-8 rounded-xl overflow-hidden shadow-lg">
-                <div class="relative" style="padding-bottom: 56.25%; height: 0;">
-                    <iframe
-                        class="absolute top-0 left-0 w-full h-full"
-                        src="https://www.youtube.com/embed/geYsQ3nc0fc"
-                        title="Tutorial Aktivasi eSIM Android"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
+                <div class="step-card rounded-2xl p-6 glow">
+                    <h3 class="font-bold text-yellow-600 mb-2">Siapa yang bisa saya hubungi jika ada kendala?</h3>
+                    <p class="text-dark text-sm">Tim support kami siap membantu 24/7 melalui WhatsApp atau email di halaman ini.</p>
+                </div>
+                <div class="step-card rounded-2xl p-6 glow">
+                    <h3 class="font-bold text-yellow-600 mb-2">Apakah saya bisa menggunakan lebih dari satu eSIM di satu perangkat?</h3>
+                    <p class="text-dark text-sm">Bisa! Banyak perangkat modern mendukung beberapa profil eSIM sekaligus, sehingga Anda dapat mengaktifkan lebih dari satu paket data sesuai kebutuhan.</p>
                 </div>
             </div>
         </div>
 
-        <!-- iPhone Card -->
-        <div class="step-card rounded-2xl p-6 glow">
-            <div class="flex items-center mb-6">
-                <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center mr-4">
-                    <i class="fab fa-apple text-2xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-dark">Aktivasi iPhone</h3>
-            </div>
+        <!-- Activation Steps -->
+        <div class="mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text">Cara Mengaktifkan eSIM Anda</h2>
 
-            <div class="space-y-6">
-                <div class="flex items-start">
-                    <div class="w-8 h-8 rounded-full bg-yellow-500 flex-shrink-0 flex items-center justify-center mr-4 mt-1">
-                        <span class="font-bold text-white">1</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Android Card -->
+                <div class="step-card rounded-2xl p-6 glow">
+                    <div class="flex items-center mb-6">
+                        <div class="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center mr-4">
+                            <i class="fab fa-android text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-dark">Aktivasi Android</h3>
                     </div>
-                    <p class="text-dark">Pergi ke <span class="text-yellow-600 font-semibold">Settings → Cellular → Add eSIM</span></p>
-                </div>
 
-                <div class="flex items-start">
-                    <div class="w-8 h-8 rounded-full bg-yellow-500 flex-shrink-0 flex items-center justify-center mr-4 mt-1">
-                        <span class="font-bold text-white">2</span>
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                <span class="font-bold text-white">1</span>
+                            </div>
+                            <p class="text-dark">Buka <span class="text-yellow-600 font-semibold">Settings → Connections → SIM Manager</span></p>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                <span class="font-bold text-white">2</span>
+                            </div>
+                            <p class="text-dark">Pilih <span class="text-yellow-600 font-semibold">Add Mobile Plan → Scan QR Code</span></p>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                <span class="font-bold text-white">3</span>
+                            </div>
+                            <p class="text-dark">Konfirmasi dan selesai! eSIM Anda sekarang aktif.</p>
+                        </div>
+
+                        <!-- YouTube Video Widget for Android -->
+                        <div class="mt-8 rounded-xl overflow-hidden shadow-lg">
+                            <div class="relative" style="padding-bottom: 56.25%; height: 0;">
+                                <iframe
+                                    class="absolute top-0 left-0 w-full h-full"
+                                    src="https://www.youtube.com/embed/geYsQ3nc0fc"
+                                    title="Tutorial Aktivasi eSIM Android"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-dark">Scan kode QR atau pilih <span class="text-yellow-600 font-semibold">Enter Details Manually</span></p>
                 </div>
 
-                <div class="flex items-start">
-                    <div class="w-8 h-8 rounded-full bg-yellow-500 flex-shrink-0 flex items-center justify-center mr-4 mt-1">
-                        <span class="font-bold text-white">3</span>
+                <!-- iPhone Card -->
+                <div class="step-card rounded-2xl p-6 glow">
+                    <div class="flex items-center mb-6">
+                        <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center mr-4">
+                            <i class="fab fa-apple text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-dark">Aktivasi iPhone</h3>
                     </div>
-                    <p class="text-dark">Isi <span class="text-yellow-600 font-semibold">SM-DP+ Address & Activation Code</span>, lalu selesai!</p>
-                </div>
-            </div>
 
-            <!-- YouTube Video Widget for iPhone -->
-            <div class="mt-8 rounded-xl overflow-hidden shadow-lg">
-                <div class="relative" style="padding-bottom: 56.25%; height: 0;">
-                    <iframe
-                        class="absolute top-0 left-0 w-full h-full"
-                        src="https://www.youtube.com/embed/Dl45LSLK4_8"
-                        title="Tutorial Aktivasi eSIM iPhone"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                <span class="font-bold text-white">1</span>
+                            </div>
+                            <p class="text-dark">Pergi ke <span class="text-yellow-600 font-semibold">Settings → Cellular → Add eSIM</span></p>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                <span class="font-bold text-white">2</span>
+                            </div>
+                            <p class="text-dark">Scan kode QR atau pilih <span class="text-yellow-600 font-semibold">Enter Details Manually</span></p>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                <span class="font-bold text-white">3</span>
+                            </div>
+                            <p class="text-dark">Isi <span class="text-yellow-600 font-semibold">SM-DP+ Address & Activation Code</span>, lalu selesai!</p>
+                        </div>
+                    </div>
+
+                    <!-- YouTube Video Widget for iPhone -->
+                    <div class="mt-8 rounded-xl overflow-hidden shadow-lg">
+                        <div class="relative" style="padding-bottom: 56.25%; height: 0;">
+                            <iframe
+                                class="absolute top-0 left-0 w-full h-full"
+                                src="https://www.youtube.com/embed/Dl45LSLK4_8"
+                                title="Tutorial Aktivasi eSIM iPhone"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
 
         <!-- QR Code Visualizer -->
         <div class="mb-20 bg-pattern rounded-2xl p-8 border border-yellow-500/30 bg-yellow-50">
@@ -227,7 +256,7 @@
             <div class="flex flex-col md:flex-row items-center justify-center gap-10">
                 <div class="qr-code bg-white p-4 rounded-2xl w-64 h-64 flex items-center justify-center shadow-lg">
                     <!-- QR Code Placeholder -->
-                    <div class="w-full h-full bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-xl flex items-center justify-center border border-yellow-300">
+                    <div class="w-full h-full bg-linear-to-br from-yellow-100 to-yellow-200 rounded-xl flex items-center justify-center border border-yellow-300">
                         <div class="text-center">
                             <div class="text-4xl mb-2">📲</div>
                             <p class="text-yellow-600 font-bold">RAVCONNECT eSIM</p>
@@ -256,24 +285,24 @@
 
         <!-- Support Section -->
         <div class="mb-20">
-            <div class="bg-gradient-to-r from-yellow-500/20 to-yellow-500/10 rounded-2xl p-8 border border-yellow-500/30 flex flex-col md:flex-row items-center">
+            <div class="bg-linear-to-r from-yellow-500/20 to-yellow-500/10 rounded-2xl p-8 border border-yellow-500/30 flex flex-col md:flex-row items-center">
                 <div class="flex-1 mb-6 md:mb-0 md:pr-8">
                     <h3 class="text-2xl font-bold text-yellow-600 mb-4">Butuh Bantuan Lebih Lanjut?</h3>
                     <p class="text-muted mb-6">Tim support kami tersedia 24/7 untuk membantu masalah aktivasi, pemecahan masalah, atau pertanyaan tentang layanan eSIM Anda.</p>
 
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="https://wa.me/6281234567890" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-xl transition-all flex items-center justify-center gap-2">
-                            <i class="fab fa-whatsapp text-xl"></i> WhatsApp Support
+                        <a href="mailto:support@ravconnect.com" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-6 py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-envelope"></i> Email Kami
                         </a>
-                        <a href="tel:+6281234567890" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-6 py-3 rounded-xl transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-phone-alt"></i> Telepon Support
+                        <a href="https://wa.me/6285706074934" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                            <i class="fab fa-whatsapp"></i> WhatsApp Kami
                         </a>
                     </div>
                 </div>
 
-                <div class="flex-shrink-0">
+                <div class="shrink-0">
                     <div class="relative">
-                        <div class="w-40 h-40 bg-gradient-to-br from-yellow-500 to-yellow-300 rounded-full flex items-center justify-center glow">
+                        <div class="w-40 h-40 bg-linear-to-br from-yellow-500 to-yellow-300 rounded-full flex items-center justify-center glow">
                             <div class="w-36 h-36 bg-white rounded-full flex items-center justify-center">
                                 <i class="fas fa-headset text-5xl text-yellow-600"></i>
                             </div>
@@ -443,7 +472,7 @@
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text">Mengapa Memilih eSIM RAVCONNECT?</h2>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-gradient-to-br from-yellow-500/20 to-transparent rounded-2xl p-6 border border-yellow-500/20 text-center">
+                <div class="bg-linear-to-br from-yellow-500/20 to-transparent rounded-2xl p-6 border border-yellow-500/20 text-center">
                     <div class="w-16 h-16 rounded-full bg-yellow-500/20 flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-bolt text-2xl text-yellow-600"></i>
                     </div>
@@ -451,7 +480,7 @@
                     <p class="text-muted">Dapatkan koneksi segera setelah pembelian. Tidak perlu menunggu pengiriman.</p>
                 </div>
 
-                <div class="bg-gradient-to-br from-yellow-500/20 to-transparent rounded-2xl p-6 border border-yellow-500/20 text-center">
+                <div class="bg-linear-to-br from-yellow-500/20 to-transparent rounded-2xl p-6 border border-yellow-500/20 text-center">
                     <div class="w-16 h-16 rounded-full bg-yellow-500/20 flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-globe text-2xl text-yellow-600"></i>
                     </div>
@@ -459,7 +488,7 @@
                     <p class="text-muted">Tetap terhubung di lebih dari 190 negara dengan jaringan partner kami.</p>
                 </div>
 
-                <div class="bg-gradient-to-br from-yellow-500/20 to-transparent rounded-2xl p-6 border border-yellow-500/20 text-center">
+                <div class="bg-linear-to-br from-yellow-500/20 to-transparent rounded-2xl p-6 border border-yellow-500/20 text-center">
                     <div class="w-16 h-16 rounded-full bg-yellow-500/20 flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-shield-alt text-2xl text-yellow-600"></i>
                     </div>
@@ -475,7 +504,7 @@
             <p class="text-xl text-muted mb-8 max-w-2xl mx-auto">Rasakan masa depan konektivitas seluler dengan RAVCONNECT eSIM. Aktivasi instan, cakupan global, dan dukungan 24/7.</p>
 
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="/" class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold px-8 py-4 rounded-2xl shadow-xl hover:from-yellow-400 hover:to-yellow-500 transition-all text-lg flex items-center justify-center gap-2">
+                <a href="/" class="bg-linear-to-r from-yellow-500 to-yellow-600 text-black font-bold px-8 py-4 rounded-2xl shadow-xl hover:from-yellow-400 hover:to-yellow-500 transition-all text-lg flex items-center justify-center gap-2">
                     <i class="fas fa-shopping-cart"></i> Lihat Paket eSIM
                 </a>
                 <a href="#support" class="bg-transparent border-2 border-yellow-500 text-yellow-600 font-bold px-8 py-4 rounded-2xl hover:bg-yellow-500/10 transition-all text-lg flex items-center justify-center gap-2">

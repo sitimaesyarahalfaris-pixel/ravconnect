@@ -19,7 +19,7 @@ class UserController extends Controller
     // List all users
     public function index()
     {
-        $users = \App\Models\User::orderBy('created_at', 'desc')->paginate(20);
+        $users = \App\Models\User::withCount('orders')->orderBy('created_at', 'desc')->paginate(20);
         if (request()->wantsJson()) {
             return response()->json($users);
         }
@@ -46,6 +46,13 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    // Edit a user
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.users.edit', compact('user'));
+    }
+
     // Update a user
     public function update(Request $request, $id)
     {
@@ -55,11 +62,13 @@ class UserController extends Controller
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6',
         ]);
-        if (isset($validated['password'])) {
+        if (array_key_exists('password', $validated) && $validated['password'] !== null && $validated['password'] !== '') {
             $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']); // Prevent setting password to null
         }
         $user->update($validated);
-        return response()->json($user);
+        return redirect()->back()->with('success', 'User updated successfully');
     }
 
     // Delete a user
@@ -86,6 +95,13 @@ class UserController extends Controller
             'orders' => $orders,
             'esims' => $orders->map->esimStock,
         ]);
+    }
+
+    // Show bank info management page for authenticated user
+    public function bankInfos()
+    {
+        $bankInfos = Auth::user()->bankInfos()->get();
+        return view('user.bank_infos', compact('bankInfos'));
     }
 
     public function toggleAdmin(Request $request, \App\Models\User $user)

@@ -10,6 +10,7 @@
         {{-- <a href="{{ route('admin.payments.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Payments</a> --}}
         {{-- <a href="{{ route('admin.product-stocks.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Stock</a> --}}
         <a href="{{ route('admin.users.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Users</a>
+        <a href="{{ route('admin.countries.index') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Countries</a>
         <a href="{{ url('admin/content') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Content</a>
         <a href="{{ url('admin/system/settings') }}" class="block py-2 px-4 rounded-lg hover:bg-[#FFC50F]/20 font-bold">Settings</a>
         <form method="POST" action="{{ route('admin.logout') }}">

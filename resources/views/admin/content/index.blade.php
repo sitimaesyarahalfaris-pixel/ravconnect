@@ -78,6 +78,24 @@
                 </div>
             </form>
 
+            <form method="POST" action="{{ url('admin/content/update-recommended-products') }}">
+                @csrf
+                <div class="bg-white p-6 rounded shadow mb-6">
+                    <label class="font-bold mb-2 block">Pilih Produk yang Direkomendasikan</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-2">
+                        @foreach(App\Models\Product::where('active', true)->orderBy('name')->get() as $product)
+                            <label class="flex items-center space-x-2 border rounded p-2">
+                                <input type="checkbox" name="recommended_products[]" value="{{ $product->id }}" {{ (isset($recommended_product_ids) && in_array($product->id, $recommended_product_ids)) ? 'checked' : '' }}>
+                                <span>{{ $product->name }} - Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    <div class="mt-2">
+                        <button type="submit" class="px-4 py-2 bg-[#FFC50F] rounded font-bold">Simpan Pilihan</button>
+                    </div>
+                </div>
+            </form>
+
             <div class="mt-6 bg-white p-6 rounded shadow">
                 <h2 class="font-bold mb-3">Recommended Products</h2>
                 <div class="grid grid-cols-3 gap-4">

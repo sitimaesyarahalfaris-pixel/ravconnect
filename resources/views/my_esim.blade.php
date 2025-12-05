@@ -10,7 +10,7 @@
         <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
     </div>
-    
+
     <div class="max-w-6xl mx-auto px-4 relative z-10">
         <div class="text-center">
             <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full border-2 border-white/40 mb-4">
@@ -68,7 +68,7 @@
                         </svg>
                     </div>
                 </div>
-                
+
                 <!-- Content -->
                 <div class="flex-1">
                     <h3 class="font-black text-gray-900 mb-2 flex items-center gap-2">
@@ -119,7 +119,8 @@
                                         <div>
                                             <div class="text-xs text-gray-300 uppercase tracking-wider">eSIM Card</div>
                                             <div class="text-xs md:text-sm font-bold text-[#FFC50F]">
-                                                {{ $esim->is_active ? 'Active' : 'Inactive' }}
+                                                SCAN NOW
+                                                {{-- {{ $esim->is_active ? 'Active' : 'Inactive' }} --}}
                                             </div>
                                         </div>
                                     </div>

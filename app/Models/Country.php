@@ -12,7 +12,8 @@ class Country extends Model
         'name',
         'code',
         'flag_url',
-        'image_url' // Add image_url for country header card
+        'image_url',
+        'active' // Add active for display toggle
     ];
 
     public function products()

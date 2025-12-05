@@ -28,7 +28,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             if (Auth::user()->is_admin) {
-                return redirect()->intended('/admin/dashboard');    
+                return redirect()->intended('/admin/dashboard');
             };
             return redirect()->intended('/');
         }
@@ -49,12 +49,14 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'whatsapp' => 'nullable|string|max:30',
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'whatsapp' => $validated['whatsapp'] ?? null,
         ]);
 
         Auth::login($user);

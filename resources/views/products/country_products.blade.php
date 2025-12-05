@@ -3,6 +3,7 @@
 @section('title', 'eSIM for ' . $country->name . ' - RAVCONNECT')
 
 @section('content')
+@if($country->active)
 <!-- Hero Section with Country -->
 <section class="relative py-16 bg-linear-to-br from-[#FFC50F] via-[#FFD700] to-[#FFA500] overflow-hidden">
     <!-- Animated Background -->
@@ -70,6 +71,7 @@
         </div>
     </div>
 </section>
+@endif
 
 <!-- Search & Filter Section -->
 <section class="bg-white shadow-lg sticky top-0 z-40 border-b-2 border-gray-100">
@@ -217,11 +219,22 @@
                             <div class="flex items-center justify-between">
                                 <span class="text-xs text-gray-500 font-semibold">Kuota</span>
                                 @if($product->quota)
-                                    @if($product->quota >= 1024)
-                                        <span class="font-black text-gray-900">{{ number_format($product->quota / 1024, 2) }}GB</span>
-                                    @else
-                                        <span class="font-black text-gray-900">{{ $product->quota }}MB</span>
-                                    @endif
+                                    @php
+                                        $quota = floatval($product->quota);
+                                        // If quota >= 1024, treat as MB and convert to GB
+                                        if ($quota >= 1024) {
+                                            $gb = $quota / 1024;
+                                            $quotaDisplay = ($gb == intval($gb)) ? intval($gb) . 'GB' : rtrim(rtrim(number_format($gb, 1, '.', ''), '0'), '.') . 'GB';
+                                        } elseif ($quota >= 1) {
+                                            // If quota is 1 or more, treat as GB
+                                            $quotaDisplay = ($quota == intval($quota)) ? intval($quota) . 'GB' : rtrim(rtrim(number_format($quota, 1, '.', ''), '0'), '.') . 'GB';
+                                        } else {
+                                            // If quota is less than 1, treat as MB
+                                            $mb = $quota * 1024;
+                                            $quotaDisplay = ($mb == intval($mb)) ? intval($mb) . 'MB' : rtrim(rtrim(number_format($mb, 1, '.', ''), '0'), '.') . 'MB';
+                                        }
+                                    @endphp
+                                    <span class="font-black text-gray-900">{{ $quotaDisplay }}</span>
                                 @else
                                     <span class="font-black text-gray-900">Unlimited</span>
                                 @endif

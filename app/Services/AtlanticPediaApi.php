@@ -80,4 +80,55 @@ class AtlanticPediaApi
             'message' => 'Gagal mengambil status deposit.'
         ];
     }
+
+    /**
+     * Create a withdrawal/transfer to bank or e-wallet via AtlanticH2H
+     * @param string $refId Unique reference from your system
+     * @param string $kodeBank Bank code from bank list
+     * @param string $nomorAkun Destination account number
+     * @param string $namaPemilik Destination account holder name
+     * @param int $nominal Amount to transfer
+     * @param string|null $email Recipient email (optional)
+     * @param string|null $phone Recipient phone (optional)
+     * @param string|null $note Transfer note (optional)
+     * @return array API response
+     */
+    public function createTransfer($refId, $kodeBank, $nomorAkun, $namaPemilik, $nominal, $email = null, $phone = null, $note = null)
+    {
+        $params = [
+            'api_key' => $this->apiKey,
+            'ref_id' => $refId,
+            'kode_bank' => $kodeBank,
+            'nomor_akun' => $nomorAkun,
+            'nama_pemilik' => $namaPemilik,
+            'nominal' => $nominal,
+        ];
+        if ($email) $params['email'] = $email;
+        if ($phone) $params['phone'] = $phone;
+        if ($note) $params['note'] = $note;
+        $response = \Illuminate\Support\Facades . Http::asForm()->post($this->baseUrl . '/transfer/create', $params);
+        if ($response->successful()) {
+            return $response->json();
+        }
+        return [
+            'status' => false,
+            'message' => 'Gagal membuat transfer.'
+        ];
+    }
+
+    public function getBankList()
+    {
+        $params = [
+            'api_key' => $this->apiKey,
+        ];
+        $response = Http::asForm()->post($this->baseUrl . '/transfer/bank_list', $params);
+        if ($response->successful()) {
+            return $response->json();
+        }
+        return [
+            'status' => false,
+            'message' => 'Gagal mengambil daftar bank/ewallet.',
+            'data' => []
+        ];
+    }
 }

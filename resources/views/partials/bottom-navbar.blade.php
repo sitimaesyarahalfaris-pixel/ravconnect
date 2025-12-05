@@ -146,15 +146,14 @@
                 <span class="nav-label">Home</span>
             </div>
 
-            <!-- History -->
-            <div class="nav-item">
+            <!-- Browse Countries -->
+            <a href="/countries" class="nav-item{{ request()->is('countries') ? ' active' : '' }}">
                 <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z">
-                    </path>
+                    <circle cx="12" cy="12" r="10" stroke-width="2" stroke="currentColor" fill="none" />
+                    <path stroke-width="2" stroke="currentColor" fill="none" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
                 </svg>
-                <span class="nav-label">History</span>
-            </div>
+                <span class="nav-label">Browse</span>
+            </a>
 
             <!-- Spacer for center button -->
             <div></div>

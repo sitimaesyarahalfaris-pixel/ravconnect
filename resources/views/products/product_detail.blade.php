@@ -53,13 +53,25 @@
                 </div>
 
                 <div class="flex-1">
+                    @php
+                        $inStock = $product->stocks()->where('status', 'available')->count();
+                    @endphp
                     <div class="flex flex-wrap gap-2 mb-3">
-                        <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-linear-to-r from-green-400 to-green-500 text-white rounded-full text-xs font-black shadow-lg border-2 border-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            In Stock
-                        </span>
+                        @if($inStock > 0)
+                            <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-linear-to-r from-green-400 to-green-500 text-white rounded-full text-xs font-black shadow-lg border-2 border-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                In Stock
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-400 text-white rounded-full text-xs font-black shadow-lg border-2 border-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="4" y1="4" x2="20" y2="20" />
+                                </svg>
+                                Out of Stock
+                            </span>
+                        @endif
                         <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-linear-to-r from-blue-400 to-blue-500 text-white rounded-full text-xs font-black shadow-lg border-2 border-white">
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
@@ -128,7 +140,7 @@
                 </div>
             @endif
 
-            @if (auth()->check())
+            @if ($inStock > 0 && auth()->check())
                 <div class="space-y-3">
                     <form method="POST" action="{{ route('cart.add', $product->id) }}?checkout=1">
                         @csrf
@@ -151,6 +163,13 @@
                         </button>
                     </form>
                 </div>
+            @elseif($inStock == 0)
+                <button class="w-full bg-gray-400 text-white py-4 rounded-2xl font-black text-base shadow-xl cursor-not-allowed opacity-90 flex items-center justify-center gap-2" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="4" y1="4" x2="20" y2="20" />
+                    </svg>
+                    <span class="ml-2 text-lg font-bold text-gray-800 drop-shadow-sm">Out of Stock</span>
+                </button>
             @else
                 <a href="{{ route('login') }}" class="w-full bg-linear-to-r from-[#F0AC06] to-[#F0AC06] text-black py-4 rounded-2xl font-black text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all text-center block flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -198,7 +217,7 @@
                 <!-- Validity -->
                 <div class="p-6 bg-linear-to-br from-green-50 to-green-100 rounded-2xl border-2 border-green-200 text-center">
                     <div class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center shadow-lg mx-auto mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                             <line x1="16" y1="2" x2="16" y2="6"></line>
                             <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -284,7 +303,7 @@
                     </div>
                 @endif
 
-                @if (auth()->check())
+                @if ($inStock > 0 && auth()->check())
                     <div class="space-y-3 mb-6">
                         <form method="POST" action="{{ route('cart.add', $product->id) }}?checkout=1">
                             @csrf
@@ -307,6 +326,13 @@
                             </button>
                         </form>
                     </div>
+                @elseif($inStock == 0)
+                    <button class="w-full bg-gray-400 text-white py-4 rounded-2xl font-black text-base shadow-xl cursor-not-allowed opacity-90 flex items-center justify-center gap-2" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="4" y1="4" x2="20" y2="20" />
+                        </svg>
+                        <span class="ml-2 text-lg font-bold text-gray-800 drop-shadow-sm">Out of Stock</span>
+                    </button>
                 @else
                     <a href="{{ route('login') }}" class="w-full bg-linear-to-r from-[#F0AC06] to-[#F0AC06] text-black py-4 rounded-2xl font-black text-base shadow-xl hover:shadow-2xl hover:scale-105 transition-all text-center block flex items-center justify-center gap-2 mb-6">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

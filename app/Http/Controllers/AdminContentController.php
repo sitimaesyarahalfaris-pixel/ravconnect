@@ -27,11 +27,20 @@ class AdminContentController extends Controller
     // Get editable content for admin panel
     public function getContent()
     {
+        $recommended_ids = Setting::where('key', 'recommended_products')->value('value');
+        $recommended_product_ids = $recommended_ids ? json_decode($recommended_ids, true) : [];
+        $recommended_products = [];
+        if ($recommended_product_ids && is_array($recommended_product_ids)) {
+            $recommended_products = Product::whereIn('id', $recommended_product_ids)->where('active', true)->get();
+        } else {
+            $recommended_products = Product::where('active', true)->orderBy('id', 'desc')->take(5)->get();
+        }
         $data = [
             'promo_banner' => Setting::where('key', 'promo_banner')->first(),
             'faq' => Setting::where('key', 'faq')->first(),
             'esim_info' => Setting::where('key', 'esim_info')->first(),
-            'recommended_products' => Product::where('active', true)->orderBy('id', 'desc')->take(5)->get(),
+            'recommended_products' => $recommended_products,
+            'recommended_product_ids' => $recommended_product_ids,
             'contact_info' => Setting::where('key', 'contact_info')->first(),
             'social_media' => Setting::where('key', 'social_media')->first(),
             'logo' => Setting::where('key', 'logo')->first(),
@@ -89,5 +98,12 @@ class AdminContentController extends Controller
         }
 
         return redirect()->back()->with('success', 'Content updated');
+    }
+
+    public function updateRecommendedProducts(Request $request)
+    {
+        $ids = $request->input('recommended_products', []);
+        Setting::updateOrCreate(['key' => 'recommended_products'], ['value' => json_encode($ids)]);
+        return redirect()->back()->with('success', 'Recommended products updated');
     }
 }

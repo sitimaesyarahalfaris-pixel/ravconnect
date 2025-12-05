@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'whatsapp', // Allow mass assignment of WhatsApp number
     ];
 
     /**
@@ -49,5 +50,10 @@ class User extends Authenticatable
     public function productStocks()
     {
         return $this->hasMany(ProductStock::class, 'user_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class, 'user_id');
     }
 }

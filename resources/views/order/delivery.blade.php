@@ -111,8 +111,24 @@
                 </div>
 
                 <!-- DEBUG: Show QR Image URL -->
-                <div class="text-xs text-gray-500 mb-2">QR Image: {{ $payment['qr_image'] ?? 'EMPTY' }}</div>
-                <!-- QR Code Payment -->
+<div class="w-full mb-6 p-4 bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-300 rounded-xl shadow-lg">
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-black text-red-900 mb-1">PENTING: Bayar Sesuai Nominal yang Ditampilkan!</h3>
+                                    <p class="text-sm text-red-800 leading-relaxed">
+                                        Anda <strong class="font-black">HARUS membayar sesuai nominal yang tertera PERSIS</strong> (tidak boleh lebih, tidak boleh kurang).
+                                        Jika nominal berbeda, pembayaran akan <strong class="font-black">GAGAL</strong> dan tidak dapat diproses.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>                <!-- QR Code Payment -->
                 @if(!empty($payment['qr_image']))
                     <div class="flex flex-col items-center mb-8 p-6 bg-linear-to-br from-gray-50 to-white rounded-2xl border-2 border-gray-200">
                         <div class="w-64 h-64 bg-white rounded-2xl p-4 shadow-lg mb-4 border-2 border-[#F0AC06]/30">
@@ -242,7 +258,7 @@
                 if (data.qr_image) {
                     const qrImg = document.querySelector('img[alt="Payment QR Code"]');
                     if (qrImg) qrImg.src = data.qr_image;
-                    document.querySelector('.text-xs.text-gray-500').innerText = 'QR Image: ' + data.qr_image;
+                    // document.querySelector('.text-xs.text-gray-500').innerText = 'QR Image: ' + data.qr_image;
                 }
                 // Update bank info
                 if (data.bank) {

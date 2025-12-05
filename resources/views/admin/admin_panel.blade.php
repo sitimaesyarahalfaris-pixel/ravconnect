@@ -106,7 +106,7 @@
             <!-- Secondary Stats Row -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <!-- Revenue Card -->
-                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-xl p-6 text-white hover:shadow-2xl transition-all hover:scale-105">
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-xl p-6 text-white hover:shadow-2xl transition-all hover:scale-105 relative">
                     <div class="flex items-center justify-between mb-4">
                         <div class="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -118,6 +118,7 @@
                     </div>
                     <div class="text-2xl font-black mb-1">Rp {{ number_format($stats['revenue_total'] ?? 0, 0, ',', '.') }}</div>
                     <div class="text-sm opacity-90 font-semibold">Total Revenue</div>
+                    <a href="{{ route('admin.withdrawal.form') }}" class="absolute top-4 right-4 bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-4 py-2 rounded-lg shadow transition-all">Withdraw</a>
                 </div>
 
                 <!-- Products Card -->
@@ -203,7 +204,7 @@
                         </div>
                     </a>
 
-                    
+
                 </div>
             </div>
 

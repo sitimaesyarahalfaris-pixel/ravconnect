@@ -6,7 +6,7 @@
 <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white p-4">
     <div class="w-full max-w-6xl">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white rounded-3xl shadow-2xl overflow-hidden">
-            
+
             <!-- Left Side - Registration Form -->
             <div class="flex flex-col justify-center p-8 md:p-12 lg:p-16 order-2 lg:order-1">
                 <!-- Mobile Logo (Only visible on mobile) -->
@@ -52,7 +52,7 @@
                     <!-- Registration Form -->
                     <form method="POST" action="{{ route('register') }}" class="space-y-4">
                         @csrf
-                        
+
                         <!-- Name Field -->
                         <div>
                             <label class="block font-bold text-gray-900 mb-2">Full Name</label>
@@ -63,11 +63,11 @@
                                         <circle cx="12" cy="7" r="4"></circle>
                                     </svg>
                                 </div>
-                                <input 
-                                    type="text" 
-                                    name="name" 
-                                    value="{{ old('name') }}" 
-                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900" 
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value="{{ old('name') }}"
+                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900"
                                     placeholder="Enter your full name"
                                     required>
                             </div>
@@ -83,13 +83,31 @@
                                         <polyline points="22,6 12,13 2,6"></polyline>
                                     </svg>
                                 </div>
-                                <input 
-                                    type="email" 
-                                    name="email" 
-                                    value="{{ old('email') }}" 
-                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900" 
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value="{{ old('email') }}"
+                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900"
                                     placeholder="your.email@example.com"
                                     required>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Field -->
+                        <div>
+                            <label class="block font-bold text-gray-900 mb-2">WhatsApp Number</label>
+                            <div class="relative">
+                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                    </svg>
+                                </div>
+                                <input
+                                    type="text"
+                                    name="whatsapp"
+                                    value="{{ old('whatsapp') }}"
+                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900"
+                                    placeholder="e.g. 6281234567890">
                             </div>
                         </div>
 
@@ -103,14 +121,14 @@
                                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                     </svg>
                                 </div>
-                                <input 
-                                    type="password" 
-                                    name="password" 
+                                <input
+                                    type="password"
+                                    name="password"
                                     id="password"
-                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-12 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900" 
+                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-12 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900"
                                     placeholder="Create a strong password"
                                     required>
-                                <button 
+                                <button
                                     type="button"
                                     onclick="togglePassword('password', 'toggleIconPassword')"
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#FFC50F] transition-colors">
@@ -133,14 +151,14 @@
                                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                     </svg>
                                 </div>
-                                <input 
-                                    type="password" 
-                                    name="password_confirmation" 
+                                <input
+                                    type="password"
+                                    name="password_confirmation"
                                     id="password_confirmation"
-                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-12 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900" 
+                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-12 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900"
                                     placeholder="Re-enter your password"
                                     required>
-                                <button 
+                                <button
                                     type="button"
                                     onclick="togglePassword('password_confirmation', 'toggleIconConfirm')"
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#FFC50F] transition-colors">
@@ -153,8 +171,8 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black rounded-xl font-black text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all mt-6">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -226,7 +244,7 @@
                         </div>
                         <div class="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
                             <div class="w-10 h-10 bg-black/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
                             </div>
@@ -237,7 +255,7 @@
                         </div>
                         <div class="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
                             <div class="w-10 h-10 bg-black/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
                             </div>
@@ -248,7 +266,7 @@
                         </div>
                         <div class="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
                             <div class="w-10 h-10 bg-black/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
                             </div>
@@ -269,7 +287,7 @@
 function togglePassword(inputId, iconId) {
     const input = document.getElementById(inputId);
     const icon = document.getElementById(iconId);
-    
+
     if (input.type === 'password') {
         input.type = 'text';
         icon.innerHTML = `

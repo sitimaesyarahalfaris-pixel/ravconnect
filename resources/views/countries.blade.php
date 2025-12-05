@@ -10,7 +10,7 @@
         <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
     </div>
-    
+
     <div class="max-w-7xl mx-auto px-4 relative z-10">
         <div class="text-center mb-8">
             <div class="inline-flex items-center gap-2 bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
@@ -21,7 +21,7 @@
                 </svg>
                 <span class="text-white font-bold text-sm">200+ Countries & Regions</span>
             </div>
-            
+
             <h1 class="text-4xl md:text-5xl font-black text-black mb-4">
                 Stay Connected <span class="text-white">Worldwide</span>
             </h1>
@@ -54,10 +54,10 @@
 
 <!-- Search & Filter Section -->
 <section class="bg-white shadow-lg sticky top-0 z-40 border-b-2 border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 py-6" x-data="{ 
-        open: false, 
-        results: [], 
-        loading: false, 
+    <div class="max-w-7xl mx-auto px-4 py-6" x-data="{
+        open: false,
+        results: [],
+        loading: false,
         query: '',
         region: 'all',
         sort: 'popular',
@@ -69,8 +69,8 @@
                 <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     placeholder="Search for countries or eSIM packages..."
                     class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#FFC50F] focus:bg-white transition font-semibold"
                     x-model="query"
@@ -78,7 +78,7 @@
                     @focus="if(results.length) open=true"
                     @blur="setTimeout(()=>open=false,200)"
                 >
-                
+
                 <!-- Search Results Dropdown -->
                 <div x-show="open" x-cloak class="absolute left-0 mt-2 w-full bg-white rounded-2xl shadow-2xl z-50 border-2 border-gray-200 max-h-96 overflow-y-auto">
                     <template x-if="loading">
@@ -112,7 +112,7 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <line x1="2" y1="12" x2="22" y2="12"></line>
-                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                                     </svg>
                                 </span>
                             </template>
@@ -201,16 +201,17 @@
         <!-- Featured Countries Grid -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
             @php
-                $featured = $countries->sortByDesc(function($country) {
-                    return $country->products_count ?? $country->products->count() ?? 0;
-                })->take(6);
+                $featured = $countries->where('active', true)
+                    ->sortByDesc(function($country) {
+                        return $country->products_count ?? $country->products->count() ?? 0;
+                    })->take(6);
             @endphp
-            
+
             @foreach($featured as $country)
                 <a href="/country/{{ $country->id }}" class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl border-2 border-[#FFC50F]/20 hover:border-[#FFC50F] p-6 transition-all overflow-hidden country-card transform hover:scale-105 duration-300">
                     <!-- Gradient Background on Hover -->
                     <div class="absolute inset-0 bg-gradient-to-br from-[#FFC50F]/5 to-[#FFD700]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    
+
                     <div class="relative z-10 flex flex-col items-center">
                         <div class="relative mb-3">
                             <img src="https://flagcdn.com/80x60/{{ strtolower($country->code) }}.png" alt="{{ $country->name }}" class="w-20 h-15 rounded-lg shadow-lg border-2 border-white group-hover:scale-110 transition-transform">
@@ -229,7 +230,7 @@
                             {{ $country->products_count ?? ($country->products->count() ?? 0) }} Plans
                         </div>
                     </div>
-                    
+
                     <!-- Badge -->
                     <div class="absolute top-2 right-2 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black text-xs font-black px-2 py-1 rounded-full shadow-lg border-2 border-white">
                         HOT
@@ -246,61 +247,64 @@
         <div class="flex items-center justify-between mb-8">
             <div>
                 <h2 class="text-2xl md:text-3xl font-black text-gray-900">All Destinations</h2>
-                <p class="text-gray-600 mt-1">Browse all {{ $countries->count() }} available countries</p>
+                <p class="text-gray-600 mt-1">Browse all {{ $countries->where('active', true)->count() }} available countries</p>
             </div>
             <div class="text-sm text-gray-500 font-semibold">
-                Showing {{ $countries->count() }} countries
+                Showing {{ $countries->where('active', true)->count() }} countries
             </div>
         </div>
-
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6" id="countriesGrid">
             @foreach($countries as $country)
-                <a href="/country/{{ $country->id }}" 
-                   class="group flex flex-col items-center bg-white rounded-2xl shadow-md hover:shadow-xl border-2 border-gray-100 hover:border-[#FFC50F] p-5 md:p-6 transition-all country-card relative transform hover:-translate-y-1 duration-300"
-                   data-region="{{ strtolower($country->region ?? 'other') }}"
-                   data-packages="{{ $country->products_count ?? ($country->products->count() ?? 0) }}"
-                   data-name="{{ strtolower($country->name) }}">
-                    
-                    <!-- Flag -->
-                    <div class="relative mb-3">
-                        <img src="https://flagcdn.com/64x48/{{ strtolower($country->code) }}.png" 
-                             alt="{{ $country->name }}" 
-                             class="w-16 h-12 rounded-lg shadow-md border border-gray-200 group-hover:scale-110 transition-transform">
-                    </div>
-                    
-                    <!-- Country Name -->
-                    <span class="font-bold text-gray-900 text-sm md:text-base text-center group-hover:text-[#FFC50F] transition-colors mb-2 line-clamp-1">
-                        {{ $country->name }}
-                    </span>
-                    
-                    <!-- Package Count -->
-                    <div class="flex items-center gap-1 px-3 py-1 bg-gray-100 group-hover:bg-[#FFC50F]/10 rounded-full transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600 group-hover:text-[#FFC50F]">
-                            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
-                            <polyline points="17 2 12 7 7 2"></polyline>
-                        </svg>
-                        <span class="text-xs font-bold text-gray-600 group-hover:text-[#FFC50F]">
-                            {{ $country->products_count ?? ($country->products->count() ?? 0) }}
-                        </span>
-                    </div>
+                @if($country->active)
+                    <a href="/country/{{ $country->id }}"
+                       class="group flex flex-col items-center bg-white rounded-2xl shadow-md hover:shadow-xl border-2 border-gray-100 hover:border-[#FFC50F] p-5 md:p-6 transition-all country-card relative transform hover:-translate-y-1 duration-300"
+                       data-region="{{ strtolower($country->region ?? 'other') }}"
+                       data-packages="{{ $country->products_count ?? ($country->products->count() ?? 0) }}"
+                       data-name="{{ strtolower($country->name) }}">
+                        <!-- Flag -->
+                        <div class="relative mb-3">
+                            <img src="https://flagcdn.com/64x48/{{ strtolower($country->code) }}.png"
+                                 alt="{{ $country->name }}"
+                                 class="w-16 h-12 rounded-lg shadow-md border border-gray-200 group-hover:scale-110 transition-transform">
+                        </div>
 
-                    <!-- Arrow Icon on Hover -->
-                    <div class="absolute top-3 right-3 w-6 h-6 bg-[#FFC50F] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-0 group-hover:scale-100 shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-black">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
+                        <!-- Country Name -->
+                        <span class="font-bold text-gray-900 text-sm md:text-base text-center group-hover:text-[#FFC50F] transition-colors mb-2 line-clamp-1">
+                            {{ $country->name }}
+                        </span>
+
+                        <!-- Package Count -->
+                        <div class="flex items-center gap-1 px-3 py-1 bg-gray-100 group-hover:bg-[#FFC50F]/10 rounded-full transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600 group-hover:text-[#FFC50F]">
+                                <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                                <polyline points="17 2 12 7 7 2"></polyline>
+                            </svg>
+                            <span class="text-xs font-bold text-gray-600 group-hover:text-[#FFC50F]">
+                                {{ $country->products_count ?? ($country->products->count() ?? 0) }}
+                            </span>
+                        </div>
+
+                        <!-- Arrow Icon on Hover -->
+                        <div class="absolute top-3 right-3 w-6 h-6 bg-[#FFC50F] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-0 group-hover:scale-100 shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+
+                        <!-- Edit Button (Admin Only) -->
+                        @if(Auth::check() && Auth::user()->is_admin)
+                            <button @click.prevent="selectedCountry = {{ $country->toJson() }}; showEditModal = true;" class="absolute bottom-3 right-3 bg-[#FFC50F] text-black text-xs font-bold px-3 py-1 rounded shadow hover:bg-[#FFD700] transition-all z-20">Edit</button>
+                        @endif
+                    </a>
+                @endif
             @endforeach
         </div>
-
-        <!-- Empty State (if no countries) -->
-        @if($countries->count() === 0)
+        @if($countries->where('active', true)->count() === 0)
             <div class="text-center py-16">
                 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300 mx-auto mb-4">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="2" y1="12" x2="22" y2="12"></line>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                 </svg>
                 <h3 class="text-xl font-black text-gray-400 mb-2">No Countries Available</h3>
                 <p class="text-gray-400">Please check back later</p>
@@ -309,7 +313,36 @@
     </div>
 </section>
 
-    
+<!-- Edit Country Modal -->
+<div x-data="{ showEditModal: false, selectedCountry: null }" x-show="showEditModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md relative">
+        <button @click="showEditModal = false" class="absolute top-3 right-3 text-gray-400 hover:text-black text-xl">&times;</button>
+        <h3 class="text-xl font-black mb-4">Edit Country</h3>
+        <form x-ref="editForm" method="POST" action="/admin/countries/update" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="id" :value="selectedCountry?.id">
+            <div class="mb-4">
+                <label class="block text-sm font-bold mb-1">Name</label>
+                <input type="text" name="name" :value="selectedCountry?.name" class="w-full border rounded px-3 py-2">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-bold mb-1">Code</label>
+                <input type="text" name="code" :value="selectedCountry?.code" class="w-full border rounded px-3 py-2">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-bold mb-1">Image</label>
+                <input type="file" name="image" class="w-full border rounded px-3 py-2">
+                <template x-if="selectedCountry?.image_url">
+                    <img :src="selectedCountry.image_url" alt="Flag" class="mt-2 w-16 h-12 rounded border">
+                </template>
+            </div>
+            <div class="flex gap-2 mt-6">
+                <button type="submit" class="bg-[#FFC50F] text-black font-bold px-4 py-2 rounded hover:bg-[#FFD700]">Save</button>
+                <button type="button" @click="showEditModal = false" class="bg-gray-200 text-gray-700 font-bold px-4 py-2 rounded hover:bg-gray-300">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Alpine.js for filtering (client-side enhancement) -->
 <script>
@@ -317,16 +350,16 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('countryFilter', () => ({
         region: 'all',
         sort: 'popular',
-        
+
         init() {
             this.$watch('region', () => this.filterCountries());
             this.$watch('sort', () => this.filterCountries());
         },
-        
+
         filterCountries() {
             const grid = document.getElementById('countriesGrid');
             const cards = Array.from(grid.children);
-            
+
             // Filter by region
             cards.forEach(card => {
                 const cardRegion = card.dataset.region;
@@ -336,7 +369,7 @@ document.addEventListener('alpine:init', () => {
                     card.style.display = 'none';
                 }
             });
-            
+
             // Sort
             const visibleCards = cards.filter(card => card.style.display !== 'none');
             visibleCards.sort((a, b) => {
@@ -347,7 +380,7 @@ document.addEventListener('alpine:init', () => {
                 }
                 return 0; // 'popular' keeps original order
             });
-            
+
             visibleCards.forEach(card => grid.appendChild(card));
         }
     }));

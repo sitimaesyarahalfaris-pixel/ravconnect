@@ -41,19 +41,19 @@
                 <div>
                     <h4 class="text-white mb-6 font-black">Menu</h4>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Beranda
                         </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Tentang Kami
                         </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Cara Kerja
                         </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Blog
                         </a></li>
@@ -64,19 +64,19 @@
                 <div>
                     <h4 class="text-white mb-6 font-black">Bantuan</h4>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             FAQ
                         </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Cara Aktivasi
                         </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Perangkat Support
                         </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Hubungi Kami
                         </a></li>
@@ -87,19 +87,19 @@
                 <div>
                     <h4 class="text-white mb-6 font-black">Legal</h4>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/terms" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Syarat & Ketentuan
                         </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/privacy" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Kebijakan Privasi
                         </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/refund" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Pengembalian Dana
                         </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        <li><a href="/disclaimer" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Disclaimer
                         </a></li>
