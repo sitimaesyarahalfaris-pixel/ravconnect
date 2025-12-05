@@ -808,74 +808,33 @@
             </div>
 
             <!-- Product Cards List -->
-            @if(isset($recommended) && count($recommended) > 0)
+            @if(isset($products) && count($products) > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($recommended as $product)
+                    @foreach($products as $product)
                         <!-- Product Card Component -->
                         <div class="relative group bg-white rounded-3xl overflow-hidden border-4 border-[#FFC50F]/30 hover:border-[#FFC50F] transition-all card-shadow-yellow transform hover:-translate-y-2">
                             <!-- Header with Country Image Background -->
-                            <div class="relative h-40 md:h-48 lg:h-56 overflow-hidden bg-gray-100" style="background-size: cover; background-position: center;">
+                            <div class="relative h-40 md:h-48 lg:h-56 overflow-hidden" style="background: none;">
                                 @php
                                     $countryImg = null;
-                                    $country = null;
-                                    $debugInfo = 'Product ID: ' . $product->id . ' | Countries count: ' . ($product->countries ? $product->countries->count() : 0);
-
                                     if ($product->countries && $product->countries->count()) {
                                         $country = $product->countries->first();
-
-                                        // Prefer a dedicated header image column if available, else fall back to flag_url
-                                        $headerCandidate = null;
-                                        if (!empty($country->image_url)) {
-                                            $headerCandidate = $country->image_url;
-                                        } elseif (!empty($country->flag_url)) {
-                                            $headerCandidate = $country->flag_url;
-                                        }
-
-                                        if ($headerCandidate) {
-                                            $img = str_replace('\\', '/', $headerCandidate);
-                                            // match absolute http(s) URLs like 'https://...'
-                                            if (preg_match('/^https?:\\/\\//i', $img)) {
-                                                $countryImg = $img;
-                                            } elseif (strpos($img, '/storage/') === 0) {
-                                                $countryImg = asset(ltrim($img, '/'));
-                                            } elseif (strpos($img, 'storage/') === 0) {
-                                                $countryImg = asset($img);
-                                            } else {
-                                                // assume relative to storage/app/public
-                                                $countryImg = asset('storage/' . ltrim($img, '/'));
-                                            }
-                                        } else {
-                                            // No stored image — use flagcdn as fallback
-                                            $countryImg = 'https://flagcdn.com/w640/' . strtolower($country->code) . '.png';
-                                        }
+                                        $countryImg = $country->image_url ?: 'https://flagcdn.com/w320/' . strtolower($country->code) . '.png';
                                     }
                                 @endphp
                                 @if($countryImg)
-                                    <div class="absolute inset-0 w-full h-full" style="background-image: url('{{ $countryImg }}'); background-size: cover; background-position: center;"></div>
+                                    <img src="{{ $countryImg }}" alt="{{ $country->name }}" class="absolute inset-0 w-full h-full object-cover z-0" />
                                 @else
-                                    <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-400">No country image found</div>
+                                    <div class="absolute inset-0 w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 rounded-3xl z-0">No image</div>
                                 @endif
                                 <!-- Subtle black overlay tint, fading bottom to top -->
                                 <div class="absolute inset-0 w-full h-full z-5 pointer-events-none" style="background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.10) 60%, rgba(0,0,0,0.0) 100%);"></div>
                                 <!-- Flag positioned in bottom-left corner with modern styling -->
                                 @php
                                     $flag = null;
-                                    if ($country && $country->code) {
-                                        $flagUrlSmall = $country->flag_url ?? null;
-                                        if ($flagUrlSmall) {
-                                            $flagUrlSmall = str_replace('\\', '/', $flagUrlSmall);
-                                            if (preg_match('/^https?:\\/\\//i', $flagUrlSmall)) {
-                                                $flag = $flagUrlSmall;
-                                            } elseif (strpos($flagUrlSmall, 'storage/') === 0) {
-                                                $flag = asset($flagUrlSmall);
-                                            } elseif (strpos($flagUrlSmall, '/storage/') === 0) {
-                                                $flag = asset(ltrim($flagUrlSmall, '/'));
-                                            } else {
-                                                $flag = asset('storage/' . ltrim($flagUrlSmall, '/'));
-                                            }
-                                        } else {
-                                            $flag = 'https://flagcdn.com/48x36/' . strtolower($country->code) . '.png';
-                                        }
+                                    if ($product->countries && $product->countries->count()) {
+                                        $country = $product->countries->first();
+                                        $flag = $country->code ? 'https://flagcdn.com/48x36/' . strtolower($country->code) . '.png' : null;
                                     }
                                 @endphp
                                 @if($flag)
@@ -884,7 +843,7 @@
                                     </div>
                                 @else
                                     <div class="absolute bottom-4 left-4 z-10 bg-white rounded-xl shadow-xl p-2 border border-gray-100 group-hover:scale-110 transition-transform">
-                                        <div class="w-12 h-9 md:w-16 md:h-12 bg-gray-300 rounded-lg flex items-center justify-center text-xs font-bold text-gray-600">{{ $country ? $country->code : 'N/A' }}</div>
+                                        <img src="{{ asset('images/products/default.png') }}" alt="{{ $product->name }}" class="w-12 h-9 md:w-16 md:h-12 object-cover rounded-lg">
                                     </div>
                                 @endif
                             </div>

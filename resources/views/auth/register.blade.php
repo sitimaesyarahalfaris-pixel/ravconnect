@@ -1,8 +1,36 @@
-@extends('layouts.app')
-@section('title', 'Register - RAVCONNECT')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<!-- Split Screen Register -->
+    @stack('head')
+    <link rel="icon" href="{{ asset('resources/assets/img/Logo-transparent 1.png') }}" type="image/x-icon">
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+                            @keyframes pulse {
+                                0%, 100% {
+                                    opacity: 0.6;
+                                }
+                                50% {
+                                    opacity: 0.8;
+                                }
+                            }
+
+                            .animate-pulse {
+                                animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                            }
+
+
+                            </style>
+</head>
+<body>
+
+    <!-- Split Screen Register -->
 <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white p-4">
     <div class="w-full max-w-6xl">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white rounded-3xl shadow-2xl overflow-hidden">
@@ -286,6 +314,7 @@
                             <div>
                                 <h3 class="font-black text-black">Best Prices</h3>
                                 <p class="text-sm text-black/70">Competitive rates worldwide</p>
+                            
                             </div>
                         </div>
                         <div class="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
@@ -344,22 +373,9 @@ const checkbox = document.getElementById('agreement');
 
 
 </script>
-
-<style>
-@keyframes pulse {
-    0%, 100% {
-        opacity: 0.6;
-    }
-    50% {
-        opacity: 0.8;
-    }
-}
-
-.animate-pulse {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+</body>
+</html>
 
 
-</style>
 
-@endsection
+

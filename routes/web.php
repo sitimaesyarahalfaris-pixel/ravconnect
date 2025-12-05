@@ -21,6 +21,7 @@ use App\Http\Controllers\MyEsimController;
 use App\Models\Country;
 use App\Http\Controllers\UserBankInfoController;
 use App\Http\Controllers\AdminWithdrawalController;
+use App\Http\Controllers\Admin\CountryAdminController; // Add this import
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('index');
@@ -126,40 +127,30 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::get('/admin/withdrawal', [AdminWithdrawalController::class, 'showForm'])->name('admin.withdrawal.form');
     Route::post('/admin/withdrawal', [AdminWithdrawalController::class, 'withdraw'])->name('admin.withdrawal.submit');
     Route::post('admin/system/withdrawal-info', [AdminSystemController::class, 'saveWithdrawalInfo'])->name('admin.system.save_withdrawal_info');
+
+    // Country admin routes - UPDATED TO USE CONTROLLER
+    Route::get('countries', [CountryAdminController::class, 'index'])->name('admin.countries.index');
+    Route::get('countries/create', [CountryAdminController::class, 'create'])->name('admin.countries.create');
+    Route::post('countries', [CountryAdminController::class, 'store'])->name('admin.countries.store');
+    Route::get('countries/{id}/edit', [CountryAdminController::class, 'edit'])->name('admin.countries.edit');
+    Route::put('countries/{id}', [CountryAdminController::class, 'update'])->name('admin.countries.update');
+
+    // Keep the toggle and JSON routes if you still need them
+    Route::post('countries/toggle', function (Illuminate\Http\Request $request) {
+        $activeIds = $request->input('active_countries', []);
+        Country::query()->update(['active' => false]);
+        Country::whereIn('id', $activeIds)->update(['active' => true]);
+        return redirect()->route('admin.countries.index')->with('success', 'Status negara berhasil diperbarui');
+    })->name('admin.countries.toggle');
+
+    Route::get('countries/json/{id}', function ($id) {
+        return \App\Models\Country::findOrFail($id);
+    });
 });
 
 // Add route to return user as JSON for AJAX edit modal
 Route::get('admin/users/{id}/json', function ($id) {
     return \App\Models\User::findOrFail($id);
 })->middleware('admin');
-
-Route::get('admin/countries', function () {
-    return view('admin.countries.index');
-})->name('admin.countries.index');
-
-Route::post('admin/countries/toggle', function (Illuminate\Http\Request $request) {
-    $activeIds = $request->input('active_countries', []);
-    Country::query()->update(['active' => false]);
-    Country::whereIn('id', $activeIds)->update(['active' => true]);
-    return redirect()->route('admin.countries.index')->with('success', 'Status negara berhasil diperbarui');
-})->name('admin.countries.toggle');
-
-Route::get('admin/countries/json/{id}', function ($id) {
-    return \App\Models\Country::findOrFail($id);
-});
-
-Route::post('admin/countries/update', function (Illuminate\Http\Request $request) {
-    $country = \App\Models\Country::findOrFail($request->input('id'));
-    $country->name = $request->input('name');
-    $country->code = $request->input('code');
-    $country->flag_url = $request->input('flag_url');
-    if ($request->hasFile('image_url')) {
-        $file = $request->file('image_url');
-        $path = $file->store('public/country_images');
-        $country->image_url = str_replace('public/', 'storage/', $path);
-    }
-    $country->save();
-    return redirect()->route('admin.countries.index')->with('success', 'Country updated');
-})->name('admin.countries.update');
 
 Route::get('countries', [CountryController::class, 'index'])->name('countries.index');

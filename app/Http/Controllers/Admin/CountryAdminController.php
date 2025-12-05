@@ -11,8 +11,8 @@ class CountryAdminController extends Controller
 {
     public function index()
     {
-        $countries = Country::all();
-        return view('admin.countries_index', compact('countries'));
+        $countries = Country::orderBy('name')->get();
+        return view('admin.countries.index', compact('countries'));
     }
 
     public function create()
@@ -23,17 +23,22 @@ class CountryAdminController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|size:2|unique:countries,code',
+            'name'  => 'required|string|max:255',
+            'code'  => 'required|string|size:2|unique:countries,code',
+            'flag_url' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        $data = $request->only(['name', 'code']);
+
+        $data = $request->only(['name', 'code', 'flag_url']);
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $path = $image->store('country_headers', 'public');
             $data['image_url'] = '/storage/' . $path;
         }
+
         Country::create($data);
+
         return redirect()->route('admin.countries.index')->with('success', 'Country added successfully.');
     }
 
@@ -46,15 +51,33 @@ class CountryAdminController extends Controller
     public function update(Request $request, $id)
     {
         $country = Country::findOrFail($id);
+
         $request->validate([
+            'name'  => 'required|string|max:255',
+            'code'  => 'required|string|size:2|unique:countries,code,' . $country->id,
+            'flag_url' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Update text fields
+        $country->name = $request->name;
+        $country->code = $request->code;
+        $country->flag_url = $request->flag_url;
+
+        // Handle image replacement
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $path = $image->store('country_headers', 'public');
+            // delete old file if exists
+            if ($country->image_url && file_exists(public_path($country->image_url))) {
+                unlink(public_path($country->image_url));
+            }
+
+            $path = $request->file('image')->store('country_headers', 'public');
             $country->image_url = '/storage/' . $path;
         }
+
         $country->save();
-        return redirect()->route('admin.countries.index')->with('success', 'Country updated successfully.');
+
+        return redirect()->route('admin.countries.index')
+            ->with('success', 'Country updated successfully.');
     }
 }
