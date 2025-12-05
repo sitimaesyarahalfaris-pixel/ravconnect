@@ -202,7 +202,7 @@
                                     <!-- Actions -->
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex items-center gap-2">
-                                            
+
 
                                             <!-- Pencil icon for Edit (button, not anchor) -->
                                             <button @click.prevent="fetchUser({{ $user->id }})" type="button" class="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors" title="Edit User">

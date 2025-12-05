@@ -61,7 +61,7 @@ class OrderController extends Controller
     // Show a single order
     public function show($id)
     {
-        $order = Order::findOrFail($id);
+        $order = Order::with(['product', 'esimStock'])->findOrFail($id);
         return response()->json($order);
     }
 

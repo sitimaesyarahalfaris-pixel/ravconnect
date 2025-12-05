@@ -170,10 +170,34 @@
                             </div>
                         </div>
 
+
+                        <!-- Terms & Privacy Agreement -->
+
+                        <div class="flex items-start gap-3 mt-4">
+                            <input
+                                type="checkbox"
+                                id="agreement"
+                                class="mt-1 h-5 w-5 text-[#FFC50F] border-gray-300 rounded focus:ring-[#FFC50F]"
+                                required
+                            >
+                            <label for="agreement" class="text-sm text-gray-700 leading-tight">
+                                Saya telah membaca dan menyetujui
+                                <a href="/terms" class="text-[#FFC50F] font-semibold hover:underline">Syarat & Ketentuan</a>
+                                serta
+                                <a href="/privacy" class="text-[#FFC50F] font-semibold hover:underline">Kebijakan Privasi</a>
+                                RAVCONNECT.
+                            </label>
+                        </div>
+
+
+
                         <!-- Submit Button -->
                         <button
+                            id="submitBtn"
                             type="submit"
-                            class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black rounded-xl font-black text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all mt-6">
+                            disabled
+                            class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black rounded-xl font-black text-lg shadow-lg transition-all mt-6 opacity-50 cursor-not-allowed">
+
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="8.5" cy="7" r="4"></circle>
@@ -302,6 +326,23 @@ function togglePassword(inputId, iconId) {
         `;
     }
 }
+
+const checkbox = document.getElementById('agreement');
+    const submitBtn = document.getElementById('submitBtn');
+
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            submitBtn.classList.add('hover:shadow-xl', 'hover:scale-[1.02]');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            submitBtn.classList.remove('hover:shadow-xl', 'hover:scale-[1.02]');
+        }
+    });
+
+
 </script>
 
 <style>
@@ -317,6 +358,8 @@ function togglePassword(inputId, iconId) {
 .animate-pulse {
     animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+
 </style>
 
 @endsection

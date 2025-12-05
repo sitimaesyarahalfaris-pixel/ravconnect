@@ -15,7 +15,7 @@ class HomeController extends Controller
         $countries = Country::all();
         $promoBanner = Setting::where('key', 'promo_banner')->first();
         $faq = Setting::where('key', 'faq')->first();
-        $recommended = Product::where('active', true)->orderBy('id', 'desc')->take(5)->get();
+        $recommended = Product::where('active', true)->with('countries')->orderBy('id', 'desc')->take(5)->get();
         return view('index', [
             'products' => $products,
             'countries' => $countries,

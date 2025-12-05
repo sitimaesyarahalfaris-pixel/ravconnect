@@ -7,7 +7,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="icon" href="{{asset('resources\assets\img\Logo-transparent 1.png')}}" type="image/x-icon">
+    <link rel="icon" href="{{asset('resources/assets/img/Logo-transparent 1.png')}}" type="image/x-icon">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -678,10 +678,12 @@
         $recommended_product_ids = $recommended_ids ? json_decode($recommended_ids, true) : [];
         $products = [];
         if ($recommended_product_ids && is_array($recommended_product_ids) && count($recommended_product_ids)) {
-            $products = Product::whereIn('id', $recommended_product_ids)->where('active', true)->get();
+            $products = Product::with('countries')->whereIn('id', $recommended_product_ids)->where('active', true)->get();
         } else {
-            $products = Product::where('active', true)->orderBy('id', 'desc')->take(5)->get();
+            $products = Product::with('countries')->where('active', true)->orderBy('id', 'desc')->take(5)->get();
         }
+        // expose as $recommended for the template (legacy variable used below)
+        $recommended = $products;
     @endphp
 
     <!-- Hero Banner - Creative Asymmetric Layout -->
@@ -806,33 +808,74 @@
             </div>
 
             <!-- Product Cards List -->
-            @if(isset($products) && count($products) > 0)
+            @if(isset($recommended) && count($recommended) > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($products as $product)
+                    @foreach($recommended as $product)
                         <!-- Product Card Component -->
                         <div class="relative group bg-white rounded-3xl overflow-hidden border-4 border-[#FFC50F]/30 hover:border-[#FFC50F] transition-all card-shadow-yellow transform hover:-translate-y-2">
                             <!-- Header with Country Image Background -->
-                            <div class="relative h-40 md:h-48 lg:h-56 overflow-hidden" style="background: none;">
+                            <div class="relative h-40 md:h-48 lg:h-56 overflow-hidden bg-gray-100" style="background-size: cover; background-position: center;">
                                 @php
                                     $countryImg = null;
+                                    $country = null;
+                                    $debugInfo = 'Product ID: ' . $product->id . ' | Countries count: ' . ($product->countries ? $product->countries->count() : 0);
+
                                     if ($product->countries && $product->countries->count()) {
                                         $country = $product->countries->first();
-                                        $countryImg = $country->image_url ?: 'https://flagcdn.com/w320/' . strtolower($country->code) . '.png';
+
+                                        // Prefer a dedicated header image column if available, else fall back to flag_url
+                                        $headerCandidate = null;
+                                        if (!empty($country->image_url)) {
+                                            $headerCandidate = $country->image_url;
+                                        } elseif (!empty($country->flag_url)) {
+                                            $headerCandidate = $country->flag_url;
+                                        }
+
+                                        if ($headerCandidate) {
+                                            $img = str_replace('\\', '/', $headerCandidate);
+                                            // match absolute http(s) URLs like 'https://...'
+                                            if (preg_match('/^https?:\\/\\//i', $img)) {
+                                                $countryImg = $img;
+                                            } elseif (strpos($img, '/storage/') === 0) {
+                                                $countryImg = asset(ltrim($img, '/'));
+                                            } elseif (strpos($img, 'storage/') === 0) {
+                                                $countryImg = asset($img);
+                                            } else {
+                                                // assume relative to storage/app/public
+                                                $countryImg = asset('storage/' . ltrim($img, '/'));
+                                            }
+                                        } else {
+                                            // No stored image — use flagcdn as fallback
+                                            $countryImg = 'https://flagcdn.com/w640/' . strtolower($country->code) . '.png';
+                                        }
                                     }
                                 @endphp
                                 @if($countryImg)
-                                    <img src="{{ $countryImg }}" alt="{{ $country->name }}" class="absolute inset-0 w-full h-full object-cover z-0" />
+                                    <div class="absolute inset-0 w-full h-full" style="background-image: url('{{ $countryImg }}'); background-size: cover; background-position: center;"></div>
                                 @else
-                                    <div class="absolute inset-0 w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 rounded-3xl z-0">No image</div>
+                                    <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-400">No country image found</div>
                                 @endif
                                 <!-- Subtle black overlay tint, fading bottom to top -->
                                 <div class="absolute inset-0 w-full h-full z-5 pointer-events-none" style="background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.10) 60%, rgba(0,0,0,0.0) 100%);"></div>
                                 <!-- Flag positioned in bottom-left corner with modern styling -->
                                 @php
                                     $flag = null;
-                                    if ($product->countries && $product->countries->count()) {
-                                        $country = $product->countries->first();
-                                        $flag = $country->code ? 'https://flagcdn.com/48x36/' . strtolower($country->code) . '.png' : null;
+                                    if ($country && $country->code) {
+                                        $flagUrlSmall = $country->flag_url ?? null;
+                                        if ($flagUrlSmall) {
+                                            $flagUrlSmall = str_replace('\\', '/', $flagUrlSmall);
+                                            if (preg_match('/^https?:\\/\\//i', $flagUrlSmall)) {
+                                                $flag = $flagUrlSmall;
+                                            } elseif (strpos($flagUrlSmall, 'storage/') === 0) {
+                                                $flag = asset($flagUrlSmall);
+                                            } elseif (strpos($flagUrlSmall, '/storage/') === 0) {
+                                                $flag = asset(ltrim($flagUrlSmall, '/'));
+                                            } else {
+                                                $flag = asset('storage/' . ltrim($flagUrlSmall, '/'));
+                                            }
+                                        } else {
+                                            $flag = 'https://flagcdn.com/48x36/' . strtolower($country->code) . '.png';
+                                        }
                                     }
                                 @endphp
                                 @if($flag)
@@ -841,7 +884,7 @@
                                     </div>
                                 @else
                                     <div class="absolute bottom-4 left-4 z-10 bg-white rounded-xl shadow-xl p-2 border border-gray-100 group-hover:scale-110 transition-transform">
-                                        <img src="{{ asset('images/products/default.png') }}" alt="{{ $product->name }}" class="w-12 h-9 md:w-16 md:h-12 object-cover rounded-lg">
+                                        <div class="w-12 h-9 md:w-16 md:h-12 bg-gray-300 rounded-lg flex items-center justify-center text-xs font-bold text-gray-600">{{ $country ? $country->code : 'N/A' }}</div>
                                     </div>
                                 @endif
                             </div>
@@ -1095,129 +1138,127 @@
 
 
     <!-- Footer -->
-    <footer class="relative bg-linear-to-b from-gray-900 to-black text-white pt-20 pb-8 overflow-hidden">
-        <!-- Decorative Background -->
-        <div class="absolute inset-0 opacity-5">
-            <div class="absolute top-0 left-1/4 w-96 h-96 bg-[#FFC50F] rounded-full blur-3xl"></div>
-            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-[#FFD700] rounded-full blur-3xl"></div>
-        </div>
+        <footer class="relative bg-gradient-to-b from-gray-900 to-black text-white pt-20 pb-8 overflow-hidden">
+            <!-- Decorative Background -->
+            <div class="absolute inset-0 opacity-5">
+            </div>
 
-        <div class="max-w-7xl mx-auto px-4 relative z-10">
-            <div class="grid md:grid-cols-4 gap-12 mb-16">
-                <!-- Company Info -->
-                <div class="space-y-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-linear-to-br from-[#FFC50F] to-[#FFD700] rounded-xl flex items-center justify-center">
-                            <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+            <div class="max-w-7xl mx-auto px-4 relative z-10">
+                <div class="grid md:grid-cols-4 gap-12 mb-16">
+                    <!-- Company Info -->
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-black rounded-xl flex items-center justify-center overflow-hidden">
+                                <!-- Use logo image instead of SVG icon -->
+                                <img src="{{ asset('resources/assets/img/Logo-transparent 1.png') }}" alt="RAVCONNECT Logo" class="w-10 h-10 object-contain" />
+                            </div>
+                            <span class="text-2xl font-black">RAV<span class="text-[#FFC50F]">CONNECT</span></span>
                         </div>
-                        <span class="text-2xl font-black">RAV<span class="text-[#FFC50F]">CONNECT</span></span>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Solusi eSIM terpercaya untuk perjalanan global Anda. Terhubung di 100+ negara tanpa ribet!
+                        </p>
+                        <div class="flex gap-3">
+                            <button class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-[#FFC50F] hover:text-black transition-all transform hover:scale-110 border border-white/20 hover:border-[#FFC50F]">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                            </button>
+                            <button class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-[#FFC50F] hover:text-black transition-all transform hover:scale-110 border border-white/20 hover:border-[#FFC50F]">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                            </button>
+                            <button class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-[#FFC50F] hover:text-black transition-all transform hover:scale-110 border border-white/20 hover:border-[#FFC50F]">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        Solusi eSIM terpercaya untuk perjalanan global Anda. Terhubung di 100+ negara tanpa ribet!
-                    </p>
-                    <div class="flex gap-3">
-                        <button class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-[#FFC50F] hover:text-black transition-all transform hover:scale-110 border border-white/20 hover:border-[#FFC50F]">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                            </svg>
-                        </button>
-                        <button class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-[#FFC50F] hover:text-black transition-all transform hover:scale-110 border border-white/20 hover:border-[#FFC50F]">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                            </svg>
-                        </button>
-                        <button class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-[#FFC50F] hover:text-black transition-all transform hover:scale-110 border border-white/20 hover:border-[#FFC50F]">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                            </svg>
-                        </button>
+
+                    <!-- Quick Links -->
+                    <div>
+                        <h4 class="text-white mb-6 font-black">Menu</h4>
+                        <ul class="space-y-3">
+                            <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Beranda
+                            </a></li>
+                            <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Tentang Kami
+                            </a></li>
+                            <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Cara Kerja
+                            </a></li>
+                            <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Blog
+                            </a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Support -->
+                    <div>
+                        <h4 class="text-white mb-6 font-black">Bantuan</h4>
+                        <ul class="space-y-3">
+                            <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                FAQ
+                            </a></li>
+                            <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Cara Aktivasi
+                            </a></li>
+                            <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Perangkat Support
+                            </a></li>
+                            <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Hubungi Kami
+                            </a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Legal -->
+                    <div>
+                        <h4 class="text-white mb-6 font-black">Legal</h4>
+                        <ul class="space-y-3">
+                            <li><a href="/terms" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Syarat & Ketentuan
+                            </a></li>
+                            <li><a href="/privacy" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Kebijakan Privasi
+                            </a></li>
+                            <li><a href="/refund" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Pengembalian Dana
+                            </a></li>
+                            <li><a href="/disclaimer" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                                <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
+                                Disclaimer
+                            </a></li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- Quick Links -->
-                <div>
-                    <h4 class="text-white mb-6 font-black">Menu</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Beranda
-                        </a></li>
-                        <li><a href="/countries" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Browse
-                        </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Cara Kerja
-                        </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Blog
-                        </a></li>
-                    </ul>
-                </div>
-
-                <!-- Support -->
-                <div>
-                    <h4 class="text-white mb-6 font-black">Bantuan</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            FAQ
-                        </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Cara Aktivasi
-                        </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Perangkat Support
-                        </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Hubungi Kami
-                        </a></li>
-                    </ul>
-                </div>
-
-                <!-- Legal -->
-                <div>
-                    <h4 class="text-white mb-6 font-black">Legal</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Syarat & Ketentuan
-                        </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Kebijakan Privasi
-                        </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Pengembalian Dana
-                        </a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
-                            <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
-                            Disclaimer
-                        </a></li>
-                    </ul>
+                <div class="border-t border-white/10 pt-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                        <div class="text-gray-400 text-sm">
+                            <p>&copy; 2025 <span class="text-[#FFC50F] font-bold">RAVCONNECT</span>. All rights reserved.</p>
+                        </div>
+                        <div class="text-gray-500 text-xs">
+                            <p>Powered by Advanced eSIM Technology ⚡</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </footer>
 
-            <div class="border-t border-white/10 pt-8">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-                    <div class="text-gray-400 text-sm">
-                        <p>&copy; 2024 <span class="text-[#FFC50F] font-bold">RAVCONNECT</span>. All rights reserved.</p>
-                    </div>
-                    <div class="text-gray-500 text-xs">
-                        <p>Powered by Advanced eSIM Technology ⚡</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <!-- Bottom Mobile Navigation - Bold Design -->
 

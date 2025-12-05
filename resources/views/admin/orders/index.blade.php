@@ -376,8 +376,8 @@
                             </div>
 
                             <div>
-                                <p class="text-gray-600 text-sm font-bold">Product ID</p>
-                                <p class="text-gray-900 font-black text-lg" id="od_product_id"></p>
+                                <p class="text-gray-600 text-sm font-bold">Product</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_product_name"></p>
                             </div>
 
                             <div>
@@ -421,6 +421,45 @@
                             </div>
 
                         </div>
+
+                        <!-- eSIM Stock Details Section -->
+                        <div id="esimStockSection" class="mt-6 pt-6 border-t-2 border-[#FFC50F]/30">
+                            <h4 class="font-black text-lg mb-4 text-gray-900">eSIM Stock Information</h4>
+                            <div id="esimStockContent" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-gray-600 text-sm font-bold">Stock ID</p>
+                                    <p class="text-gray-900 font-black text-lg" id="od_esim_id">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 text-sm font-bold">Status</p>
+                                    <p class="text-gray-900 font-black text-lg" id="od_esim_status">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 text-sm font-bold">SKU</p>
+                                    <p class="text-gray-900 font-black text-lg" id="od_esim_sku">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 text-sm font-bold">ICCID</p>
+                                    <p class="text-gray-900 font-black text-lg" id="od_esim_iccid">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 text-sm font-bold">Activation Code</p>
+                                    <p class="text-gray-900 font-black text-lg" id="od_esim_activation_code">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 text-sm font-bold">SMDP+</p>
+                                    <p class="text-gray-900 font-black text-lg" id="od_esim_smdp_plus">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 text-sm font-bold">Assigned At</p>
+                                    <p class="text-gray-900 font-black text-lg" id="od_esim_assigned_at">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 text-sm font-bold">QR Image URL</p>
+                                    <p class="text-gray-900 font-black text-lg" id="od_esim_qr_image_url">-</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Footer -->
@@ -441,7 +480,7 @@ fetch(`/admin/orders/${orderId}/detail`)
 
 function openOrderDetailModal(order) {
     document.getElementById("od_id").innerText = order.id;
-    document.getElementById("od_product_id").innerText = order.product_id;
+    document.getElementById("od_product_name").innerText = order.product?.name ?? "-";
     document.getElementById("od_name").innerText = order.name ?? "-";
     document.getElementById("od_email").innerText = order.email ?? "-";
     document.getElementById("od_whatsapp").innerText = order.whatsapp ?? "-";
@@ -450,6 +489,27 @@ function openOrderDetailModal(order) {
     document.getElementById("od_total").innerText = "Rp " + order.total.toLocaleString();
     document.getElementById("od_created").innerText = order.created_at;
     document.getElementById("od_updated").innerText = order.updated_at;
+
+    // Populate eSIM Stock details
+    if (order.esim_stock) {
+        document.getElementById("od_esim_id").innerText = order.esim_stock.id ?? "-";
+        document.getElementById("od_esim_status").innerText = order.esim_stock.status ?? "-";
+        document.getElementById("od_esim_sku").innerText = order.esim_stock.sku ?? "-";
+        document.getElementById("od_esim_iccid").innerText = order.esim_stock.iccid ?? "-";
+        document.getElementById("od_esim_activation_code").innerText = order.esim_stock.activation_code ?? "-";
+        document.getElementById("od_esim_smdp_plus").innerText = order.esim_stock.smdp_plus ?? "-";
+        document.getElementById("od_esim_assigned_at").innerText = order.esim_stock.assigned_at ?? "-";
+        document.getElementById("od_esim_qr_image_url").innerText = order.esim_stock.qr_image_url ?? "-";
+    } else {
+        document.getElementById("od_esim_id").innerText = "-";
+        document.getElementById("od_esim_status").innerText = "-";
+        document.getElementById("od_esim_sku").innerText = "-";
+        document.getElementById("od_esim_iccid").innerText = "-";
+        document.getElementById("od_esim_activation_code").innerText = "-";
+        document.getElementById("od_esim_smdp_plus").innerText = "-";
+        document.getElementById("od_esim_assigned_at").innerText = "-";
+        document.getElementById("od_esim_qr_image_url").innerText = "-";
+    }
 
     // Show modal
     document.getElementById("orderDetailModal").classList.remove("hidden");
