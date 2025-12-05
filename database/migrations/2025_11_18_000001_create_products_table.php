@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->string('validity')->nullable();
             $table->string('operator')->nullable();
             $table->boolean('auto_delivery')->default(true);
-            $table->string('image')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

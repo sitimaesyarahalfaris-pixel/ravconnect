@@ -199,14 +199,14 @@
                     <input type="text" name="operator" id="productOperator" required class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-[#FFC50F] focus:outline-none transition" placeholder="e.g. AIS, Telkomsel">
                 </div>
 
-                <div class="md:col-span-2">
+                {{-- <div class="md:col-span-2">
                     <label class="block font-bold mb-2 text-gray-700">Product Image</label>
                     <input type="file" name="image_file" id="productImageFile" class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-[#FFC50F] focus:outline-none transition" accept="image/*">
                     <p class="text-xs text-gray-500 mt-1">Upload product image (recommended: 800x600px, JPG/PNG/AVIF)</p>
                     @if(isset($product) && $product->image)
                         <img src="{{ asset($product->image) }}" alt="Product Image" class="mt-2 rounded-lg shadow w-32 h-24 object-cover">
                     @endif
-                </div>
+                </div> --}}
 
                 <div class="md:col-span-2">
                     <label class="block font-bold mb-2 text-gray-700">Description</label>

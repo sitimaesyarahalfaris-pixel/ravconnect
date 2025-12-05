@@ -16,7 +16,6 @@ class Product extends Model
         'validity',
         'operator',
         'auto_delivery',
-        'image',
         'active'
     ];
 

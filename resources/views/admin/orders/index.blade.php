@@ -244,41 +244,66 @@
                                     <div class="text-xs text-gray-500">{{ $order->created_at->format('H:i') }}</div>
                                 </td>
 
+
                                 <!-- Actions -->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex items-center gap-2">
-                                        <a href="{{ route('admin.orders.show', $order->id) }}" class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" title="View Details">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                                <circle cx="12" cy="12" r="3"></circle>
-                                            </svg>
-                                        </a>
 
+                                        {{-- Show "View Details" only when order is paid --}}
+                                        @if($order->status === 'paid')
+                                            <button
+                                                onclick="loadOrderDetail({{ $order->id }})"
+                                                class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                                                title="View Details"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                </svg>
+                                            </button>
+                                        @endif
+
+                                        {{-- Mark as Paid (only show if pending) --}}
                                         @if($order->status === 'pending')
                                             <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('PATCH')
                                                 <input type="hidden" name="status" value="paid">
-                                                <button type="submit" class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors" title="Mark as Paid">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <button type="submit"
+                                                        class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
+                                                        title="Mark as Paid">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                         <polyline points="20 6 9 17 4 12"></polyline>
                                                     </svg>
                                                 </button>
                                             </form>
                                         @endif
 
-                                        <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this order?');">
+                                        {{-- Delete button --}}
+                                        <form action="{{ route('admin.orders.destroy', $order->id) }}"
+                                            method="POST" class="inline"
+                                            onsubmit="return confirm('Are you sure you want to delete this order?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors" title="Delete">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <button type="submit"
+                                                    class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                                                    title="Delete">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <polyline points="3 6 5 6 21 6"></polyline>
                                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                 </svg>
                                             </button>
                                         </form>
+
                                     </div>
                                 </td>
+
                             </tr>
                             @empty
                             <tr>
@@ -322,7 +347,128 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ORDER DETAIL MODAL -->
+            <div id="orderDetailModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-2xl p-8 w-full max-w-4xl shadow-2xl border-4 border-[#FFC50F]/30 max-h-[90vh] overflow-y-auto">
+
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-black text-gray-900">Order Detail</h3>
+                        <button onclick="closeOrderDetailModal()" class="text-gray-400 hover:text-gray-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Order Content -->
+                    <div id="orderDetailContent" class="bg-gradient-to-r from-[#FFC50F]/10 to-[#FFD700]/10 rounded-xl p-6 border-2 border-[#FFC50F]/30">
+
+                        <h4 class="font-black text-xl mb-4 text-gray-900">Order Information</h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">Order ID</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_id"></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">Product ID</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_product_id"></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">Name</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_name"></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">Email</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_email"></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">WhatsApp</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_whatsapp"></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">Status</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_status"></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">Delivery Status</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_delivery_status"></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">Total</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_total"></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">Created At</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_created"></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-600 text-sm font-bold">Updated At</p>
+                                <p class="text-gray-900 font-black text-lg" id="od_updated"></p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="flex justify-end mt-6">
+                        <button onclick="closeOrderDetailModal()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300 transition">
+                            Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </main>
 </div>
+
+<script>
+fetch(`/admin/orders/${orderId}/detail`)
+
+function openOrderDetailModal(order) {
+    document.getElementById("od_id").innerText = order.id;
+    document.getElementById("od_product_id").innerText = order.product_id;
+    document.getElementById("od_name").innerText = order.name ?? "-";
+    document.getElementById("od_email").innerText = order.email ?? "-";
+    document.getElementById("od_whatsapp").innerText = order.whatsapp ?? "-";
+    document.getElementById("od_status").innerText = order.status;
+    document.getElementById("od_delivery_status").innerText = order.delivery_status;
+    document.getElementById("od_total").innerText = "Rp " + order.total.toLocaleString();
+    document.getElementById("od_created").innerText = order.created_at;
+    document.getElementById("od_updated").innerText = order.updated_at;
+
+    // Show modal
+    document.getElementById("orderDetailModal").classList.remove("hidden");
+}
+
+function closeOrderDetailModal() {
+    document.getElementById("orderDetailModal").classList.add("hidden");
+}
+
+async function loadOrderDetail(orderId) {
+    try {
+        const res = await fetch(`/admin/orders/${orderId}`);
+        const data = await res.json();
+
+        openOrderDetailModal(data); // 👉 buka modal
+    } catch (err) {
+        console.error(err);
+        alert("Failed to load order detail.");
+    }
+}
+</script>
 @endsection

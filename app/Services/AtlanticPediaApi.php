@@ -93,28 +93,33 @@ class AtlanticPediaApi
      * @param string|null $note Transfer note (optional)
      * @return array API response
      */
-    public function createTransfer($refId, $kodeBank, $nomorAkun, $namaPemilik, $nominal, $email = null, $phone = null, $note = null)
-    {
-        $params = [
-            'api_key' => $this->apiKey,
-            'ref_id' => $refId,
-            'kode_bank' => $kodeBank,
-            'nomor_akun' => $nomorAkun,
-            'nama_pemilik' => $namaPemilik,
-            'nominal' => $nominal,
-        ];
-        if ($email) $params['email'] = $email;
-        if ($phone) $params['phone'] = $phone;
-        if ($note) $params['note'] = $note;
-        $response = \Illuminate\Support\Facades . Http::asForm()->post($this->baseUrl . '/transfer/create', $params);
-        if ($response->successful()) {
-            return $response->json();
-        }
-        return [
-            'status' => false,
-            'message' => 'Gagal membuat transfer.'
-        ];
-    }
+ public function createTransfer($refId, $kodeBank, $nomorAkun, $namaPemilik, $nominal, $email = null, $phone = null, $note = null)
+{
+    $params = [
+        'api_key' => $this->apiKey,
+        'ref_id' => $refId,
+        'kode_bank' => $kodeBank,
+        'nomor_akun' => $nomorAkun,
+        'nama_pemilik' => $namaPemilik,
+        'nominal' => (int) $nominal,
+    ];
+
+    if ($email) $params['email'] = $email;
+    if ($phone) $params['phone'] = $phone;
+    if ($note) $params['note'] = $note;
+
+    $response = Http::asForm()->post($this->baseUrl . '/transfer/create', $params);
+
+    return $response->json() ?? [
+        'status' => false,
+        'message' => 'API error',
+        'raw' => $response->body(),
+    ];
+}
+
+
+
+
 
     public function getBankList()
     {

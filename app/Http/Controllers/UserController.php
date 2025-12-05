@@ -76,7 +76,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return response()->json(['message' => 'User deleted']);
+        return redirect()->back()->with(['message' => 'User deleted']);
     }
 
     // Show user's assigned eSIMs

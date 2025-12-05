@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Withdrawal;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Payment;
@@ -27,24 +28,33 @@ class AdminDashboardController extends Controller
     // Dashboard statistics
     public function stats()
     {
-        $totalOrders = Order::count();
-        $pendingOrders = Order::where('status', 'pending')->count();
-        $paidOrders = Order::where('status', 'paid')->count();
-        $expiredOrders = Order::where('status', 'expired')->count();
-        $totalProducts = Product::count();
-        $totalRevenue = Order::where('status', 'paid')->sum('total');
-        $remainingStock = ProductStock::where('status', 'available')->count();
+        // Count orders by status
+        $totalOrders     = Order::count();
+        $pendingOrders   = Order::where('status', 'pending')->count();
+        $paidOrders      = Order::where('status', 'paid')->count();
+        $expiredOrders   = Order::where('status', 'expired')->count();
+
+        // Products & stock
+        $totalProducts   = Product::count();
+        $remainingStock  = ProductStock::where('status', 'available')->count();
+
+        // Revenue calculation
+        $totalRevenue    = Order::where('status', 'paid')->sum('total');
+        $totalWithdrawn  = Withdrawal::sum('total_deducted');
+        $netRevenue      = $totalRevenue - $totalWithdrawn;
 
         return response()->json([
-            'total_orders' => $totalOrders,
-            'pending_orders' => $pendingOrders,
-            'paid_orders' => $paidOrders,
-            'expired_orders' => $expiredOrders,
-            'total_products' => $totalProducts,
-            'total_revenue' => $totalRevenue,
-            'remaining_stock' => $remainingStock,
+            'total_orders'     => $totalOrders,
+            'pending_orders'   => $pendingOrders,
+            'paid_orders'      => $paidOrders,
+            'expired_orders'   => $expiredOrders,
+            'total_products'   => $totalProducts,
+            'total_revenue'    => $totalRevenue,     // total pemasukan kotor
+            'net_revenue'      => $netRevenue,       // total bersih setelah potongan withdraw
+            'remaining_stock'  => $remainingStock,
         ]);
     }
+
 
     // Admin dashboard main view
     public function index()

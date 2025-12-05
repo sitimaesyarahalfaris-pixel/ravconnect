@@ -18,7 +18,7 @@
                     <div class="text-sm text-gray-600 bg-white px-4 py-2 rounded-lg shadow">
                         <span class="font-semibold">Logged in as:</span> {{ auth()->user()->name }}
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -202,12 +202,7 @@
                                     <!-- Actions -->
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex items-center gap-2">
-                                            <a href="{{ route('admin.users.show', $user->id) }}" class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" title="View Details">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                                    <circle cx="12" cy="12" r="3"></circle>
-                                                </svg>
-                                            </a>
+                                            
 
                                             <!-- Pencil icon for Edit (button, not anchor) -->
                                             <button @click.prevent="fetchUser({{ $user->id }})" type="button" class="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors" title="Edit User">

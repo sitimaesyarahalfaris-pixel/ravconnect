@@ -94,6 +94,7 @@ Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name(
 
 // Admin routes group (protected by admin middleware)
 Route::middleware(['admin'])->prefix('admin')->group(function () {
+    Route::get('orders/{id}/detail', [OrderController::class, 'detail'])->name('admin.orders.detail');
     Route::get('/dashboard/stats', [AdminDashboardController::class, 'stats']);
     Route::resource('products', ProductController::class, ['as' => 'admin']);
     Route::resource('orders', OrderController::class, ['as' => 'admin']);

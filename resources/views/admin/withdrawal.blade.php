@@ -373,9 +373,95 @@
             </div>
             @endif
 
+            <!-- Withdrawal History Section -->
+            <div class="mb-10 mt-10 bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-600 to-purple-800 p-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-black/40 backdrop-blur rounded-xl flex items-center justify-center shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="white"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 8v4l3 3"></path>
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black text-black">Withdrawal History</h2>
+                            <p class="text-sm text-white/70 mt-1">All of your withdrawal records</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-8">
+                    @if(isset($withdrawals) && count($withdrawals) > 0)
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-separate border-spacing-y-3">
+                                <thead>
+                                    <tr class="text-left text-gray-700 text-sm uppercase tracking-wider">
+                                        <th class="px-3 py-2">Reference ID</th>
+                                        <th class="px-3 py-2">Amount</th>
+                                        <th class="px-3 py-2">Fee</th>
+                                        <th class="px-3 py-2">Total</th>
+                                        <th class="px-3 py-2">Status</th>
+                                        <th class="px-3 py-2">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($withdrawals as $wd)
+                                    <tr class="bg-gray-50 hover:bg-gray-100 transition-all rounded-xl shadow-sm">
+                                        <td class="px-3 py-4 font-mono text-sm text-gray-700">{{ $wd->reference_id }}</td>
+                                        <td class="px-3 py-4 font-bold text-green-700">Rp {{ number_format($wd->amount, 0, ',', '.') }}</td>
+                                        <td class="px-3 py-4 font-bold text-red-700">Rp {{ number_format($wd->fee, 0, ',', '.') }}</td>
+                                        <td class="px-3 py-4 font-black text-gray-900">Rp {{ number_format($wd->total_deducted, 0, ',', '.') }}</td>
+
+                                        <td class="px-3 py-4">
+                                            @if($wd->status === 'pending')
+                                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">
+                                                    Pending
+                                                </span>
+                                            @elseif($wd->status === 'success')
+                                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                                    Success
+                                                </span>
+                                            @else
+                                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                                    Failed
+                                                </span>
+                                            @endif
+                                        </td>
+
+                                        <td class="px-3 py-4 text-sm text-gray-600">
+                                            {{ $wd->created_at->format('d M Y, H:i') }}
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                    <div class="p-6 bg-gray-50 border-2 border-gray-200 rounded-xl text-center">
+                        <div class="flex justify-center mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                viewBox="0 0 24 24" fill="none" stroke="#999"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                        </div>
+                        <p class="text-gray-600 text-sm">You have no withdrawal history yet.</p>
+                    </div>
+                    @endif
+                </div>
+</div>
+
+
         </div>
     </main>
 </div>
+
+
+
 
 <style>
     [x-cloak] { display: none !important; }
@@ -544,4 +630,3 @@
     });
 </script>
 @endsection
-    
