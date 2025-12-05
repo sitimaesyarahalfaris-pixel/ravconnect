@@ -3,6 +3,89 @@
 @section('title', 'My eSIM - RAVCONNECT')
 
 @section('content')
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fef7e0 0%, #fff9e6 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translate(0, 0px); }
+            50% { transform: translate(0, -15px); }
+            100% { transform: translate(0, -0px); }
+        }
+
+        .glow {
+            box-shadow: 0 0 15px rgba(255, 197, 15, 0.5);
+        }
+
+        .device-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 197, 15, 0.3);
+        }
+
+        .device-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 197, 15, 0.2);
+            border-color: rgba(255, 197, 15, 0.5);
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 197, 15, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: scale(1.02);
+            border-color: rgba(255, 197, 15, 0.5);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #FFC50F, #FFD700, #FFEC8B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .bg-pattern {
+            background-image: radial-gradient(circle at 25px 25px, rgba(255, 197, 15, 0.15) 2%, transparent 2.5%), radial-gradient(circle at 75px 75px, rgba(255, 197, 15, 0.1) 2%, transparent 2.5%);
+            background-size: 100px 100px;
+        }
+
+        .qr-code {
+            filter: drop-shadow(0 0 10px rgba(255, 197, 15, 0.5));
+        }
+
+        .text-dark {
+            color: #333;
+        }
+
+        .text-muted {
+            color: #666;
+        }
+    </style>
 <!-- Hero Section -->
 <section class="relative py-16 bg-gradient-to-br from-[#FFC50F] via-[#FFD700] to-[#FFA500] overflow-hidden">
     <!-- Animated Background -->
@@ -229,131 +312,236 @@
         <!-- Activation Tutorial Section -->
         <div class="mt-16">
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-3">How to Activate Your eSIM</h2>
-                <p class="text-gray-600 text-lg">Follow these simple steps to get connected</p>
+                <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-3">Cara Mengaktifkan eSIM Anda</h2>
+                <p class="text-gray-600 text-lg">Ikuti langkah ini dengan tepat untuk mengaktfikan eSIM</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Android Card -->
-                <div class="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-6 md:p-8 hover:shadow-2xl transition-all">
+                <div class="step-card rounded-2xl p-6 glow">
                     <div class="flex items-center mb-6">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center mr-4 shadow-lg">
-                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M17.6,9.48l1.84-3.18c0.16-0.31,0.04-0.69-0.26-0.85c-0.29-0.15-0.65-0.06-0.83,0.22l-1.88,3.24 c-2.86-1.21-6.08-1.21-8.94,0L5.65,5.67c-0.19-0.29-0.58-0.38-0.87-0.2C4.5,5.65,4.41,6.01,4.56,6.3L6.4,9.48 C3.3,11.25,1.28,14.44,1,18h22C22.72,14.44,20.7,11.25,17.6,9.48z M7,15.25c-0.69,0-1.25-0.56-1.25-1.25 c0-0.69,0.56-1.25,1.25-1.25S8.25,13.31,8.25,14C8.25,14.69,7.69,15.25,7,15.25z M17,15.25c-0.69,0-1.25-0.56-1.25-1.25 c0-0.69,0.56-1.25,1.25-1.25s1.25,0.56,1.25,1.25C18.25,14.69,17.69,15.25,17,15.25z"/>
-                            </svg>
+                        <div class="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center mr-4">
+                            <i class="fab fa-android text-2xl text-white"></i>
                         </div>
-                        <div>
-                            <h3 class="text-2xl font-black text-gray-900">Android</h3>
-                            <p class="text-sm text-gray-600">For Android devices</p>
+                        <h3 class="text-2xl font-bold text-dark">Aktivasi Android</h3>
+                    </div>
+
+                  
+
+                    <!-- Installation Steps -->
+                    <div class="mb-6">
+                        <h4 class="font-bold text-yellow-600 mb-4 flex items-center gap-2">
+                            <i class="fas fa-download"></i>
+                            Langkah Aktivasi di Android
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">1</span>
+                                </div>
+                                <div>
+                                    <p class="text-dark">Masuk menu <span class="text-yellow-600 font-semibold">'Pengaturan Telepon'</span> lalu pilih <span class="text-yellow-600 font-semibold">'Koneksi'</span></p>
+                                    <p class="text-xs text-muted italic mt-1">Go to Settings and Tap Connections</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">2</span>
+                                </div>
+                                <p class="text-dark">Pilih <span class="text-yellow-600 font-semibold">"Manajer SIM"</span></p>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">3</span>
+                                </div>
+                                <p class="text-dark">Pilih <span class="text-yellow-600 font-semibold">'Tambah Paket Seluler'</span></p>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">4</span>
+                                </div>
+                                <p class="text-dark">Pilih <span class="text-yellow-600 font-semibold">'Pindai Kode QR'</span></p>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">5</span>
+                                </div>
+                                <p class="text-dark">Posisikan QR Code didalam garis panduan untuk memindainya</p>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">6</span>
+                                </div>
+                                <p class="text-dark">Begitu eSIM telah terdeteksi, Tekan <span class="text-yellow-600 font-semibold">'Tambah'</span></p>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">7</span>
+                                </div>
+                                <p class="text-dark">Ketika eSIM telah terdaftar, Tekan <span class="text-yellow-600 font-semibold">'OK'</span> untuk mengaktifkan eSIM</p>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">8</span>
+                                </div>
+                                <p class="text-dark">Begitu eSIM telah aktif, akan tampil didalam menu <span class="text-yellow-600 font-semibold">'Pengelola Kartu eSIM'</span></p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="space-y-4 mb-6">
-                        <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFC50F] to-[#FFD700] flex-shrink-0 flex items-center justify-center shadow-lg">
-                                <span class="font-black text-black text-sm">1</span>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-gray-900 font-semibold mb-1">Open Settings</p>
-                                <p class="text-sm text-gray-600">Settings → Connections → SIM Manager</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFC50F] to-[#FFD700] flex-shrink-0 flex items-center justify-center shadow-lg">
-                                <span class="font-black text-black text-sm">2</span>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-gray-900 font-semibold mb-1">Scan QR Code</p>
-                                <p class="text-sm text-gray-600">Select "Add Mobile Plan" → "Scan QR Code"</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFC50F] to-[#FFD700] flex-shrink-0 flex items-center justify-center shadow-lg">
-                                <span class="font-black text-black text-sm">3</span>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-gray-900 font-semibold mb-1">Activate</p>
-                                <p class="text-sm text-gray-600">Confirm and you're done! eSIM is now active.</p>
+                    <!-- After Installation -->
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+                        <h4 class="font-bold text-green-800 mb-3 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            Setelah Pemasangan (After Install)
+                        </h4>
+                        <div class="flex items-start gap-3 text-sm text-green-800">
+                            <i class="fas fa-toggle-on text-2xl text-green-600 mt-1"></i>
+                            <div>
+                                <p class="font-semibold mb-1">Nyalakan/ON Data Roaming</p>
+                                <p>eSIM siap digunakan! <span class="font-bold">Success ✓</span></p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- YouTube Video for Android -->
-                    <div class="rounded-2xl overflow-hidden shadow-lg border-2 border-gray-200">
+                    <!-- YouTube Video Widget for Android (Optional) -->
+                    {{-- <div class="mt-8 rounded-xl overflow-hidden shadow-lg">
                         <div class="relative" style="padding-bottom: 56.25%; height: 0;">
                             <iframe
                                 class="absolute top-0 left-0 w-full h-full"
                                 src="https://www.youtube.com/embed/geYsQ3nc0fc"
-                                title="Android eSIM Activation Tutorial"
+                                title="Tutorial Aktivasi eSIM Android"
                                 frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen>
                             </iframe>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <!-- iPhone Card -->
-                <div class="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-6 md:p-8 hover:shadow-2xl transition-all">
+                <div class="step-card rounded-2xl p-6 glow">
                     <div class="flex items-center mb-6">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-700 to-black flex items-center justify-center mr-4 shadow-lg">
-                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                            </svg>
+                        <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center mr-4">
+                            <i class="fab fa-apple text-2xl text-white"></i>
                         </div>
-                        <div>
-                            <h3 class="text-2xl font-black text-gray-900">iPhone</h3>
-                            <p class="text-sm text-gray-600">For iOS devices</p>
+                        <h3 class="text-2xl font-bold text-dark">Aktivasi iPhone</h3>
+                    </div>
+
+                    <!-- Important Part -->
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-6">
+                        <h4 class="font-bold text-red-800 mb-3 flex items-center gap-2">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Bagian Penting 
+                            
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-extrabold bg-blue-600 text-white shadow-md">
+                                Important
+                            </span>
+                            
+                            
+                        </h4>
+                        <ul class="space-y-2 text-sm text-red-800">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle mt-1 text-red-600"></i>
+                                <span>Lepas <strong>SIM fisik</strong> yang terpasang</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle mt-1 text-red-600"></i>
+                                <span><strong>OFF/DELETE</strong> eSIM sebelumnya/lainnya</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle mt-1 text-red-600"></i>
+                                <span><strong>OFF</strong> mode hemat baterai</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle mt-1 text-red-600"></i>
+                                <span>Terhubung ke <strong>WiFi/Hotspot</strong> aktif</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Installation Steps -->
+                    <div class="mb-6">
+                        <h4 class="font-bold text-yellow-600 mb-4 flex items-center gap-2">
+                            <i class="fas fa-download"></i>
+                            Bagian Pemasangan 
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-extrabold bg-blue-600 text-white shadow-md">
+                                Installation Part
+                            </span>
+                            
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">1</span>
+                                </div>
+                                <p class="text-dark">Buka <span class="text-yellow-600 font-semibold">Pengaturan (Settings)</span></p>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">2</span>
+                                </div>
+                                <p class="text-dark">Pilih <span class="text-yellow-600 font-semibold">Seluler (Cellular)</span></p>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">3</span>
+                                </div>
+                                <p class="text-dark">Klik <span class="text-yellow-600 font-semibold">Tambah/Atur Seluler (Add eSIM/Set Up Cellular)</span></p>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 shrink-0 flex items-center justify-center mr-4 mt-1">
+                                    <span class="font-bold text-white">4</span>
+                                </div>
+                                <p class="text-dark">Pilih <span class="text-yellow-600 font-semibold">Gunakan/Use QR CODE</span> dan scan kode QR dari akun Anda</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="space-y-4 mb-6">
-                        <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFC50F] to-[#FFD700] flex-shrink-0 flex items-center justify-center shadow-lg">
-                                <span class="font-black text-black text-sm">1</span>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-gray-900 font-semibold mb-1">Open Settings</p>
-                                <p class="text-sm text-gray-600">Settings → Cellular → Add eSIM</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFC50F] to-[#FFD700] flex-shrink-0 flex items-center justify-center shadow-lg">
-                                <span class="font-black text-black text-sm">2</span>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-gray-900 font-semibold mb-1">Scan or Enter Details</p>
-                                <p class="text-sm text-gray-600">Scan QR code or select "Enter Details Manually"</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFC50F] to-[#FFD700] flex-shrink-0 flex items-center justify-center shadow-lg">
-                                <span class="font-black text-black text-sm">3</span>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-gray-900 font-semibold mb-1">Complete Setup</p>
-                                <p class="text-sm text-gray-600">Enter SM-DP+ Address & Activation Code, then done!</p>
+                    <!-- After Installation -->
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+                        <h4 class="font-bold text-green-800 mb-3 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            Setelah Pemasangan 
+                            
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-extrabold bg-blue-600 text-white shadow-md">
+                                After Install
+                            </span>
+                            
+                            
+                        </h4>
+                        <div class="flex items-start gap-3 text-sm text-green-800">
+                            <i class="fas fa-toggle-on text-2xl text-green-600 mt-1"></i>
+                            <div>
+                                <p class="font-semibold mb-1">Nyalakan/ON Data Roaming</p>
+                                <p>eSIM siap digunakan! <span class="font-bold">Success ✓</span></p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- YouTube Video for iPhone -->
-                    <div class="rounded-2xl overflow-hidden shadow-lg border-2 border-gray-200">
+                    <!-- YouTube Video Widget for iPhone (Optional) -->
+                    {{-- <div class="mt-8 rounded-xl overflow-hidden shadow-lg">
                         <div class="relative" style="padding-bottom: 56.25%; height: 0;">
                             <iframe
                                 class="absolute top-0 left-0 w-full h-full"
                                 src="https://www.youtube.com/embed/Dl45LSLK4_8"
-                                title="iPhone eSIM Activation Tutorial"
+                                title="Tutorial Aktivasi eSIM iPhone"
                                 frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen>
                             </iframe>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

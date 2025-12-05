@@ -45,7 +45,7 @@
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Beranda
                         </a></li>
-                        <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
+                        {{-- <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Tentang Kami
                         </a></li>
@@ -56,7 +56,7 @@
                         <li><a href="/support" class="text-gray-400 hover:text-[#FFC50F] transition-all flex items-center gap-2 group">
                             <span class="w-0 group-hover:w-2 h-0.5 bg-[#FFC50F] transition-all"></span>
                             Blog
-                        </a></li>
+                        </a></li> --}}
                     </ul>
                 </div>
 

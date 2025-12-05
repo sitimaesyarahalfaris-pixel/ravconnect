@@ -3,8 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAVCONNECT - eSIM Global Roaming anti ribet</title>
+    
+    
+    <!-- Primary Meta Tags -->
+    <title>RAVCONNECT - eSIM Global Roaming Tanpa Ribet | Internet Internasional Murah</title>
+    <meta name="title" content="RAVCONNECT - eSIM Global Roaming Tanpa Ribet | Internet Internasional Murah">
+    <meta name="description" content="eSIM global roaming terbaik di Indonesia. Akses internet di 150+ negara tanpa ganti kartu SIM. Harga terjangkau, aktivasi instan, paket data fleksibel untuk traveler.">
+    <meta name="keywords" content="esim indonesia, esim global roaming, internet luar negeri, kartu sim internasional, data roaming murah, esim travel, esim asia, esim eropa">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="language" content="Indonesian">
+    <meta name="author" content="RAVCONNECT">
+    <link rel="canonical" href="https://ravconnect.my.id/">
 
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ravconnect.com/">
+    <meta property="og:title" content="RAVCONNECT - eSIM Global Roaming Tanpa Ribet">
+    <meta property="og:description" content="eSIM global roaming terbaik di Indonesia. Akses internet di 150+ negara tanpa ganti kartu SIM. Aktivasi instan, harga terjangkau.">
+    <meta property="og:image" content="https://ravconnect.com/og-image.jpg">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ravconnect.my.id/">
+    <meta property="twitter:title" content="RAVCONNECT - eSIM Global Roaming Tanpa Ribet">
+    <meta property="twitter:description" content="eSIM global roaming terbaik di Indonesia. Akses internet di 150+ negara tanpa ganti kartu SIM.">
+    <meta property="twitter:image" content="https://ravconnect.my.id/twitter-image.jpg">
+
+
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="icon" href="{{asset('resources/assets/img/Logo-transparent 1.png')}}" type="image/x-icon">

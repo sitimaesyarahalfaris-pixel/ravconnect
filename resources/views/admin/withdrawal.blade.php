@@ -96,12 +96,12 @@
             @endif
 
             <!-- Available Revenue Card -->
-            <div class="mb-8 bg-gradient-to-br from-green-500 via-green-600 to-green-700 rounded-3xl shadow-2xl border-2 border-green-400 overflow-hidden relative">
+            <div class="mb-8 rounded-3xl shadow-2xl border-2 border-green-400 overflow-hidden relative" style="background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);">
                 <div class="absolute inset-0 opacity-10">
                     <div class="absolute -top-12 -right-12 w-64 h-64 bg-white rounded-full blur-3xl"></div>
                     <div class="absolute -bottom-12 -left-12 w-64 h-64 bg-white rounded-full blur-3xl"></div>
                 </div>
-
+                
                 <div class="p-8 relative z-10">
                     <div class="flex items-center justify-between">
                         <div>
@@ -113,17 +113,17 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-white/80 text-sm font-bold">Total Revenue Tersedia</p>
-                                    <h2 class="text-4xl font-black text-white">Rp {{ number_format($revenue, 0, ',', '.') }}</h2>
+                                    <p style="color: white;" class="text-sm font-bold">Total Revenue Tersedia</p>
+                                    <h2 style="color: white;" class="text-4xl font-black">Rp {{ number_format($revenue, 0, ',', '.') }}</h2>
                                 </div>
                             </div>
                             <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full border border-white/40">
                                 <div class="w-2 h-2 bg-green-200 rounded-full animate-pulse"></div>
-                                <span class="text-white text-xs font-bold">Available for withdrawal</span>
+                                <span style="color: white;" class="text-xs font-bold">Available for withdrawal</span>
                             </div>
                         </div>
                         <div class="hidden md:block">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-white/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.2;">
                                 <line x1="12" y1="1" x2="12" y2="23"></line>
                                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                             </svg>
@@ -291,7 +291,7 @@
                                 <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
-                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-black text-lg">Rp</div>
+                                
                                 <input type="number"
                                        name="nominal"
                                        id="nominal"
@@ -453,7 +453,7 @@
                     </div>
                     @endif
                 </div>
-</div>
+            </div>
 
 
         </div>
