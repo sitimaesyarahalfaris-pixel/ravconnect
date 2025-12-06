@@ -176,7 +176,15 @@
                                 @foreach($grouped[$group] as $method)
                                     <label class="flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all shadow-sm hover:border-[#F0AC06] {{ old('payment_method', $defaultPaymentMethod) == $method['metode'] ? 'border-[#F0AC06] bg-yellow-50' : 'border-gray-200 bg-white' }}">
                                         <div class="flex flex-col items-center justify-center w-28 min-w-28">
-                                            <div class="font-black text-lg" style="color:#F0AC06">Rp {{ number_format($total + ($method['fee'] ?? 0) + round($total * (($method['fee_persen'] ?? 0) / 100)), 0, ',', '.') }}</div>
+                                            <div class="font-black text-lg" style="color:#F0AC06">
+                                                @php
+                                                    $feeFixed = floatval($method['fee'] ?? 0);
+                                                    $feePercent = floatval($method['fee_persen'] ?? 0) / 100;
+                                                    $nominal = ($total + $feeFixed) / (1 - $feePercent);
+                                                    $nominal = ceil($nominal);
+                                                @endphp
+                                                Rp {{ number_format($nominal, 0, ',', '.') }}
+                                            </div>
                                             @if(($method['fee'] ?? 0) > 0 || ($method['fee_persen'] ?? 0) > 0)
                                                 <div class="text-xs text-gray-400">Termasuk admin/fee</div>
                                             @endif

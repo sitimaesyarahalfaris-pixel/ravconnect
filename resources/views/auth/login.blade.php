@@ -1,12 +1,37 @@
-@extends('layouts.app')
-@section('title', 'Login - RAVCONNECT')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<!-- Split Screen Login -->
+    @stack('head')
+    <link rel="icon" href="{{ asset('resources/assets/img/Logo-transparent 1.png') }}" type="image/x-icon">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 0.6;
+        }
+        50% {
+            opacity: 0.8;
+        }
+    }
+
+    .animate-pulse {
+        animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    </style>
+
+</head>
+<body>
+    <!-- Split Screen Login -->
 <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white p-4">
     <div class="w-full max-w-6xl">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white rounded-3xl shadow-2xl overflow-hidden">
-            
+
             <!-- Left Side - Branding & Visual (Hidden on Mobile, Visible on Desktop) -->
             <div class="hidden lg:flex flex-col justify-center items-center p-12 bg-gradient-to-br from-[#FFC50F] via-[#FFD700] to-[#FFA500] relative overflow-hidden">
                 <!-- Animated Background Elements -->
@@ -117,7 +142,7 @@
                     <!-- Login Form -->
                     <form method="POST" action="{{ route('login') }}" class="space-y-5">
                         @csrf
-                        
+
                         <!-- Email Field -->
                         <div>
                             <label class="block font-bold text-gray-900 mb-2">Email Address</label>
@@ -128,13 +153,13 @@
                                         <polyline points="22,6 12,13 2,6"></polyline>
                                     </svg>
                                 </div>
-                                <input 
-                                    type="email" 
-                                    name="email" 
-                                    value="{{ old('email') }}" 
-                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900" 
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value="{{ old('email') }}"
+                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900"
                                     placeholder="your.email@example.com"
-                                    required 
+                                    required
                                     autofocus>
                             </div>
                         </div>
@@ -149,14 +174,14 @@
                                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                     </svg>
                                 </div>
-                                <input 
-                                    type="password" 
-                                    name="password" 
+                                <input
+                                    type="password"
+                                    name="password"
                                     id="password"
-                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-12 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900" 
+                                    class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-12 py-3.5 focus:border-[#FFC50F] focus:outline-none focus:ring-4 focus:ring-[#FFC50F]/10 transition-all text-gray-900"
                                     placeholder="Enter your password"
                                     required>
-                                <button 
+                                <button
                                     type="button"
                                     onclick="togglePassword('password', 'toggleIcon')"
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#FFC50F] transition-colors">
@@ -178,8 +203,8 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-[#FFC50F] to-[#FFD700] text-black rounded-xl font-black text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
@@ -219,7 +244,7 @@
 function togglePassword(inputId, iconId) {
     const input = document.getElementById(inputId);
     const icon = document.getElementById(iconId);
-    
+
     if (input.type === 'password') {
         input.type = 'text';
         icon.innerHTML = `
@@ -235,20 +260,14 @@ function togglePassword(inputId, iconId) {
     }
 }
 </script>
+</body>
+</html>
 
-<style>
-@keyframes pulse {
-    0%, 100% {
-        opacity: 0.6;
-    }
-    50% {
-        opacity: 0.8;
-    }
-}
+{{-- @extends('layouts.app')
+@section('title', 'Login - RAVCONNECT')
+@section('content') --}}
 
-.animate-pulse {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-</style>
 
-@endsection
+
+
+

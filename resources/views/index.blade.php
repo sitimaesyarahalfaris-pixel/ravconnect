@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    
+
+
     <!-- Primary Meta Tags -->
     <title>RAVCONNECT - eSIM Global Roaming Tanpa Ribet | Internet Internasional Murah</title>
     <meta name="title" content="RAVCONNECT - eSIM Global Roaming Tanpa Ribet | Internet Internasional Murah">
@@ -20,7 +20,7 @@
     <meta property="og:url" content="https://ravconnect.com/">
     <meta property="og:title" content="RAVCONNECT - eSIM Global Roaming Tanpa Ribet">
     <meta property="og:description" content="eSIM global roaming terbaik di Indonesia. Akses internet di 150+ negara tanpa ganti kartu SIM. Aktivasi instan, harga terjangkau.">
-    <meta property="og:image" content="https://ravconnect.com/og-image.jpg">
+    <meta property="og:image" content="https://gallfly-stonelike-rikki.ngrok-free.dev/resources/assets/img/Logo-transparent%201.png">
     <meta property="og:locale" content="id_ID">
 
     <!-- Twitter -->
@@ -31,7 +31,7 @@
     <meta property="twitter:image" content="https://ravconnect.my.id/twitter-image.jpg">
 
 
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="icon" href="{{asset('resources/assets/img/Logo-transparent 1.png')}}" type="image/x-icon">

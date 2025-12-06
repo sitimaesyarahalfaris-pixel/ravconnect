@@ -182,11 +182,16 @@ class CartController extends Controller
         $baseNominal = array_sum(array_map(function ($item) {
             return $item['price'];
         }, $cart));
-        $adminFeeFixed = $selected['fee'] ?? 0;
-        $adminFeePercent = $selected['fee_persen'] ?? 0;
-        $adminFeePercentValue = round($baseNominal * ($adminFeePercent / 100));
-        $adminFee = $adminFeeFixed + $adminFeePercentValue;
-        $nominal = $baseNominal + $adminFee;
+        $feeFixed = floatval($selected['fee'] ?? 0); // contoh 200
+        $feePercent = floatval($selected['fee_persen'] ?? 0) / 100; // contoh 1.4 => 0.014
+
+        // Hitung nominal yang dibayar customer agar kamu menerima baseNominal full
+        $nominal = ($baseNominal + $feeFixed) / (1 - $feePercent);
+        $nominal = ceil($nominal); // pembulatan ke atas supaya cukup untuk potongan
+
+        // Fee admin yang ditanggung customer
+        $adminFee = $nominal - $baseNominal;
+
         $type = $selected['type'] ?? '';
         $metode = $selected['metode'] ?? '';
 
